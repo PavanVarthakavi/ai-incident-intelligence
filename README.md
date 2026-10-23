@@ -3,9 +3,10 @@
 A system that analyzes distributed logs, metrics, traces, and deployment events to generate
 evidence-grounded incident diagnoses.
 
-> **Status: Milestone 2 (Evidence Collection).** A local demo system produces logs, metrics,
-> traces, and deployment events, and the backend collects them into citable evidence for a
-> time window. There is no persistence or LLM agent yet. See [`docs/roadmap.md`](docs/roadmap.md).
+> **Status: Milestone 3 (Incident Persistence).** A local demo system produces logs, metrics,
+> traces, and deployment events; the backend collects them into citable evidence and stores
+> incidents with immutable evidence snapshots in PostgreSQL. There is no LLM agent yet. See
+> [`docs/roadmap.md`](docs/roadmap.md).
 
 ## What exists today
 
@@ -18,13 +19,14 @@ evidence-grounded incident diagnoses.
 | GitHub Actions CI (lint, unit tests, full-stack integration test) | Implemented |
 | Demo microservices with fault injection + load generator (`demo/`) | Implemented |
 | Telemetry stack: OTel Collector, Prometheus, Jaeger, OpenSearch (`compose.yaml`) | Implemented |
-| PostgreSQL persistence for incidents | Planned |
+| Incidents with evidence snapshots in PostgreSQL (`/v1/incidents`) | Implemented |
 | LLM investigation agent | Planned |
 | Frontend | Planned |
 
 See [`docs/architecture.md`](docs/architecture.md) for the target design,
 [`docs/demo-environment.md`](docs/demo-environment.md) for the demo stack,
-[`docs/evidence.md`](docs/evidence.md) for evidence collection, and
+[`docs/evidence.md`](docs/evidence.md) for evidence collection,
+[`docs/incidents.md`](docs/incidents.md) for incidents and snapshots, and
 [`docs/roadmap.md`](docs/roadmap.md) for milestones.
 
 ## Repository layout
@@ -37,13 +39,16 @@ backend/                 FastAPI service (Python 3.11+)
     api/                 HTTP endpoints (health, readiness, evidence)
     integrations/        Read-only clients for Prometheus, Jaeger, OpenSearch
     evidence/            Evidence model and one collector per source
+    db/                  ORM models and database sessions
+    incidents/           Incident schemas, storage, and API mapping
+  migrations/            Alembic migrations
   tests/                 Unit tests (recorded fixtures) and integration tests
   pyproject.toml         Dependencies and tool configuration
 demo/                    Synthetic instrumented microservices (not production code)
   shop/                  gateway, orders, inventory, load generator, fault injection
   tools/                 incidentctl (inject faults/deploys), smoke_check
-infra/                   Collector, Prometheus, Jaeger, OpenSearch configuration
-compose.yaml             Local demo + telemetry stack
+infra/                   Collector, Prometheus, Jaeger, OpenSearch, Postgres configuration
+compose.yaml             Local demo, telemetry, and database stack
 docs/                    Architecture, roadmap, demo environment, decisions
 .github/workflows/       CI pipelines
 ```
@@ -58,10 +63,12 @@ python3 -m venv .venv
 source .venv/bin/activate
 pip install -e ".[dev]"
 
-# Optional: local configuration
-cp ../.env.example .env
+# Local configuration (database password and URLs), in the repository root
+cp ../.env.example ../.env
 
-# Run the API
+# Start the database (see below for the full stack), apply migrations, run the API
+docker compose up -d --wait postgres
+alembic upgrade head
 uvicorn app.main:app --reload
 curl http://localhost:8000/health
 ```
@@ -73,6 +80,7 @@ Interactive API docs are served at `http://localhost:8000/docs`.
 Requires Docker. Tools require Python 3.11+.
 
 ```bash
+cp .env.example .env                    # once; set POSTGRES_PASSWORD
 docker compose up -d --build --wait
 python3 demo/tools/smoke_check.py --wait 120
 python3 demo/tools/incidentctl.py deploy inventory 3.2.0 --latency-ms 2500   # cause an incident
@@ -88,18 +96,18 @@ Details in [`docs/demo-environment.md`](docs/demo-environment.md) and
 
 ```bash
 cd backend
-pytest                  # unit tests
+pytest                  # unit tests (database tests use APP_TEST_DATABASE_URL)
 pytest -m integration   # against the running demo stack
 ruff check .            # lint
 ruff format .       # format
 ```
 
-Backend CI runs lint and unit tests on Python 3.11 and 3.13; Demo CI runs the demo's unit
-tests. The Integration workflow starts the full Compose stack, runs the smoke check, injects a
+Backend CI runs lint, migration checks, and unit tests (with a PostgreSQL service) on
+Python 3.11 and 3.13; Demo CI runs the demo's unit tests. The Integration workflow starts the full Compose stack, runs the smoke check, injects a
 bad deploy, and checks that the backend finds it in every telemetry source.
 
 ## Data policy
 
 This project uses only public or synthetic data. Never commit real production telemetry,
-customer data, or secrets. Configuration secrets belong in a local `.env` file, which is
-git-ignored.
+customer data, or secrets. Configuration secrets, including the database password, belong
+in the git-ignored `.env` file in the repository root.

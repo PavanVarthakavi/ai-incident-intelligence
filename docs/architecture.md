@@ -1,9 +1,9 @@
 # Architecture
 
-> **Implemented vs. planned.** As of Milestone 2, the **synthetic telemetry environment** and
-> **evidence collection** (read-only adapters, evidence model, readiness, `GET /v1/evidence`)
-> exist. Nothing is persisted and there is no LLM agent yet. Components marked Planned are
-> proposals and may change as later milestones are designed.
+> **Implemented vs. planned.** As of Milestone 3, the **synthetic telemetry environment**,
+> **evidence collection**, and **incident persistence** (PostgreSQL, immutable evidence
+> snapshots) exist. There is no LLM agent yet. Components marked Planned are proposals and
+> may change as later milestones are designed.
 
 ## Goal
 
@@ -47,8 +47,8 @@ over retrieved evidence, not a source of facts.
 | OpenTelemetry Collector | Receives OTLP from services; routes to backends | **Implemented (M1)** |
 | Prometheus / Jaeger / OpenSearch | Metrics / traces / logs + deploy events storage and query | **Implemented (M1)** |
 | Evidence collectors | Typed, read-only adapters that query each backend for a time window and service set and normalize results ([details](evidence.md)) | **Implemented (M2)** |
-| Readiness endpoint | `/ready` checks Prometheus, Jaeger, and OpenSearch | **Implemented (M2)** |
-| PostgreSQL | Incidents, evidence snapshots, diagnoses, audit trail | Planned (M3) |
+| Readiness endpoint | `/ready` checks the database, Prometheus, Jaeger, and OpenSearch | **Implemented (M2, M3)** |
+| PostgreSQL | Incidents and immutable evidence snapshots ([details](incidents.md)); diagnoses and audit trail later | **Implemented (M3)** |
 | Investigation agent | LLM that calls evidence collectors as tools and produces a cited diagnosis | Planned (M4) |
 | Evaluation harness | Replays injected faults and scores diagnoses against known root causes | Planned (M5) |
 | Frontend | Incident timeline and diagnosis review UI | Planned (M6) |
@@ -164,3 +164,30 @@ Unit tests replay real backend responses recorded during an incident, trimmed to
 the code reads, so they exercise real API formats without a network. Integration tests assert
 on the specific release they deployed, because evidence from earlier incidents in the same
 window would otherwise make them pass vacuously (observed during development).
+
+### D-019: PostgreSQL with async SQLAlchemy and explicit Alembic migrations (M3)
+SQLAlchemy 2 (asyncio) with psycopg 3 fits the async FastAPI stack and keeps one driver for
+sync tooling and async requests. Migrations run only through `alembic upgrade head`, never
+on app startup, so a deploy cannot change the schema by accident and several API processes
+cannot race to migrate.
+
+### D-020: Immutable snapshots with evidence stored as rows (M3)
+A diagnosis is only checkable against the evidence it saw, so snapshots are append-only.
+Items are rows keyed by (snapshot, evidence ID) rather than one JSON blob, so a cited
+`ev-...` ID can be validated with a primary-key lookup. Counts are denormalized onto the
+snapshot because the rows never change.
+
+### D-021: Collect evidence outside the database transaction (M3)
+Backend queries can take seconds. Collecting first and then writing in a short
+transaction keeps connections free and avoids long-held locks; the cost is that a crash
+between the two steps loses the collected evidence, which can simply be collected again.
+
+### D-022: One root .env shared by compose and the backend; guarded test database (M3)
+The database password lives once in a git-ignored root `.env`; both docker compose and
+pydantic-settings expand `${POSTGRES_PASSWORD}` from it. CI generates a throwaway password
+or uses trust auth on an ephemeral container, so no credential is committed. Tests use
+settings that ignore `.env`, and database tests refuse any database not named `*_test`.
+
+### D-023: Database tests run against real PostgreSQL (M3)
+Tests use the same engine as production (JSONB, arrays, check constraints) instead of
+SQLite, via the compose database locally and a service container in CI.

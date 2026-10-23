@@ -1,5 +1,6 @@
-# Local synthetic telemetry environment (Milestone 1).
+# Local demo stack: synthetic services, telemetry backends, and the platform database.
 #
+#   cp .env.example .env                  # once; set POSTGRES_PASSWORD
 #   docker compose up -d --build          # core stack
 #   docker compose --profile ui up -d     # also start OpenSearch Dashboards
 #
@@ -119,6 +120,25 @@ services:
       retries: 20
       start_period: 30s
 
+  # --- Platform database ------------------------------------------------------
+  # Host port 5433 avoids clashing with other local Postgres instances on 5432.
+  postgres:
+    image: postgres:17.6
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: incidents
+      POSTGRES_DB: incidents
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in .env (see .env.example)}
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - ./infra/postgres/init:/docker-entrypoint-initdb.d:ro
+    ports: ["127.0.0.1:5433:5432"]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U incidents -d incidents"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
   # One-shot: installs index templates before any data is written.
   opensearch-init:
     image: opensearchproject/opensearch:2.19.1
@@ -146,3 +166,4 @@ services:
 volumes:
   prometheus-data:
   opensearch-data:
+  postgres-data:

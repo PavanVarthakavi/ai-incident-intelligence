@@ -22,7 +22,7 @@ from app.integrations.opensearch import OpenSearchClient
 from app.integrations.prometheus import PrometheusClient
 from tests import fakes
 
-SETTINGS = Settings()
+SETTINGS = Settings(_env_file=None)
 
 
 @pytest.fixture

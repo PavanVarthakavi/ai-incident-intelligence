@@ -41,12 +41,17 @@ jobs:
           cache: pip
           cache-dependency-path: backend/pyproject.toml
 
+      - name: Create .env with a throwaway database password
+        run: sed "s/^POSTGRES_PASSWORD=change-me$/POSTGRES_PASSWORD=$(openssl rand -hex 16)/" .env.example > .env
+
       - name: Start stack
         run: docker compose up -d --build --wait --wait-timeout 300
 
-      - name: Install backend
+      - name: Install backend and migrate the database
         working-directory: backend
-        run: pip install -e ".[dev]"
+        run: |
+          pip install -e ".[dev]"
+          alembic upgrade head
 
       - name: Smoke check
         run: python demo/tools/smoke_check.py --wait 180
@@ -63,7 +68,7 @@ jobs:
         env:
           INCIDENT_SCENARIO: bad-inventory-deploy
           INCIDENT_RELEASE: "9.9.9"
-        run: pytest -m integration -k bad_inventory_deploy
+        run: pytest -m integration -v
 
       - name: Show logs on failure
         if: failure()

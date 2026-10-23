@@ -68,7 +68,7 @@ jobs:
         env:
           INCIDENT_SCENARIO: bad-inventory-deploy
           INCIDENT_RELEASE: "9.9.9"
-        run: pytest -m integration -k bad_inventory_deploy -v
+        run: pytest -m integration -v
 
       - name: Show logs on failure
         if: failure()

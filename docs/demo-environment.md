@@ -16,6 +16,7 @@ the platform will investigate. Nothing here touches real systems or real data.
 | `prometheus` | Metrics storage and query | http://localhost:9090 |
 | `opensearch` | Log and deployment-event storage | http://localhost:9200 |
 | `opensearch-init` | One-shot: installs index templates, then exits | n/a |
+| `postgres` | Platform database for incidents and snapshots ([details](incidents.md)) | 127.0.0.1:5433 |
 | `opensearch-dashboards` | Optional log UI (`ui` profile) | http://localhost:5601 |
 
 Request flow: `loadgen -> gateway -> orders -> inventory`. Every hop is traced, so one checkout
@@ -34,6 +35,7 @@ Requires Docker with ~2 GB of memory available to containers (about 1.2 GB in us
 measured; add ~300 MB for Dashboards). The host tools need Python 3.11+ and no extra packages.
 
 ```bash
+cp .env.example .env                          # once; set POSTGRES_PASSWORD
 docker compose up -d --build --wait           # start (first build takes a minute or two)
 python3 demo/tools/smoke_check.py --wait 120  # verify telemetry reaches every backend
 docker compose --profile ui up -d             # optional: OpenSearch Dashboards

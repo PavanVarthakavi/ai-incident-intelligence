@@ -38,9 +38,11 @@ Goal: the backend can retrieve and normalize telemetry for a time window.
 
 Goal: incidents and their evidence are stored and queryable.
 
-- PostgreSQL with migrations (Alembic)
-- Incident create/read/list API
-- Evidence snapshots linked to incidents
+- [x] PostgreSQL in the compose stack, with migrations (Alembic) checked in CI
+- [x] Incident create/read/list API
+- [x] Immutable evidence snapshots linked to incidents, re-collectable on demand
+- [x] Readiness includes the database
+- [x] Documentation: [`incidents.md`](incidents.md), including known limitations
 
 ## M4: LLM Investigation Agent
 

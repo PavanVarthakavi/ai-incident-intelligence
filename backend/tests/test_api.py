@@ -5,13 +5,21 @@ from fastapi.testclient import TestClient
 from tests import fakes
 
 
-def test_ready_when_all_backends_answer(client: TestClient) -> None:
-    response = client.get("/ready")
+def test_ready_when_database_and_backends_answer(db_client: TestClient) -> None:
+    response = db_client.get("/ready")
 
     assert response.status_code == 200
     body = response.json()
     assert body["status"] == "ready"
-    assert set(body["dependencies"]) == {"prometheus", "jaeger", "opensearch"}
+    assert set(body["dependencies"]) == {"database", "prometheus", "jaeger", "opensearch"}
+
+
+def test_not_ready_without_database(client: TestClient) -> None:
+    response = client.get("/ready")
+
+    assert response.status_code == 503
+    database = response.json()["dependencies"]["database"]
+    assert database == {"ok": False, "error": "APP_DATABASE_URL is not set"}
 
 
 def test_not_ready_names_the_failing_backend(

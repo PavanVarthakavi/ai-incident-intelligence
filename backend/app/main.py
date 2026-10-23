@@ -12,8 +12,10 @@ from fastapi import FastAPI
 from app import __version__
 from app.api.evidence import router as evidence_router
 from app.api.health import router as health_router
+from app.api.incidents import router as incidents_router
 from app.backends import Backends
 from app.config import Settings, get_settings
+from app.db.session import Database
 
 
 def create_app(
@@ -24,11 +26,21 @@ def create_app(
 
     @asynccontextmanager
     async def lifespan(app: FastAPI) -> AsyncIterator[None]:
-        async with httpx.AsyncClient(
-            timeout=settings.backend_timeout_s, transport=transport
-        ) as http:
-            app.state.backends = Backends.create(settings, http)
-            yield
+        database = (
+            Database.connect(settings.database_url.get_secret_value())
+            if settings.database_url
+            else None
+        )
+        app.state.database = database
+        try:
+            async with httpx.AsyncClient(
+                timeout=settings.backend_timeout_s, transport=transport
+            ) as http:
+                app.state.backends = Backends.create(settings, http)
+                yield
+        finally:
+            if database is not None:
+                await database.engine.dispose()
 
     app = FastAPI(
         title="AI Incident Intelligence API",
@@ -39,6 +51,7 @@ def create_app(
     app.dependency_overrides[get_settings] = lambda: settings
     app.include_router(health_router)
     app.include_router(evidence_router)
+    app.include_router(incidents_router)
     return app
 
 

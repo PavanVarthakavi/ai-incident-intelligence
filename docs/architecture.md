@@ -225,3 +225,21 @@ recorded.
 A fake model drives the service tests and a fake HTTP transport checks the real SDK
 client, including against a reply recorded once from the live API. Live calls are run by
 hand with `tests/record_llm_reply.py`, which needs an explicit `--yes`.
+
+### D-030: Evaluation cases captured once from the demo stack and frozen (M5)
+Cases are real collector output from scripted scenarios, so the model sees the same evidence
+shape as in production, while freezing them as JSON makes runs reproducible, free of the
+stack, and comparable across variants. Cost: cases go stale when collectors change and must be
+recaptured.
+
+### D-031: Exact checks only, no model-graded scores (M5)
+Every case has a known root-cause service and, where relevant, a release, so correctness is
+checkable with string matching and the backend's citation validator. This keeps grading free,
+deterministic, and auditable; explanation quality is out of scope for now.
+
+### D-032: Paid evaluation runs are gated and capped (M5)
+A run starts only for a harness (runner, grader, prompt, client, validator, cases) whose hash
+a person approved, and a spend cap reserves each call's worst case. Failed calls are recorded
+separately so they cannot be mistaken for wrong answers. Evaluations are run by hand, never
+in CI.
+

@@ -58,7 +58,7 @@ export default defineConfig({
       timeout: 60_000,
     },
     {
-      command: `npx vite --port ${WEB_PORT} --strictPort`,
+      command: `npx vite --host 127.0.0.1 --port ${WEB_PORT} --strictPort`,
       env: { BACKEND_URL: `http://127.0.0.1:${API_PORT}` },
       url: `http://127.0.0.1:${WEB_PORT}`,
       reuseExistingServer: false,

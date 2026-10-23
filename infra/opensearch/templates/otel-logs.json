@@ -1,0 +1,33 @@
+{
+  "index_patterns": ["otel-logs*"],
+  "priority": 100,
+  "template": {
+    "settings": {
+      "number_of_shards": 1,
+      "number_of_replicas": 0
+    },
+    "mappings": {
+      "dynamic_templates": [
+        {
+          "strings_as_keywords": {
+            "match_mapping_type": "string",
+            "mapping": { "type": "keyword", "ignore_above": 1024 }
+          }
+        }
+      ],
+      "properties": {
+        "@timestamp": { "type": "date_nanos" },
+        "observedTimestamp": { "type": "date_nanos" },
+        "body": { "type": "text", "fields": { "keyword": { "type": "keyword", "ignore_above": 1024 } } },
+        "traceId": { "type": "keyword" },
+        "spanId": { "type": "keyword" },
+        "severity": {
+          "properties": {
+            "text": { "type": "keyword" },
+            "number": { "type": "integer" }
+          }
+        }
+      }
+    }
+  }
+}

@@ -3,7 +3,7 @@
 Milestones are incremental: each one should leave the system working, tested, and documented.
 Scope for later milestones is a plan and will be refined when each begins.
 
-## M0 — Project Foundation ✅ (current)
+## M0 — Project Foundation ✅
 
 - [x] Repository structure (`backend/`, `docs/`, `.github/`)
 - [x] FastAPI app factory and environment-based settings
@@ -12,15 +12,16 @@ Scope for later milestones is a plan and will be refined when each begins.
 - [x] Architecture and roadmap documents
 - [x] GitHub Actions workflow running lint and tests
 
-## M1 — Synthetic Telemetry Environment
+## M1 — Synthetic Telemetry Environment ✅
 
 Goal: a reproducible local environment that emits realistic logs, metrics, and traces.
 
-- Docker Compose with OpenTelemetry Collector, Prometheus, Jaeger, and OpenSearch
-- Two or three small instrumented demo services with a request flow across them
-- Load generator and a simple fault-injection mechanism (latency, errors, bad deploy)
-- Synthetic deployment events emitted alongside faults
-- Documentation for starting the stack and viewing data in each tool
+- [x] Docker Compose with OpenTelemetry Collector, Prometheus, Jaeger, and OpenSearch
+- [x] Three instrumented demo services (`gateway → orders → inventory`)
+- [x] Load generator and runtime fault injection (latency, errors, bad deploy)
+- [x] Synthetic deployment events recorded in OpenSearch
+- [x] Smoke check and CI job that boots the stack and verifies every signal
+- [x] Documentation: [`demo-environment.md`](demo-environment.md), including known limitations
 
 ## M2 — Evidence Collection
 

@@ -1,0 +1,24 @@
+{
+  "index_patterns": ["deploy-events*"],
+  "priority": 100,
+  "template": {
+    "settings": {
+      "number_of_shards": 1,
+      "number_of_replicas": 0
+    },
+    "mappings": {
+      "dynamic": "strict",
+      "properties": {
+        "@timestamp": { "type": "date" },
+        "event_id": { "type": "keyword" },
+        "service": { "type": "keyword" },
+        "version": { "type": "keyword" },
+        "previous_version": { "type": "keyword" },
+        "environment": { "type": "keyword" },
+        "change_type": { "type": "keyword" },
+        "author": { "type": "keyword" },
+        "description": { "type": "text" }
+      }
+    }
+  }
+}

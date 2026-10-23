@@ -1,0 +1,74 @@
+name: Integration
+
+# Boots the full demo stack, then checks that the backend's evidence collection
+# finds a deliberately injected incident in every telemetry source.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "backend/**"
+      - "demo/**"
+      - "infra/**"
+      - "compose.yaml"
+      - ".github/workflows/integration.yml"
+  pull_request:
+    paths:
+      - "backend/**"
+      - "demo/**"
+      - "infra/**"
+      - "compose.yaml"
+      - ".github/workflows/integration.yml"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: integration-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  stack:
+    name: stack + evidence
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+          cache: pip
+          cache-dependency-path: backend/pyproject.toml
+
+      - name: Start stack
+        run: docker compose up -d --build --wait --wait-timeout 300
+
+      - name: Install backend
+        working-directory: backend
+        run: pip install -e ".[dev]"
+
+      - name: Smoke check
+        run: python demo/tools/smoke_check.py --wait 180
+
+      - name: Backend integration tests (healthy stack)
+        working-directory: backend
+        run: pytest -m integration
+
+      - name: Inject bad inventory deploy
+        run: python demo/tools/incidentctl.py deploy inventory 9.9.9 --latency-ms 2500
+
+      - name: Backend finds the incident in every source
+        working-directory: backend
+        env:
+          INCIDENT_SCENARIO: bad-inventory-deploy
+          INCIDENT_RELEASE: "9.9.9"
+        run: pytest -m integration -k bad_inventory_deploy
+
+      - name: Show logs on failure
+        if: failure()
+        run: docker compose logs --tail 100
+
+      - name: Stop stack
+        if: always()
+        run: docker compose down -v

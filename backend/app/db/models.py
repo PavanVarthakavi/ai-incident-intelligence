@@ -7,15 +7,18 @@ Schema changes go through Alembic migrations in ``backend/migrations``.
 
 import uuid
 from datetime import datetime
+from decimal import Decimal
 from typing import Any
 
 from sqlalchemy import (
     ARRAY,
+    Boolean,
     CheckConstraint,
     DateTime,
     ForeignKey,
     Integer,
     MetaData,
+    Numeric,
     String,
     Text,
     func,
@@ -113,3 +116,44 @@ class EvidenceItem(Base):
     query: Mapped[str] = mapped_column(Text)
     reference: Mapped[str | None] = mapped_column(Text)
     data: Mapped[dict[str, Any]]
+
+
+DIAGNOSIS_STATUSES = ("running", "valid", "invalid", "refused", "error")
+
+
+class Diagnosis(Base):
+    """One model run over one snapshot. Created as ``running`` with a reserved
+    cost, then completed once with the outcome and the actual cost."""
+
+    __tablename__ = "diagnoses"
+    __table_args__ = (
+        CheckConstraint(
+            "status IN (" + ", ".join(f"'{s}'" for s in DIAGNOSIS_STATUSES) + ")", name="status"
+        ),
+    )
+    __mapper_args__ = {"eager_defaults": True}
+
+    id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=uuid.uuid4)
+    snapshot_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("evidence_snapshots.id", ondelete="CASCADE"), index=True
+    )
+    status: Mapped[str] = mapped_column(String(16))
+    created_at: Mapped[datetime] = mapped_column(server_default=func.now(), index=True)
+    completed_at: Mapped[datetime | None]
+    model_requested: Mapped[str] = mapped_column(String(64))
+    model_used: Mapped[str | None] = mapped_column(String(64))
+    effort: Mapped[str] = mapped_column(String(16))
+    prompt_version: Mapped[str] = mapped_column(String(32))
+    output: Mapped[dict[str, Any] | None]
+    validation_errors: Mapped[list[str]] = mapped_column(ARRAY(Text))
+    error_message: Mapped[str | None] = mapped_column(Text)
+    stop_reason: Mapped[str | None] = mapped_column(String(32))
+    fallback_used: Mapped[bool] = mapped_column(Boolean)
+    input_tokens: Mapped[int] = mapped_column(Integer)
+    output_tokens: Mapped[int] = mapped_column(Integer)
+    cache_read_tokens: Mapped[int] = mapped_column(Integer)
+    cache_creation_tokens: Mapped[int] = mapped_column(Integer)
+    # Worst-case cost held against the daily budget while the request runs.
+    reserved_cost_usd: Mapped[Decimal] = mapped_column(Numeric(10, 6))
+    cost_usd: Mapped[Decimal | None] = mapped_column(Numeric(10, 6))
+    request_id: Mapped[str | None] = mapped_column(String(128))

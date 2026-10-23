@@ -1,0 +1,50 @@
+{
+ "body": {
+  "container": null,
+  "content": [
+   {
+    "text": "{\"summary\":\"Checkout failures (gateway 502s, up to 31.4% 5xx) began about 06:46:38Z, roughly 3 seconds after inventory 3.3.0 was deployed at 06:46:35Z. That release switched stock reservation to row-level locking. Traces put most of the self time in inventory POST /reserve on release 3.3.0 (about 2.3s). Orders then times out reserving inventory and returns 504, which the gateway surfaces as 502. Inventory itself returns no 5xx; it is slow, not failing.\",\"root_cause\":{\"statement\":\"The inventory 3.3.0 deploy ('Switch stock reservation to row-level locking') made POST /reserve slow, about 2.3s of self time and p95 up to 4.37s. Orders calls to inventory time out at about 2s, so orders returns 504 and the gateway returns 502 on checkout. The likely mechanism is lock contention from the new row-level locking, but this is inferred from the change description and not directly observed.\",\"service\":\"inventory\",\"confidence\":\"high\",\"evidence_ids\":[\"ev-6b7c13e85bc6\",\"ev-3eef69bf2d9e\",\"ev-28ece748c2ce\",\"ev-bef08dc7b7ce\",\"ev-deb04ae62798\",\"ev-b303350196a3\"]},\"contributing_factors\":[{\"statement\":\"Orders appears to give up on inventory after about 2s and turns slow reservations into 504 errors, which the gateway propagates as 502s.\",\"evidence_ids\":[\"ev-3eef69bf2d9e\",\"ev-ce5203e1e84a\",\"ev-bef08dc7b7ce\"]},{\"statement\":\"In 2 sampled traces the self time is attributed to an orders 'POST' span with no inventory span present. This is consistent with the outbound call to inventory timing out before inventory recorded a span; 2 incomplete traces were also skipped.\",\"evidence_ids\":[\"ev-ce5203e1e84a\"]}],\"timeline\":[{\"time\":\"2026-10-23T05:49:46Z\",\"event\":\"inventory deployed 3.1.5 -> 9.9.11\",\"evidence_ids\":[\"ev-41fc25b81db0\"]},{\"time\":\"2026-10-23T05:50:19Z\",\"event\":\"inventory rolled back 9.9.11 -> 3.1.5\",\"evidence_ids\":[\"ev-dd534e1c4fda\"]},{\"time\":\"2026-10-23T06:46:35Z\",\"event\":\"inventory deployed 3.1.5 -> 3.3.0 (row-level locking for stock reservation)\",\"evidence_ids\":[\"ev-6b7c13e85bc6\"]},{\"time\":\"2026-10-23T06:46:38Z\",\"event\":\"orders starts logging 'timed out reserving inventory' and gateway starts logging 'checkout failed: orders returned 504'\",\"evidence_ids\":[\"ev-bef08dc7b7ce\",\"ev-b303350196a3\"]},{\"time\":\"2026-10-23T06:46:57Z\",\"event\":\"first sampled slow/error trace with dominant self time in inventory POST /reserve (3.3.0)\",\"evidence_ids\":[\"ev-3eef69bf2d9e\"]},{\"time\":\"2026-10-23T06:47:04Z\",\"event\":\"gateway and orders 5xx ratio cross 5% and p95 latency crosses 1s on gateway, orders and inventory\",\"evidence_ids\":[\"ev-e533a14b6c05\",\"ev-deb04ae62798\",\"ev-28ece748c2ce\"]}],\"ruled_out\":[{\"statement\":\"Gateway and orders are not the origin. They report the errors, but trace self time is dominated by inventory POST /reserve, and their logs point to downstream timeouts.\",\"evidence_ids\":[\"ev-3eef69bf2d9e\",\"ev-bef08dc7b7ce\",\"ev-b303350196a3\"]},{\"statement\":\"The 9.9.11 deploy and rollback about 47 minutes earlier are unlikely causes. The rollback to 3.1.5 completed long before symptoms began, and failing traces all show inventory 3.3.0.\",\"evidence_ids\":[\"ev-41fc25b81db0\",\"ev-dd534e1c4fda\",\"ev-3eef69bf2d9e\"]},{\"statement\":\"Inventory is not crashing or returning errors; its 5xx ratio is 0%. The problem is latency.\",\"evidence_ids\":[\"ev-28ece748c2ce\"]},{\"statement\":\"A traffic surge is unlikely. Gateway request rate stayed around 2 rps (max 2.34).\",\"evidence_ids\":[\"ev-e533a14b6c05\"]}],\"unknowns\":[\"No inventory logs or database metrics are available (lock waits, deadlocks, connection pool) to confirm lock contention as the mechanism.\",\"The incident window ends at about 06:47:19Z, so it is unknown whether the failures persist or are worsening.\",\"The exact orders-to-inventory client timeout setting is not in the evidence; about 2s is inferred from trace durations.\"],\"recommended_actions\":[{\"action\":\"Roll back inventory from 3.3.0 to 3.1.5.\",\"rationale\":\"Symptoms started about 3s after the 3.3.0 deploy, and the slow span is inventory POST /reserve on 3.3.0. 3.1.5 was the prior version and was running before the incident.\",\"evidence_ids\":[\"ev-6b7c13e85bc6\",\"ev-3eef69bf2d9e\",\"ev-dd534e1c4fda\"]},{\"action\":\"After rollback, confirm that gateway and orders 5xx ratios and inventory p95 latency return to baseline, and that orders 'timed out reserving inventory' logs stop.\",\"rationale\":\"These are the observed symptom signals.\",\"evidence_ids\":[\"ev-e533a14b6c05\",\"ev-deb04ae62798\",\"ev-28ece748c2ce\",\"ev-bef08dc7b7ce\"]},{\"action\":\"Before redeploying, inspect inventory database lock waits and contention for the row-level locking change.\",\"rationale\":\"The change description points to locking as the likely mechanism for the reserve latency, but this is unconfirmed.\",\"evidence_ids\":[\"ev-6b7c13e85bc6\"]}]}",
+    "type": "text"
+   }
+  ],
+  "diagnostics": null,
+  "id": "msg_011CgJikaynUPHdbSN8ANd27",
+  "model": "claude-opus-5-5",
+  "role": "assistant",
+  "stop_details": null,
+  "stop_reason": "end_turn",
+  "stop_sequence": null,
+  "type": "message",
+  "usage": {
+   "cache_creation": {
+    "ephemeral_1h_input_tokens": 0,
+    "ephemeral_5m_input_tokens": 0
+   },
+   "cache_creation_input_tokens": 0,
+   "cache_read_input_tokens": 0,
+   "inference_geo": "global",
+   "input_tokens": 5872,
+   "iterations": [
+    {
+     "cache_creation": {
+      "ephemeral_1h_input_tokens": 0,
+      "ephemeral_5m_input_tokens": 0
+     },
+     "cache_creation_input_tokens": 0,
+     "cache_read_input_tokens": 0,
+     "input_tokens": 5872,
+     "model": null,
+     "output_tokens": 2078,
+     "type": "message"
+    }
+   ],
+   "output_tokens": 2078,
+   "output_tokens_details": {
+    "thinking_tokens": 0
+   },
+   "service_tier": "standard",
+   "speed": "standard"
+  }
+ },
+ "status": 200
+}

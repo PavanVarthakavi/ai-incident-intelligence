@@ -1,5 +1,6 @@
 import os
-from collections.abc import Iterator
+from collections.abc import Callable, Iterator
+from contextlib import ExitStack
 
 import pytest
 from alembic import command
@@ -20,11 +21,16 @@ class _TestEnv(BaseSettings):
 
 
 def hermetic_settings(**overrides) -> Settings:
-    """Settings that ignore .env files, so tests never pick up a developer's database."""
-    return Settings(
-        _env_file=None,
-        **{"service_name": "test-service", "environment": "test", "database_url": None} | overrides,
-    )
+    """Settings that ignore .env files and the API key, so tests never use a developer's
+    database or spend money. The key is passed by its env name because the field reads
+    ANTHROPIC_API_KEY through an alias."""
+    defaults = {
+        "service_name": "test-service",
+        "environment": "test",
+        "database_url": None,
+        "ANTHROPIC_API_KEY": None,
+    }
+    return Settings(_env_file=None, **(defaults | overrides))
 
 
 @pytest.fixture
@@ -65,12 +71,24 @@ def test_database_url() -> str:
 
 
 @pytest.fixture
-def db_client(test_database_url: str, transport: FixtureTransport) -> Iterator[TestClient]:
-    """API client backed by the test database, emptied before each test."""
+def make_db_client(
+    test_database_url: str, transport: FixtureTransport
+) -> Iterator[Callable[..., TestClient]]:
+    """Factory for API clients on the emptied test database; kwargs override settings."""
     engine = create_engine(test_database_url)
     with engine.begin() as conn:
         conn.execute(text("TRUNCATE incidents CASCADE"))
     engine.dispose()
-    settings = hermetic_settings(database_url=test_database_url)
-    with TestClient(create_app(settings, transport=transport)) as test_client:
-        yield test_client
+    with ExitStack() as stack:
+
+        def make(**overrides) -> TestClient:
+            settings = hermetic_settings(database_url=test_database_url, **overrides)
+            return stack.enter_context(TestClient(create_app(settings, transport=transport)))
+
+        yield make
+
+
+@pytest.fixture
+def db_client(make_db_client: Callable[..., TestClient]) -> TestClient:
+    """API client backed by the test database, emptied before each test."""
+    return make_db_client()

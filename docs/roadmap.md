@@ -48,9 +48,12 @@ Goal: incidents and their evidence are stored and queryable.
 
 Goal: an agent that investigates an incident and produces a cited diagnosis.
 
-- Agent loop with evidence collectors exposed as tools
-- Structured diagnosis output where every claim references stored evidence
-- Guardrails: tool budgets, timeouts, and rejection of uncited claims
+- [x] Diagnosis of a stored snapshot with Claude, as one structured-output request
+- [x] Every claim cites evidence IDs; citations validated server-side, failures stored as invalid
+- [x] Guardrails: per-reply token cap, daily budget with reservation, timeouts, refusal fallback
+- [x] Usage and cost recorded per diagnosis
+- [x] Documentation: [`diagnosis.md`](diagnosis.md), including known limitations
+- Deferred: an agent loop with evidence collectors as tools, pending M5 results
 
 ## M5: Evaluation
 

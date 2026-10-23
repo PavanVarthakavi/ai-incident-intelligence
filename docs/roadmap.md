@@ -59,9 +59,15 @@ Goal: an agent that investigates an incident and produces a cited diagnosis.
 
 Goal: measure diagnosis quality objectively.
 
-- Scenario library of injected faults with known root causes
-- Automated scoring (root-cause accuracy, citation validity, time-to-diagnosis)
-- Evaluation results tracked in CI or on demand
+- [x] 24 cases captured from scripted scenarios with known root causes, frozen as JSON
+- [x] Exact-check grading (root cause, healthy specificity, release, citation validity),
+  with oracle and null checks of the grader
+- [x] Resumable runner with harness approval, spend cap, timeouts, and served-model check
+- [x] Baseline run and report with 95% intervals; latency and cost per case
+- [x] Documentation: [`evaluation.md`](evaluation.md), including known limitations
+- Next: allow actions that respond to a source error to cite it (finding from F17), measured
+  as variant `v1`; harder cases to add headroom
+- Not planned: running paid evaluations in CI
 
 ## M6: Frontend
 

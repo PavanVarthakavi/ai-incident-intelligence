@@ -25,6 +25,9 @@ htmlcov/
 *.pem
 *.key
 
+# Local evaluation approval (see docs/evaluation.md)
+backend/eval/results/approved_harness.json
+
 # Editors / OS
 .vscode/
 .idea/

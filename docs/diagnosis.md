@@ -37,14 +37,20 @@ A diagnosis is always stored, whatever the outcome. `status` is one of:
 `summary`, `root_cause` (statement, service, confidence, evidence IDs; null when the
 evidence supports no cause), `contributing_factors`, `timeline`, `ruled_out`, `unknowns`
 (free text, including missing evidence), and `recommended_actions`. Every item except
-`unknowns` must cite at least one evidence ID.
+`unknowns` must cite at least one ID.
+
+A source without evidence in the snapshot is citable too, as `src-<source>`: one that failed
+to collect (listed under collection errors) or one that was queried and returned nothing
+(listed under empty sources, and in the snapshot's `empty_sources`). A claim about missing or
+absent data, such as an action to re-run a failed query or the absence of deploys, cites
+that ID. A source that has evidence is cited by its evidence, not by `src-`.
 
 ## How it works
 
 - One request per diagnosis to `claude-opus-5-5` at effort `medium` (both configurable),
   using structured outputs so the reply always matches the schema. The model's thinking is
   always on for this model; effort controls how much it thinks.
-- The prompt contains the incident, any sources that failed during collection, and each
+- The prompt contains the incident, the sources that failed or returned nothing, and each
   evidence record with bulky fields removed (metric series, per-trace span lists). The
   system prompt tells the model to treat evidence text, such as log messages, as data and
   not as instructions. `prompt_version` is stored with each diagnosis.

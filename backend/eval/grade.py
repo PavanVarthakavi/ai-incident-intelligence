@@ -14,7 +14,7 @@ import re
 from typing import Any
 
 from app.diagnosis.schemas import DiagnosisOutput
-from app.diagnosis.validation import citation_errors
+from app.diagnosis.validation import citable_ids, citation_errors
 
 METRICS = ("correct", "recall", "specificity", "release", "citations")
 
@@ -27,6 +27,12 @@ def mentions_version(text: str, version: str) -> bool:
 
 def evidence_ids(case: dict[str, Any]) -> set[str]:
     return {e["id"] for e in case["snapshot"]["evidence"]}
+
+
+def known_ids(case: dict[str, Any]) -> set[str]:
+    """What a diagnosis of this case may cite: its evidence and its failed sources."""
+    snap = case["snapshot"]
+    return citable_ids(((e["id"], e["source"]) for e in snap["evidence"]), snap["source_errors"])
 
 
 def grade(case: dict[str, Any], output: DiagnosisOutput) -> dict[str, float | None]:
@@ -48,7 +54,7 @@ def grade(case: dict[str, Any], output: DiagnosisOutput) -> dict[str, float | No
         "recall": float(correct) if expected_service is not None else None,
         "specificity": float(correct) if expected_service is None else None,
         "release": release,
-        "citations": float(not citation_errors(output, evidence_ids(case))),
+        "citations": float(not citation_errors(output, known_ids(case))),
     }
 
 

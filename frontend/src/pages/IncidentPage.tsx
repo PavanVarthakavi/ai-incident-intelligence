@@ -54,7 +54,12 @@ function IncidentReport({ incident }: { incident: IncidentRead }) {
     );
 
   return (
-    <ExhibitProvider evidence={snapshot.data?.evidence ?? []} citedBy={cited}>
+    <ExhibitProvider
+      evidence={snapshot.data?.evidence ?? []}
+      sourceErrors={snapshot.data?.source_errors}
+      emptySources={snapshot.data?.empty_sources}
+      citedBy={cited}
+    >
       <article className={styles.sheet}>
         <div className={styles.report}>
           <h1 className={styles.title}>{incident.title}</h1>

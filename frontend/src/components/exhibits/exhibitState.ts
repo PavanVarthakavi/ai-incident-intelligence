@@ -2,8 +2,13 @@ import { createContext, useContext } from "react";
 import type { Evidence } from "../../api/client";
 import type { CitationSource } from "../../lib/exhibits";
 
+export type SourceGap =
+  { kind: "failed"; source: string; message: string } | { kind: "empty"; source: string };
+
 export type ExhibitState = {
   evidence: Evidence[];
+  /** Citable IDs of sources without evidence ("src-logs"): failed, or queried with no results. */
+  sourceGaps: Map<string, SourceGap>;
   numbers: Map<string, number>;
   citedBy: Map<string, CitationSource[]>;
   /** Evidence under the pointer or keyboard focus, highlighted while it lasts. */

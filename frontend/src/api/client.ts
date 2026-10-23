@@ -16,6 +16,7 @@ export type IncidentPage = Schemas["IncidentPage"];
 export type SnapshotSummary = Schemas["SnapshotSummary"];
 export type SnapshotRead = Schemas["SnapshotRead"];
 export type Evidence = Schemas["Evidence"];
+export type SourceError = Schemas["SourceError"];
 export type DiagnosisRead = Schemas["DiagnosisRead"];
 export type DiagnosisBrief = Schemas["DiagnosisBrief"];
 export type DiagnosisOutput = Schemas["DiagnosisOutput"];

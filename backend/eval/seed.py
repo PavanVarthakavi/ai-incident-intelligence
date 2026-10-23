@@ -28,7 +28,7 @@ from app.diagnosis.validation import citation_errors
 from app.evidence.models import Evidence, EvidenceBundle, SourceError, TimeWindow
 from app.incidents import repository
 from app.incidents.schemas import IncidentCreate
-from eval.grade import evidence_ids
+from eval.grade import known_ids
 from eval.run import RESULTS_DIR, load_cases
 
 BASELINE = RESULTS_DIR / "baseline"
@@ -56,7 +56,7 @@ def bundle_of(case: dict[str, Any]) -> EvidenceBundle:
 def diagnosis_of(case: dict[str, Any], result: dict[str, Any], window_end: datetime) -> Diagnosis:
     trace = json.loads((BASELINE / "traces" / f"{case['id']}_rep0.json").read_text())
     output = DiagnosisOutput.model_validate_json(trace[-1]["content"])
-    errors = citation_errors(output, evidence_ids(case))
+    errors = citation_errors(output, known_ids(case))
     created = window_end + timedelta(minutes=1)
     cost = Decimal(result["cost_usd"])
     usage = result["usage"]

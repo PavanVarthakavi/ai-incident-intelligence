@@ -61,7 +61,7 @@ def test_valid_diagnosis_is_stored_with_usage_and_cost(
     )
     assert (body["input_tokens"], body["output_tokens"]) == (5_000, 3_000)
     assert Decimal(body["cost_usd"]) == Decimal("0.08")
-    assert body["prompt_version"] == "1"
+    assert body["prompt_version"] == "3"
     assert body["completed_at"] is not None
     assert client.get(f"{url}/diagnoses/{body['id']}").json() == body
     assert [d["id"] for d in client.get(f"{url}/diagnoses").json()] == [body["id"]]
@@ -244,3 +244,19 @@ def test_offline_provider_runs_the_full_flow_at_no_cost(
     assert Decimal(body["cost_usd"]) == 0
     assert body["output"]["root_cause"]["evidence_ids"] == ids[:2]
     assert body["output"]["summary"].startswith("Offline stand-in")
+
+
+def test_an_action_citing_a_failed_source_is_valid(
+    make_client, model: FakeModel, transport: fakes.FixtureTransport
+) -> None:
+    transport.overrides["opensearch_search_otel_logs"] = 500
+    client = make_client()
+    url, ids = snapshot_url(client)
+    output = output_citing(ids)
+    output.recommended_actions[0].evidence_ids = ["src-logs"]
+    model.next = reply(output)
+
+    body = client.post(f"{url}/diagnoses").json()
+
+    assert (body["status"], body["validation_errors"]) == ("valid", [])
+    assert "src-logs: " in model.calls[0][1]

@@ -98,13 +98,33 @@ Findings:
 - **F17 fails the citation check.** With logs unavailable, the diagnosis recommends re-running
   the log query once the backend recovers and cites nothing, because a missing source is a
   source error, not evidence. The diagnosis is correct, but the API would store it as
-  `invalid`. The citation rule is too strict for actions that respond to source errors; a fix
-  is planned as variant `v1`.
+  `invalid`. Fixed in prompt version 3; see Variants.
 - **The model did not follow misleading reports or decoy deploys.** In F14 it stated that the
   gateway release preceded the errors but that nothing linked it to them; in H05 it reported
   that the data contradicts a reported outage.
 - **Confidence tracks difficulty.** `high` on four deploy-caused cases (F01, F03, F05, F09),
   `low` only on F08 (mild slowdown, no slow traces), and `medium` on the other faulty cases.
+
+## Variants
+
+The F17 finding led to one change in two steps, each measured on the cases it targets plus a
+regression sample. Both runs used the baseline model and effort.
+
+| Variant | Prompt | Change | Runs | Correct | Citations valid | Cost |
+|---|---|---|---|---|---|---|
+| `v1` | 2 | A source that failed to collect is citable as `src-<source>` | F17 x3, F18 x3, F01, F14, H05 | 9/9 | 8/9 | $0.53 |
+| `v2` | 3 | A source that was queried and returned nothing is citable too | H05 x3, F17, F18 | 5/5 | 5/5 | $0.25 |
+
+- **v1** fixed the target: all six F17 and F18 runs cited the failed source in their re-run
+  actions and passed. It exposed the same gap in another form: H05 recommended pulling
+  deployment records the snapshot lacked, but deployments had not failed, they had returned
+  nothing, so there was nothing to cite.
+- **v2** made those sources citable as well. All five runs passed, citing for example
+  `src-deployments` when ruling out a deploy ("no deployment records were found in the
+  window") and the empty trace and log sources for an action to re-run them.
+- Not measured: prompt version 3 on the other 19 cases. The change adds one instruction and an
+  `<empty_sources>` list, so regressions are unlikely but not ruled out; a full run costs about
+  $1.25.
 
 ## Known limitations
 

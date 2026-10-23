@@ -182,3 +182,33 @@ describe("worst cases", () => {
     expect(screen.getByRole("button", { name: "Show less" })).toBeInTheDocument();
   });
 });
+
+it("shows a citation of a missing source as a link to the collection errors", async () => {
+  const [diagnosis] = structuredClone(cases.invalid.diagnoses);
+  diagnosis!.status = "valid";
+  diagnosis!.validation_errors = [];
+  diagnosis!.output!.recommended_actions.at(-1)!.evidence_ids = ["src-logs"];
+  server.use(
+    http.get("*/v1/incidents/:id/snapshots/:sid/diagnoses", () => HttpResponse.json([diagnosis])),
+  );
+  renderAt(pathOf("invalid"));
+
+  const tag = await screen.findByRole("link", { name: "logs missing" });
+  expect(tag).toHaveAttribute("href", "#source-errors");
+  expect(screen.queryByText(/not in snapshot/)).not.toBeInTheDocument();
+});
+
+it("shows a citation of a source that returned nothing, and lists those sources", async () => {
+  const [diagnosis] = structuredClone(cases.healthy.diagnoses);
+  diagnosis!.output!.ruled_out[0]!.evidence_ids = ["src-deployments"];
+  server.use(
+    http.get("*/v1/incidents/:id/snapshots/:sid/diagnoses", () => HttpResponse.json([diagnosis])),
+  );
+  renderAt(pathOf("healthy"));
+
+  const tag = await screen.findByRole("link", { name: "deployments: none found" });
+  expect(tag).toHaveAttribute("href", "#empty-sources");
+  expect(
+    screen.getByText("Queried, nothing found: traces, logs, deployments."),
+  ).toBeInTheDocument();
+});

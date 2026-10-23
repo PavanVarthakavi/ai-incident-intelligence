@@ -3,8 +3,24 @@ import styles from "./Exhibits.module.css";
 
 /** A citation. Pointing at it highlights its exhibit; clicking opens the exhibit's details. */
 export function ExhibitTag({ id }: { id: string }) {
-  const { numbers, evidence, active, pinned, setActive, togglePin } = useExhibits();
+  const { numbers, evidence, sourceGaps, active, pinned, setActive, togglePin } = useExhibits();
   const number = numbers.get(id);
+  const gap = sourceGaps.get(id);
+
+  if (gap?.kind === "failed") {
+    return (
+      <a className={styles.sourceTag} href="#source-errors" title={gap.message}>
+        {gap.source} missing
+      </a>
+    );
+  }
+  if (gap?.kind === "empty") {
+    return (
+      <a className={styles.emptyTag} href="#empty-sources" title="Queried, returned nothing">
+        {gap.source}: none found
+      </a>
+    );
+  }
 
   if (number === undefined) {
     return (

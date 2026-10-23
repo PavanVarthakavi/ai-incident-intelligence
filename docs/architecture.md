@@ -270,3 +270,11 @@ standard (sidebar, cards, pills), and the owner chose the investigation-report d
 separate design review then checked the build against that direction, and DESIGN.md records
 the system as built rather than as planned.
 
+### D-038: Sources without evidence are citable (M5 follow-up)
+A diagnosis must cite something for every claim, but some claims are about data the snapshot
+does not have: re-run a failed query, no deploys in the window. Rather than exempt those
+claims, each source without evidence gets an ID, `src-<source>`, for either case: it failed to
+collect, or it was queried and returned nothing. The rule stays strict and the citation stays
+checkable. Every collection queries every source, so "no evidence and no error" means the
+query returned nothing.
+

@@ -592,6 +592,11 @@ export interface components {
              */
             collected_at: string;
             /**
+             * Empty Sources
+             * @description Sources that were queried and returned nothing (not failed ones).
+             */
+            empty_sources: components["schemas"]["EvidenceSource"][];
+            /**
              * Evidence
              * @description In the order they were collected.
              */

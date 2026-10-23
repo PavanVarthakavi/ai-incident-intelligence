@@ -949,6 +949,14 @@
             "title": "Collected At",
             "type": "string"
           },
+          "empty_sources": {
+            "description": "Sources that were queried and returned nothing (not failed ones).",
+            "items": {
+              "$ref": "#/components/schemas/EvidenceSource"
+            },
+            "title": "Empty Sources",
+            "type": "array"
+          },
           "evidence": {
             "description": "In the order they were collected.",
             "items": {
@@ -1015,7 +1023,8 @@
           "incident_id",
           "window",
           "services",
-          "evidence"
+          "evidence",
+          "empty_sources"
         ],
         "title": "SnapshotRead",
         "type": "object"

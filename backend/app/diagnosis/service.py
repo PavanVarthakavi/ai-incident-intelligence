@@ -18,7 +18,7 @@ from app.diagnosis import pricing
 from app.diagnosis.llm import OUTPUT_SCHEMA_CHARS, DiagnosisModel, LLMError, ModelReply
 from app.diagnosis.prompt import PROMPT_VERSION, SYSTEM_PROMPT, render_user_message
 from app.diagnosis.schemas import DiagnosisStatus
-from app.diagnosis.validation import citation_errors
+from app.diagnosis.validation import citable_ids, citation_errors
 
 BUDGET_LOCK_ID = 7_310_001  # arbitrary constant naming the budget advisory lock
 
@@ -125,7 +125,9 @@ async def run_diagnosis(
     user = render_user_message(incident, snapshot)
     request_chars = len(SYSTEM_PROMPT) + len(user) + OUTPUT_SCHEMA_CHARS
     diagnosis = await reserve(session, snapshot, model, request_chars, daily_budget_usd)
-    known_ids = {item.evidence_id for item in snapshot.items}
+    known_ids = citable_ids(
+        ((item.evidence_id, item.source) for item in snapshot.items), snapshot.source_errors
+    )
 
     # No transaction is held open during the model call, which can take minutes.
     try:

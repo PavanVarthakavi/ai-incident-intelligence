@@ -2,6 +2,7 @@
 
 from app.db.models import Diagnosis, EvidenceSnapshot, Incident
 from app.diagnosis.schemas import DiagnosisBrief, DiagnosisStatus
+from app.diagnosis.validation import source_gaps
 from app.evidence.models import Evidence, EvidenceSource, TimeWindow
 from app.incidents.schemas import (
     IncidentRead,
@@ -51,11 +52,13 @@ def incident_read(incident: Incident, latest: Diagnosis | None = None) -> Incide
 
 
 def snapshot_read(snapshot: EvidenceSnapshot) -> SnapshotRead:
+    gaps = source_gaps((item.source for item in snapshot.items), snapshot.source_errors)
     return SnapshotRead(
         **SnapshotSummary.model_validate(snapshot).model_dump(),
         incident_id=snapshot.incident_id,
         window=window_of(snapshot),
         services=snapshot.services,
+        empty_sources=[EvidenceSource(g.source) for g in gaps.values() if g.kind == "empty"],
         evidence=[
             Evidence(
                 id=item.evidence_id,

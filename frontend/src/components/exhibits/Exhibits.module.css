@@ -27,6 +27,45 @@
     0 0 0 4px var(--navy);
 }
 
+.sourceTag {
+  font: 500 var(--text-xs) / 1 var(--font-mono);
+  color: var(--red);
+  background: var(--red-wash);
+  outline: 1px solid var(--red);
+  outline-offset: -1px;
+  padding: 3px 6px;
+  text-decoration: none;
+}
+
+.sourceTag:hover {
+  text-decoration: underline;
+}
+
+.sourceErrors {
+  scroll-margin: var(--s-6);
+}
+
+.emptyTag {
+  font: 500 var(--text-xs) / 1 var(--font-mono);
+  color: var(--ink-2);
+  background: var(--paper);
+  outline: 1px solid var(--ink-3);
+  outline-offset: -1px;
+  padding: 3px 6px;
+  text-decoration: none;
+}
+
+.emptyTag:hover {
+  text-decoration: underline;
+}
+
+.emptySources {
+  margin-bottom: var(--s-3);
+  font-size: var(--text-sm);
+  color: var(--ink-3);
+  scroll-margin: var(--s-6);
+}
+
 .missingTag {
   font: 500 var(--text-xs) / 1 var(--font-mono);
   color: var(--red);

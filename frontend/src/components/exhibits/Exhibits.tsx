@@ -30,13 +30,22 @@ export function Exhibits({ snapshot }: { snapshot: SnapshotRead }) {
         </span>
       </header>
       {snapshot.source_errors.length > 0 && (
-        <ul className={styles.sourceErrors} aria-label="Sources that could not be collected">
+        <ul
+          id="source-errors"
+          className={styles.sourceErrors}
+          aria-label="Sources that could not be collected"
+        >
           {snapshot.source_errors.map((error) => (
             <li key={error.source}>
               <strong>{capitalize(error.source)} missing.</strong> {error.message}
             </li>
           ))}
         </ul>
+      )}
+      {snapshot.empty_sources.length > 0 && (
+        <p id="empty-sources" className={styles.emptySources}>
+          Queried, nothing found: {snapshot.empty_sources.join(", ")}.
+        </p>
       )}
       {evidence.length === 0 ? (
         <p className={styles.empty}>

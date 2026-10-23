@@ -72,3 +72,6 @@ class SnapshotRead(SnapshotSummary):
     window: TimeWindow
     services: list[str] | None
     evidence: list[Evidence] = Field(description="In the order they were collected.")
+    empty_sources: list[EvidenceSource] = Field(
+        description="Sources that were queried and returned nothing (not failed ones)."
+    )

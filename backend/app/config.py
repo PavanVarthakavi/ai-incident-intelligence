@@ -10,7 +10,7 @@ from functools import lru_cache
 from pathlib import Path
 from typing import Literal
 
-from pydantic import SecretStr
+from pydantic import Field, SecretStr
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 BACKEND_DIR = Path(__file__).resolve().parents[1]
@@ -35,6 +35,18 @@ class Settings(BaseSettings):
     deploy_events_index: str = "deploy-events"
     backend_timeout_s: float = 10.0
     readiness_timeout_s: float = 2.0
+
+    # Investigation agent. The key is read from the standard ANTHROPIC_API_KEY
+    # variable (no APP_ prefix); without it, diagnosis endpoints return 503.
+    anthropic_api_key: SecretStr | None = Field(default=None, validation_alias="ANTHROPIC_API_KEY")
+    llm_model: str = "claude-opus-5-5"
+    llm_effort: Literal["low", "medium", "high", "xhigh", "max"] = "medium"
+    llm_max_tokens: int = Field(default=16000, ge=1024, le=64000)
+    llm_timeout_s: float = 300.0
+    # Retry a refused request on Anthropic's recommended fallback model.
+    llm_fallbacks: bool = True
+    # Spend cap across all diagnoses per UTC day, enforced before each request.
+    llm_daily_budget_usd: float = Field(default=2.0, ge=0)
 
 
 @lru_cache

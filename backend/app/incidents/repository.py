@@ -7,7 +7,7 @@ from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
-from app.db.models import EvidenceItem, EvidenceSnapshot, Incident
+from app.db.models import Diagnosis, EvidenceItem, EvidenceSnapshot, Incident
 from app.evidence.models import EvidenceBundle
 from app.incidents.schemas import IncidentCreate
 
@@ -83,4 +83,21 @@ async def get_snapshot(
         select(EvidenceSnapshot)
         .where(EvidenceSnapshot.id == snapshot_id, EvidenceSnapshot.incident_id == incident_id)
         .options(selectinload(EvidenceSnapshot.items))
+    )
+
+
+async def list_diagnoses(session: AsyncSession, snapshot_id: uuid.UUID) -> list[Diagnosis]:
+    rows = await session.scalars(
+        select(Diagnosis)
+        .where(Diagnosis.snapshot_id == snapshot_id)
+        .order_by(Diagnosis.created_at.desc(), Diagnosis.id)
+    )
+    return list(rows)
+
+
+async def get_diagnosis(
+    session: AsyncSession, snapshot_id: uuid.UUID, diagnosis_id: uuid.UUID
+) -> Diagnosis | None:
+    return await session.scalar(
+        select(Diagnosis).where(Diagnosis.id == diagnosis_id, Diagnosis.snapshot_id == snapshot_id)
     )

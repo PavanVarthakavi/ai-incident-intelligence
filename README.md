@@ -3,10 +3,10 @@
 A system that analyzes distributed logs, metrics, traces, and deployment events to generate
 evidence-grounded incident diagnoses.
 
-> **Status: Milestone 3 (Incident Persistence).** A local demo system produces logs, metrics,
-> traces, and deployment events; the backend collects them into citable evidence and stores
-> incidents with immutable evidence snapshots in PostgreSQL. There is no LLM agent yet. See
-> [`docs/roadmap.md`](docs/roadmap.md).
+> **Status: Milestone 4 (Investigation Agent).** A local demo system produces logs, metrics,
+> traces, and deployment events; the backend collects them into citable evidence, stores
+> incidents with immutable snapshots in PostgreSQL, and diagnoses a snapshot with Claude,
+> checking that every claim cites stored evidence. See [`docs/roadmap.md`](docs/roadmap.md).
 
 ## What exists today
 
@@ -20,13 +20,14 @@ evidence-grounded incident diagnoses.
 | Demo microservices with fault injection + load generator (`demo/`) | Implemented |
 | Telemetry stack: OTel Collector, Prometheus, Jaeger, OpenSearch (`compose.yaml`) | Implemented |
 | Incidents with evidence snapshots in PostgreSQL (`/v1/incidents`) | Implemented |
-| LLM investigation agent | Planned |
+| Investigation agent: cited diagnoses with Claude (`.../diagnoses`) | Implemented |
 | Frontend | Planned |
 
 See [`docs/architecture.md`](docs/architecture.md) for the target design,
 [`docs/demo-environment.md`](docs/demo-environment.md) for the demo stack,
 [`docs/evidence.md`](docs/evidence.md) for evidence collection,
-[`docs/incidents.md`](docs/incidents.md) for incidents and snapshots, and
+[`docs/incidents.md`](docs/incidents.md) for incidents and snapshots,
+[`docs/diagnosis.md`](docs/diagnosis.md) for the investigation agent, and
 [`docs/roadmap.md`](docs/roadmap.md) for milestones.
 
 ## Repository layout
@@ -41,6 +42,7 @@ backend/                 FastAPI service (Python 3.11+)
     evidence/            Evidence model and one collector per source
     db/                  ORM models and database sessions
     incidents/           Incident schemas, storage, and API mapping
+    diagnosis/           Investigation agent: prompt, Claude client, validation, budget
   migrations/            Alembic migrations
   tests/                 Unit tests (recorded fixtures) and integration tests
   pyproject.toml         Dependencies and tool configuration

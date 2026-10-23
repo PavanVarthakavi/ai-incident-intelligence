@@ -1,9 +1,9 @@
 # Architecture
 
-> **Implemented vs. planned.** As of Milestone 3, the **synthetic telemetry environment**,
-> **evidence collection**, and **incident persistence** (PostgreSQL, immutable evidence
-> snapshots) exist. There is no LLM agent yet. Components marked Planned are proposals and
-> may change as later milestones are designed.
+> **Implemented vs. planned.** As of Milestone 4, the **synthetic telemetry environment**,
+> **evidence collection**, **incident persistence**, and the **investigation agent**
+> (cited, validated diagnoses of a snapshot) exist. Evaluation and the frontend are
+> planned. Components marked Planned are proposals and may change.
 
 ## Goal
 
@@ -49,7 +49,7 @@ over retrieved evidence, not a source of facts.
 | Evidence collectors | Typed, read-only adapters that query each backend for a time window and service set and normalize results ([details](evidence.md)) | **Implemented (M2)** |
 | Readiness endpoint | `/ready` checks the database, Prometheus, Jaeger, and OpenSearch | **Implemented (M2, M3)** |
 | PostgreSQL | Incidents and immutable evidence snapshots ([details](incidents.md)); diagnoses and audit trail later | **Implemented (M3)** |
-| Investigation agent | LLM that calls evidence collectors as tools and produces a cited diagnosis | Planned (M4) |
+| Investigation agent | Diagnoses a stored snapshot with Claude; every claim cites evidence IDs, checked server-side ([details](diagnosis.md)) | **Implemented (M4)** |
 | Evaluation harness | Replays injected faults and scores diagnoses against known root causes | Planned (M5) |
 | Frontend | Incident timeline and diagnosis review UI | Planned (M6) |
 
@@ -191,3 +191,37 @@ settings that ignore `.env`, and database tests refuse any database not named `*
 ### D-023: Database tests run against real PostgreSQL (M3)
 Tests use the same engine as production (JSONB, arrays, check constraints) instead of
 SQLite, via the compose database locally and a service container in CI.
+
+### D-024: One structured call per diagnosis, not a tool loop (M4)
+A snapshot is small (4,000 to 6,000 input tokens measured) and already contains the collected evidence, so a
+single request with structured outputs is cheaper, faster, reproducible from stored data,
+and easy to test. A tool loop that fetches more telemetry would break reproducibility
+unless that data were snapshotted too. Revisit if evaluation (M5) shows diagnoses fail for
+lack of information.
+
+### D-025: Claude Opus 5.5 at medium effort, configurable, with refusal fallback (M4)
+Chosen by the project owner. Model and effort are settings so evaluation can compare
+them on the same incidents. Server-side `fallbacks: "default"` handles the unlikely case
+of a safety decline without code changes.
+
+### D-026: Citations are validated by the backend, not trusted (M4)
+Structured outputs guarantee the shape but cannot know which evidence IDs exist. The
+backend checks that every claim cites at least one ID and that every ID is in the
+snapshot. Failures are stored as `invalid` with the reasons, never shown as valid, and
+not retried automatically.
+
+### D-027: Budget reserved before each call under an advisory lock (M4)
+The worst-case cost is reserved in the same transaction as the budget check, under a
+PostgreSQL advisory lock, so concurrent requests cannot overspend. Failures whose cost is
+unknown (timeouts) keep the reservation, so errors make the budget stricter, not looser.
+
+### D-028: Replies parsed by the app rather than the SDK helper (M4)
+The SDK's `parse()` helper can raise before returning usage when a reply is truncated
+or invalid, and those tokens are still billed. The app calls `create()` with the SDK's
+`transform_schema` output and validates the text itself, so usage and cost are always
+recorded.
+
+### D-029: No API calls in tests or CI (M4)
+A fake model drives the service tests and a fake HTTP transport checks the real SDK
+client, including against a reply recorded once from the live API. Live calls are run by
+hand with `tests/record_llm_reply.py`, which needs an explicit `--yes`.

@@ -54,14 +54,20 @@ async def list_incidents(
     offset: Annotated[int, Query(ge=0)] = 0,
 ) -> IncidentPage:
     incidents, total = await repository.list_incidents(session, limit=limit, offset=offset)
+    latest = await repository.latest_diagnoses(session, [i.id for i in incidents])
     return IncidentPage(
-        items=[incident_summary(i) for i in incidents], total=total, limit=limit, offset=offset
+        items=[incident_summary(i, latest.get(i.id)) for i in incidents],
+        total=total,
+        limit=limit,
+        offset=offset,
     )
 
 
 @router.get("/{incident_id}", response_model=IncidentRead)
 async def get_incident(incident_id: uuid.UUID, session: SessionDep) -> IncidentRead:
-    return incident_read(await _require_incident(session, incident_id))
+    incident = await _require_incident(session, incident_id)
+    latest = await repository.latest_diagnoses(session, [incident.id])
+    return incident_read(incident, latest.get(incident.id))
 
 
 @router.post(

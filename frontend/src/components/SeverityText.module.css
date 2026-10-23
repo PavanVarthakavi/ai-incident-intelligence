@@ -1,0 +1,13 @@
+.severity {
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--ink-2);
+}
+
+.severity[data-urgent] {
+  color: var(--red);
+}
+
+.none {
+  color: var(--ink-3);
+}

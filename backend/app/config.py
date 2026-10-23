@@ -10,7 +10,7 @@ from functools import lru_cache
 from pathlib import Path
 from typing import Literal
 
-from pydantic import Field, SecretStr
+from pydantic import Field, SecretStr, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 BACKEND_DIR = Path(__file__).resolve().parents[1]
@@ -39,6 +39,10 @@ class Settings(BaseSettings):
     # Investigation agent. The key is read from the standard ANTHROPIC_API_KEY
     # variable (no APP_ prefix); without it, diagnosis endpoints return 503.
     anthropic_api_key: SecretStr | None = Field(default=None, validation_alias="ANTHROPIC_API_KEY")
+    llm_provider: Literal["anthropic", "offline"] = Field(
+        default="anthropic",
+        description="'offline' returns a labelled stand-in diagnosis at no cost (tests, demos).",
+    )
     llm_model: str = "claude-opus-5-5"
     llm_effort: Literal["low", "medium", "high", "xhigh", "max"] = "medium"
     llm_max_tokens: int = Field(default=16000, ge=1024, le=64000)
@@ -47,6 +51,12 @@ class Settings(BaseSettings):
     llm_fallbacks: bool = True
     # Spend cap across all diagnoses per UTC day, enforced before each request.
     llm_daily_budget_usd: float = Field(default=2.0, ge=0)
+
+    @model_validator(mode="after")
+    def _no_stand_in_in_production(self) -> "Settings":
+        if self.llm_provider == "offline" and self.environment == "production":
+            raise ValueError("APP_LLM_PROVIDER=offline is for tests and demos, not production")
+        return self
 
 
 @lru_cache

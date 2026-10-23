@@ -1,0 +1,3269 @@
+{
+  "cases": {
+    "valid": {
+      "incident": {
+        "id": "4e588dfa-89c3-45ba-97f1-c3bc0d3560eb",
+        "title": "Checkout failing since the gateway release",
+        "severity": "high",
+        "window": {
+          "start": "2026-10-23T09:11:42.968555Z",
+          "end": "2026-10-23T09:16:13.146978Z"
+        },
+        "services": null,
+        "created_at": "2026-10-23T19:35:23.238645Z",
+        "latest_diagnosis": {
+          "id": "d50233f4-036f-4564-b090-aaad266a9622",
+          "snapshot_id": "15305400-b9e4-440f-8958-13397f4c13d2",
+          "status": "valid",
+          "created_at": "2026-10-23T09:17:13.146978Z",
+          "root_cause_service": "inventory",
+          "confidence": "medium"
+        },
+        "description": "Errors started right after gateway was deployed.",
+        "snapshots": [
+          {
+            "id": "15305400-b9e4-440f-8958-13397f4c13d2",
+            "collected_at": "2026-10-23T09:16:13.419522Z",
+            "evidence_count": 8,
+            "source_counts": {
+              "logs": 3,
+              "traces": 1,
+              "metrics": 3,
+              "deployments": 1
+            },
+            "source_errors": []
+          }
+        ]
+      },
+      "snapshot": {
+        "id": "15305400-b9e4-440f-8958-13397f4c13d2",
+        "collected_at": "2026-10-23T09:16:13.419522Z",
+        "evidence_count": 8,
+        "source_counts": {
+          "logs": 3,
+          "traces": 1,
+          "metrics": 3,
+          "deployments": 1
+        },
+        "source_errors": [],
+        "incident_id": "4e588dfa-89c3-45ba-97f1-c3bc0d3560eb",
+        "window": {
+          "start": "2026-10-23T09:11:42.968555Z",
+          "end": "2026-10-23T09:16:13.146978Z"
+        },
+        "services": null,
+        "evidence": [
+          {
+            "id": "ev-6d5399d5f26e",
+            "source": "metrics",
+            "kind": "service_http_metrics",
+            "service": "gateway",
+            "observed_at": "2026-10-23T09:14:12.969000Z",
+            "summary": "gateway: 2.08 req/s avg; 5xx ratio avg 14.0%, max 36.8%; first at or above 5.0% at 2026-10-23T09:14:12Z; p95 latency avg 141ms, max 192ms",
+            "query": "request_rate_rps: sum by (job) (rate(http_server_request_duration_seconds_count[60s]))\nerror_ratio: (sum by (job) (rate(http_server_request_duration_seconds_count{http_response_status_code=~\"5..\"}[60s])) or sum by (job) (rate(http_server_request_duration_seconds_count[60s])) * 0) / sum by (job) (rate(http_server_request_duration_seconds_count[60s]))\np95_latency_s: histogram_quantile(0.95, sum by (job, le) (rate(http_server_request_duration_seconds_bucket[60s])))",
+            "reference": "http://localhost:9090/api/v1/query_range?query=%28sum+by+%28job%29+%28rate%28http_server_request_duration_seconds_count%7Bhttp_response_status_code%3D~%225..%22%7D%5B60s%5D%29%29+or+sum+by+%28job%29+%28rate%28http_server_request_duration_seconds_count%5B60s%5D%29%29+%2A+0%29+%2F+sum+by+%28job%29+%28rate%28http_server_request_duration_seconds_count%5B60s%5D%29%29&start=1792746702.968555&end=1792746973.146978&step=15",
+            "data": {
+              "stats": {
+                "error_ratio": {
+                  "avg": 0.13976177468603362,
+                  "max": 0.3679245283018868,
+                  "last": 0.29896907216494845
+                },
+                "p95_latency_s": {
+                  "avg": 0.14078050069570228,
+                  "max": 0.19173076923076923,
+                  "last": 0.12874999999999995
+                },
+                "request_rate_rps": {
+                  "avg": 2.076853907932941,
+                  "max": 2.3399064037438504,
+                  "last": 1.9399612007759846
+                }
+              },
+              "series": {
+                "error_ratio": [
+                  [
+                    "2026-10-23T09:11:42Z",
+                    0
+                  ],
+                  [
+                    "2026-10-23T09:11:57Z",
+                    0
+                  ],
+                  [
+                    "2026-10-23T09:12:12Z",
+                    0
+                  ],
+                  [
+                    "2026-10-23T09:12:27Z",
+                    0
+                  ],
+                  [
+                    "2026-10-23T09:12:42Z",
+                    0
+                  ],
+                  [
+                    "2026-10-23T09:12:57Z",
+                    0
+                  ],
+                  [
+                    "2026-10-23T09:13:12Z",
+                    0
+                  ],
+                  [
+                    "2026-10-23T09:13:27Z",
+                    0
+                  ],
+                  [
+                    "2026-10-23T09:13:42Z",
+                    0
+                  ],
+                  [
+                    "2026-10-23T09:13:57Z",
+                    0
+                  ],
+                  [
+                    "2026-10-23T09:14:12Z",
+                    0.122222
+                  ],
+                  [
+                    "2026-10-23T09:14:27Z",
+                    0.193878
+                  ],
+                  [
+                    "2026-10-23T09:14:42Z",
+                    0.309091
+                  ],
+                  [
+                    "2026-10-23T09:14:57Z",
+                    0.336207
+                  ],
+                  [
+                    "2026-10-23T09:15:12Z",
+                    0.366071
+                  ],
+                  [
+                    "2026-10-23T09:15:27Z",
+                    0.367925
+                  ],
+                  [
+                    "2026-10-23T09:15:42Z",
+                    0.35
+                  ],
+                  [
+                    "2026-10-23T09:15:57Z",
+                    0.311111
+                  ],
+                  [
+                    "2026-10-23T09:16:12Z",
+                    0.298969
+                  ]
+                ],
+                "p95_latency_s": [
+                  [
+                    "2026-10-23T09:11:42Z",
+                    0.1525
+                  ],
+                  [
+                    "2026-10-23T09:11:57Z",
+                    0.1645
+                  ],
+                  [
+                    "2026-10-23T09:12:12Z",
+                    0.16
+                  ],
+                  [
+                    "2026-10-23T09:12:27Z",
+                    0.145
+                  ],
+                  [
+                    "2026-10-23T09:12:42Z",
+                    0.159063
+                  ],
+                  [
+                    "2026-10-23T09:12:57Z",
+                    0.142857
+                  ],
+                  [
+                    "2026-10-23T09:13:12Z",
+                    0.179773
+                  ],
+                  [
+                    "2026-10-23T09:13:27Z",
+                    0.16675
+                  ],
+                  [
+                    "2026-10-23T09:13:42Z",
+                    0.191731
+                  ],
+                  [
+                    "2026-10-23T09:13:57Z",
+                    0.17125
+                  ],
+                  [
+                    "2026-10-23T09:14:12Z",
+                    0.175
+                  ],
+                  [
+                    "2026-10-23T09:14:27Z",
+                    0.145
+                  ],
+                  [
+                    "2026-10-23T09:14:42Z",
+                    0.099479
+                  ],
+                  [
+                    "2026-10-23T09:14:57Z",
+                    0.098043
+                  ],
+                  [
+                    "2026-10-23T09:15:12Z",
+                    0.099211
+                  ],
+                  [
+                    "2026-10-23T09:15:27Z",
+                    0.096618
+                  ],
+                  [
+                    "2026-10-23T09:15:42Z",
+                    0.1
+                  ],
+                  [
+                    "2026-10-23T09:15:57Z",
+                    0.099306
+                  ],
+                  [
+                    "2026-10-23T09:16:12Z",
+                    0.12875
+                  ]
+                ],
+                "request_rate_rps": [
+                  [
+                    "2026-10-23T09:11:42Z",
+                    2.339906
+                  ],
+                  [
+                    "2026-10-23T09:11:57Z",
+                    2.280091
+                  ],
+                  [
+                    "2026-10-23T09:12:12Z",
+                    2.159698
+                  ],
+                  [
+                    "2026-10-23T09:12:27Z",
+                    1.959961
+                  ],
+                  [
+                    "2026-10-23T09:12:42Z",
+                    1.940155
+                  ],
+                  [
+                    "2026-10-23T09:12:57Z",
+                    2
+                  ],
+                  [
+                    "2026-10-23T09:13:12Z",
+                    2.060041
+                  ],
+                  [
+                    "2026-10-23T09:13:27Z",
+                    2.220133
+                  ],
+                  [
+                    "2026-10-23T09:13:42Z",
+                    2.020162
+                  ],
+                  [
+                    "2026-10-23T09:13:57Z",
+                    2.100042
+                  ],
+                  [
+                    "2026-10-23T09:14:12Z",
+                    1.79982
+                  ],
+                  [
+                    "2026-10-23T09:14:27Z",
+                    1.959961
+                  ],
+                  [
+                    "2026-10-23T09:14:42Z",
+                    2.19978
+                  ],
+                  [
+                    "2026-10-23T09:14:57Z",
+                    2.32
+                  ],
+                  [
+                    "2026-10-23T09:15:12Z",
+                    2.24
+                  ],
+                  [
+                    "2026-10-23T09:15:27Z",
+                    2.120509
+                  ],
+                  [
+                    "2026-10-23T09:15:42Z",
+                    2.00004
+                  ],
+                  [
+                    "2026-10-23T09:15:57Z",
+                    1.799964
+                  ],
+                  [
+                    "2026-10-23T09:16:12Z",
+                    1.939961
+                  ]
+                ]
+              },
+              "step_s": 15,
+              "error_ratio_onset": "2026-10-23T09:14:12.969000Z",
+              "p95_latency_onset": null
+            }
+          },
+          {
+            "id": "ev-4df59038eeb9",
+            "source": "metrics",
+            "kind": "service_http_metrics",
+            "service": "inventory",
+            "observed_at": "2026-10-23T09:14:12.969000Z",
+            "summary": "inventory: 1.49 req/s avg; 5xx ratio avg 18.9%, max 50.0%; first at or above 5.0% at 2026-10-23T09:14:12Z; p95 latency avg 44ms, max 47ms",
+            "query": "request_rate_rps: sum by (job) (rate(http_server_request_duration_seconds_count[60s]))\nerror_ratio: (sum by (job) (rate(http_server_request_duration_seconds_count{http_response_status_code=~\"5..\"}[60s])) or sum by (job) (rate(http_server_request_duration_seconds_count[60s])) * 0) / sum by (job) (rate(http_server_request_duration_seconds_count[60s]))\np95_latency_s: histogram_quantile(0.95, sum by (job, le) (rate(http_server_request_duration_seconds_bucket[60s])))",
+            "reference": "http://localhost:9090/api/v1/query_range?query=%28sum+by+%28job%29+%28rate%28http_server_request_duration_seconds_count%7Bhttp_response_status_code%3D~%225..%22%7D%5B60s%5D%29%29+or+sum+by+%28job%29+%28rate%28http_server_request_duration_seconds_count%5B60s%5D%29%29+%2A+0%29+%2F+sum+by+%28job%29+%28rate%28http_server_request_duration_seconds_count%5B60s%5D%29%29&start=1792746702.968555&end=1792746973.146978&step=15",
+            "data": {
+              "stats": {
+                "error_ratio": {
+                  "avg": 0.1894721129368485,
+                  "max": 0.5,
+                  "last": 0.3972602739726028
+                },
+                "p95_latency_s": {
+                  "avg": 0.04404128919876517,
+                  "max": 0.046510416666666665,
+                  "last": 0.04429687499999999
+                },
+                "request_rate_rps": {
+                  "avg": 1.491586725377265,
+                  "max": 1.6999320027198914,
+                  "last": 1.4599708005839882
+                }
+              },
+              "series": {
+                "error_ratio": [
+                  [
+                    "2026-10-23T09:11:42Z",
+                    0
+                  ],
+                  [
+                    "2026-10-23T09:11:57Z",
+                    0
+                  ],
+                  [
+                    "2026-10-23T09:12:12Z",
+                    0
+                  ],
+                  [
+                    "2026-10-23T09:12:27Z",
+                    0
+                  ],
+                  [
+                    "2026-10-23T09:12:42Z",
+                    0
+                  ],
+                  [
+                    "2026-10-23T09:12:57Z",
+                    0
+                  ],
+                  [
+                    "2026-10-23T09:13:12Z",
+                    0
+                  ],
+                  [
+                    "2026-10-23T09:13:27Z",
+                    0
+                  ],
+                  [
+                    "2026-10-23T09:13:42Z",
+                    0
+                  ],
+                  [
+                    "2026-10-23T09:13:57Z",
+                    0
+                  ],
+                  [
+                    "2026-10-23T09:14:12Z",
+                    0.174603
+                  ],
+                  [
+                    "2026-10-23T09:14:27Z",
+                    0.271429
+                  ],
+                  [
+                    "2026-10-23T09:14:42Z",
+                    0.425
+                  ],
+                  [
+                    "2026-10-23T09:14:57Z",
+                    0.452381
+                  ],
+                  [
+                    "2026-10-23T09:15:12Z",
+                    0.5
+                  ],
+                  [
+                    "2026-10-23T09:15:27Z",
+                    0.5
+                  ],
+                  [
+                    "2026-10-23T09:15:42Z",
+                    0.467532
+                  ],
+                  [
+                    "2026-10-23T09:15:57Z",
+                    0.411765
+                  ],
+                  [
+                    "2026-10-23T09:16:12Z",
+                    0.39726
+                  ]
+                ],
+                "p95_latency_s": [
+                  [
+                    "2026-10-23T09:11:42Z",
+                    0.04494
+                  ],
+                  [
+                    "2026-10-23T09:11:57Z",
+                    0.044539
+                  ],
+                  [
+                    "2026-10-23T09:12:12Z",
+                    0.045
+                  ],
+                  [
+                    "2026-10-23T09:12:27Z",
+                    0.045069
+                  ],
+                  [
+                    "2026-10-23T09:12:42Z",
+                    0.045347
+                  ],
+                  [
+                    "2026-10-23T09:12:57Z",
+                    0.045278
+                  ],
+                  [
+                    "2026-10-23T09:13:12Z",
+                    0.045924
+                  ],
+                  [
+                    "2026-10-23T09:13:27Z",
+                    0.045815
+                  ],
+                  [
+                    "2026-10-23T09:13:42Z",
+                    0.046406
+                  ],
+                  [
+                    "2026-10-23T09:13:57Z",
+                    0.04651
+                  ],
+                  [
+                    "2026-10-23T09:14:12Z",
+                    0.04475
+                  ],
+                  [
+                    "2026-10-23T09:14:27Z",
+                    0.044853
+                  ],
+                  [
+                    "2026-10-23T09:14:42Z",
+                    0.040909
+                  ],
+                  [
+                    "2026-10-23T09:14:57Z",
+                    0.040455
+                  ],
+                  [
+                    "2026-10-23T09:15:12Z",
+                    0.041458
+                  ],
+                  [
+                    "2026-10-23T09:15:27Z",
+                    0.041136
+                  ],
+                  [
+                    "2026-10-23T09:15:42Z",
+                    0.042596
+                  ],
+                  [
+                    "2026-10-23T09:15:57Z",
+                    0.0415
+                  ],
+                  [
+                    "2026-10-23T09:16:12Z",
+                    0.044297
+                  ]
+                ],
+                "request_rate_rps": [
+                  [
+                    "2026-10-23T09:11:42Z",
+                    1.699932
+                  ],
+                  [
+                    "2026-10-23T09:11:57Z",
+                    1.660066
+                  ],
+                  [
+                    "2026-10-23T09:12:12Z",
+                    1.599776
+                  ],
+                  [
+                    "2026-10-23T09:12:27Z",
+                    1.419972
+                  ],
+                  [
+                    "2026-10-23T09:12:42Z",
+                    1.340107
+                  ],
+                  [
+                    "2026-10-23T09:12:57Z",
+                    1.36
+                  ],
+                  [
+                    "2026-10-23T09:13:12Z",
+                    1.50003
+                  ],
+                  [
+                    "2026-10-23T09:13:27Z",
+                    1.540092
+                  ],
+                  [
+                    "2026-10-23T09:13:42Z",
+                    1.38011
+                  ],
+                  [
+                    "2026-10-23T09:13:57Z",
+                    1.340027
+                  ],
+                  [
+                    "2026-10-23T09:14:12Z",
+                    1.259874
+                  ],
+                  [
+                    "2026-10-23T09:14:27Z",
+                    1.399972
+                  ],
+                  [
+                    "2026-10-23T09:14:42Z",
+                    1.59984
+                  ],
+                  [
+                    "2026-10-23T09:14:57Z",
+                    1.68
+                  ],
+                  [
+                    "2026-10-23T09:15:12Z",
+                    1.64
+                  ],
+                  [
+                    "2026-10-23T09:15:27Z",
+                    1.560374
+                  ],
+                  [
+                    "2026-10-23T09:15:42Z",
+                    1.540031
+                  ],
+                  [
+                    "2026-10-23T09:15:57Z",
+                    1.359973
+                  ],
+                  [
+                    "2026-10-23T09:16:12Z",
+                    1.459971
+                  ]
+                ]
+              },
+              "step_s": 15,
+              "error_ratio_onset": "2026-10-23T09:14:12.969000Z",
+              "p95_latency_onset": null
+            }
+          },
+          {
+            "id": "ev-c5447ed2471d",
+            "source": "metrics",
+            "kind": "service_http_metrics",
+            "service": "orders",
+            "observed_at": "2026-10-23T09:14:12.969000Z",
+            "summary": "orders: 1.49 req/s avg; 5xx ratio avg 19.0%, max 50.0%; first at or above 5.0% at 2026-10-23T09:14:12Z; p95 latency avg 97ms, max 100ms",
+            "query": "request_rate_rps: sum by (job) (rate(http_server_request_duration_seconds_count[60s]))\nerror_ratio: (sum by (job) (rate(http_server_request_duration_seconds_count{http_response_status_code=~\"5..\"}[60s])) or sum by (job) (rate(http_server_request_duration_seconds_count[60s])) * 0) / sum by (job) (rate(http_server_request_duration_seconds_count[60s]))\np95_latency_s: histogram_quantile(0.95, sum by (job, le) (rate(http_server_request_duration_seconds_bucket[60s])))",
+            "reference": "http://localhost:9090/api/v1/query_range?query=%28sum+by+%28job%29+%28rate%28http_server_request_duration_seconds_count%7Bhttp_response_status_code%3D~%225..%22%7D%5B60s%5D%29%29+or+sum+by+%28job%29+%28rate%28http_server_request_duration_seconds_count%5B60s%5D%29%29+%2A+0%29+%2F+sum+by+%28job%29+%28rate%28http_server_request_duration_seconds_count%5B60s%5D%29%29&start=1792746702.968555&end=1792746973.146978&step=15",
+            "data": {
+              "stats": {
+                "error_ratio": {
+                  "avg": 0.18982511110198405,
+                  "max": 0.5,
+                  "last": 0.3972602739726028
+                },
+                "p95_latency_s": {
+                  "avg": 0.09682972227348696,
+                  "max": 0.09970394736842106,
+                  "last": 0.09565476190476191
+                },
+                "request_rate_rps": {
+                  "avg": 1.489481441162107,
+                  "max": 1.6999320027198914,
+                  "last": 1.4599708005839882
+                }
+              },
+              "series": {
+                "error_ratio": [
+                  [
+                    "2026-10-23T09:11:42Z",
+                    0
+                  ],
+                  [
+                    "2026-10-23T09:11:57Z",
+                    0
+                  ],
+                  [
+                    "2026-10-23T09:12:12Z",
+                    0
+                  ],
+                  [
+                    "2026-10-23T09:12:27Z",
+                    0
+                  ],
+                  [
+                    "2026-10-23T09:12:42Z",
+                    0
+                  ],
+                  [
+                    "2026-10-23T09:12:57Z",
+                    0
+                  ],
+                  [
+                    "2026-10-23T09:13:12Z",
+                    0
+                  ],
+                  [
+                    "2026-10-23T09:13:27Z",
+                    0
+                  ],
+                  [
+                    "2026-10-23T09:13:42Z",
+                    0
+                  ],
+                  [
+                    "2026-10-23T09:13:57Z",
+                    0
+                  ],
+                  [
+                    "2026-10-23T09:14:12Z",
+                    0.171875
+                  ],
+                  [
+                    "2026-10-23T09:14:27Z",
+                    0.275362
+                  ],
+                  [
+                    "2026-10-23T09:14:42Z",
+                    0.43038
+                  ],
+                  [
+                    "2026-10-23T09:14:57Z",
+                    0.452381
+                  ],
+                  [
+                    "2026-10-23T09:15:12Z",
+                    0.493976
+                  ],
+                  [
+                    "2026-10-23T09:15:27Z",
+                    0.5
+                  ],
+                  [
+                    "2026-10-23T09:15:42Z",
+                    0.467532
+                  ],
+                  [
+                    "2026-10-23T09:15:57Z",
+                    0.41791
+                  ],
+                  [
+                    "2026-10-23T09:16:12Z",
+                    0.39726
+                  ]
+                ],
+                "p95_latency_s": [
+                  [
+                    "2026-10-23T09:11:42Z",
+                    0.097379
+                  ],
+                  [
+                    "2026-10-23T09:11:57Z",
+                    0.097375
+                  ],
+                  [
+                    "2026-10-23T09:12:12Z",
+                    0.097222
+                  ],
+                  [
+                    "2026-10-23T09:12:27Z",
+                    0.097311
+                  ],
+                  [
+                    "2026-10-23T09:12:42Z",
+                    0.098042
+                  ],
+                  [
+                    "2026-10-23T09:12:57Z",
+                    0.097391
+                  ],
+                  [
+                    "2026-10-23T09:13:12Z",
+                    0.099306
+                  ],
+                  [
+                    "2026-10-23T09:13:27Z",
+                    0.098676
+                  ],
+                  [
+                    "2026-10-23T09:13:42Z",
+                    0.099704
+                  ],
+                  [
+                    "2026-10-23T09:13:57Z",
+                    0.099036
+                  ],
+                  [
+                    "2026-10-23T09:14:12Z",
+                    0.09875
+                  ],
+                  [
+                    "2026-10-23T09:14:27Z",
+                    0.098274
+                  ],
+                  [
+                    "2026-10-23T09:14:42Z",
+                    0.095903
+                  ],
+                  [
+                    "2026-10-23T09:14:57Z",
+                    0.094167
+                  ],
+                  [
+                    "2026-10-23T09:15:12Z",
+                    0.094539
+                  ],
+                  [
+                    "2026-10-23T09:15:27Z",
+                    0.093036
+                  ],
+                  [
+                    "2026-10-23T09:15:42Z",
+                    0.093583
+                  ],
+                  [
+                    "2026-10-23T09:15:57Z",
+                    0.094417
+                  ],
+                  [
+                    "2026-10-23T09:16:12Z",
+                    0.095655
+                  ]
+                ],
+                "request_rate_rps": [
+                  [
+                    "2026-10-23T09:11:42Z",
+                    1.699932
+                  ],
+                  [
+                    "2026-10-23T09:11:57Z",
+                    1.660066
+                  ],
+                  [
+                    "2026-10-23T09:12:12Z",
+                    1.599776
+                  ],
+                  [
+                    "2026-10-23T09:12:27Z",
+                    1.419972
+                  ],
+                  [
+                    "2026-10-23T09:12:42Z",
+                    1.340107
+                  ],
+                  [
+                    "2026-10-23T09:12:57Z",
+                    1.36
+                  ],
+                  [
+                    "2026-10-23T09:13:12Z",
+                    1.50003
+                  ],
+                  [
+                    "2026-10-23T09:13:27Z",
+                    1.520091
+                  ],
+                  [
+                    "2026-10-23T09:13:42Z",
+                    1.38011
+                  ],
+                  [
+                    "2026-10-23T09:13:57Z",
+                    1.340027
+                  ],
+                  [
+                    "2026-10-23T09:14:12Z",
+                    1.279872
+                  ],
+                  [
+                    "2026-10-23T09:14:27Z",
+                    1.379972
+                  ],
+                  [
+                    "2026-10-23T09:14:42Z",
+                    1.579842
+                  ],
+                  [
+                    "2026-10-23T09:14:57Z",
+                    1.68
+                  ],
+                  [
+                    "2026-10-23T09:15:12Z",
+                    1.66
+                  ],
+                  [
+                    "2026-10-23T09:15:27Z",
+                    1.560374
+                  ],
+                  [
+                    "2026-10-23T09:15:42Z",
+                    1.540031
+                  ],
+                  [
+                    "2026-10-23T09:15:57Z",
+                    1.339973
+                  ],
+                  [
+                    "2026-10-23T09:16:12Z",
+                    1.459971
+                  ]
+                ]
+              },
+              "step_s": 15,
+              "error_ratio_onset": "2026-10-23T09:14:12.969000Z",
+              "p95_latency_onset": null
+            }
+          },
+          {
+            "id": "ev-97ec8dd1752c",
+            "source": "traces",
+            "kind": "trace_pattern",
+            "service": "gateway",
+            "observed_at": "2026-10-23T09:15:42.954419Z",
+            "summary": "20 of 20 sampled error/slow traces: gateway POST /checkout returned 502 in 7ms-20ms; failing: gateway POST /checkout (502) <- orders POST /orders (502) <- inventory POST /reserve (500)",
+            "query": "Jaeger /api/traces for services ['gateway', 'inventory', 'orders']: tags error=true, and minDuration=1000ms; limit 20 per query",
+            "reference": "http://localhost:16686/trace/fe18f4cf5d103fa0162e0bcd0d698bad",
+            "data": {
+              "root": {
+                "service": "gateway",
+                "operation": "POST /checkout",
+                "status_code": 502
+              },
+              "releases": {
+                "orders=2.7.0": 20,
+                "gateway=1.5.3": 20,
+                "inventory=3.1.5": 20
+              },
+              "last_seen": "2026-10-23T09:16:07Z",
+              "duration_s": {
+                "max": 0.020009,
+                "min": 0.007148
+              },
+              "error_path": [
+                [
+                  "gateway",
+                  "POST /checkout",
+                  502
+                ],
+                [
+                  "orders",
+                  "POST /orders",
+                  502
+                ],
+                [
+                  "inventory",
+                  "POST /reserve",
+                  500
+                ]
+              ],
+              "first_seen": "2026-10-23T09:15:42Z",
+              "trace_count": 20,
+              "example_traces": [
+                {
+                  "url": "http://localhost:16686/trace/fe18f4cf5d103fa0162e0bcd0d698bad",
+                  "start": "2026-10-23T09:15:51Z",
+                  "trace_id": "fe18f4cf5d103fa0162e0bcd0d698bad",
+                  "duration_s": 0.020009,
+                  "top_self_time": [
+                    {
+                      "release": "1.5.3",
+                      "service": "gateway",
+                      "operation": "POST /checkout",
+                      "self_time_s": 0.006712
+                    },
+                    {
+                      "release": "2.7.0",
+                      "service": "orders",
+                      "operation": "POST /orders",
+                      "self_time_s": 0.00417
+                    },
+                    {
+                      "release": null,
+                      "service": "gateway",
+                      "operation": "POST",
+                      "self_time_s": 0.003984
+                    }
+                  ]
+                },
+                {
+                  "url": "http://localhost:16686/trace/836a123c86974cb0e53dae30141392a2",
+                  "start": "2026-10-23T09:16:00Z",
+                  "trace_id": "836a123c86974cb0e53dae30141392a2",
+                  "duration_s": 0.019699,
+                  "top_self_time": [
+                    {
+                      "release": "1.5.3",
+                      "service": "gateway",
+                      "operation": "POST /checkout",
+                      "self_time_s": 0.005763
+                    },
+                    {
+                      "release": "2.7.0",
+                      "service": "orders",
+                      "operation": "POST /orders",
+                      "self_time_s": 0.004317
+                    },
+                    {
+                      "release": null,
+                      "service": "gateway",
+                      "operation": "POST",
+                      "self_time_s": 0.003971
+                    }
+                  ]
+                },
+                {
+                  "url": "http://localhost:16686/trace/16697f47e4a94397c1338473453b6ef7",
+                  "start": "2026-10-23T09:15:59Z",
+                  "trace_id": "16697f47e4a94397c1338473453b6ef7",
+                  "duration_s": 0.019642,
+                  "top_self_time": [
+                    {
+                      "release": "1.5.3",
+                      "service": "gateway",
+                      "operation": "POST /checkout",
+                      "self_time_s": 0.005109
+                    },
+                    {
+                      "release": "2.7.0",
+                      "service": "orders",
+                      "operation": "POST /orders",
+                      "self_time_s": 0.004722
+                    },
+                    {
+                      "release": null,
+                      "service": "gateway",
+                      "operation": "POST",
+                      "self_time_s": 0.003899
+                    }
+                  ]
+                }
+              ],
+              "sampled_traces": 20,
+              "dominant_self_time": null,
+              "incomplete_traces_skipped": 0
+            }
+          },
+          {
+            "id": "ev-b07f2f336800",
+            "source": "logs",
+            "kind": "log_pattern",
+            "service": "gateway",
+            "observed_at": "2026-10-23T09:13:45.445000Z",
+            "summary": "gateway logged ERROR 'checkout failed: orders returned 502' 98 times from 2026-10-23T09:13:45Z to 2026-10-23T09:16:07Z (release 1.5.3); example traces: de56d9800be16db71b8d60f2d05d39f4, bc1aae4f967c0c1a00ad192c17b8355a, f609a28575f5e6587aee1f02525e7751",
+            "query": "POST /otel-logs/_search {\"size\":0,\"query\":{\"bool\":{\"filter\":[{\"range\":{\"@timestamp\":{\"gte\":\"2026-10-23T09:11:42.968555+00:00\",\"lt\":\"2026-10-23T09:16:13.146978+00:00\"}}},{\"range\":{\"severity.number\":{\"gte\":13}}}]}},\"aggs\":{\"services\":{\"terms\":{\"field\":\"resource.service.name\",\"size\":20},\"aggs\":{\"messages\":{\"terms\":{\"field\":\"body.keyword\",\"size\":10},\"aggs\":{\"first_seen\":{\"min\":{\"field\":\"@timestamp\"}},\"last_seen\":{\"max\":{\"field\":\"@timestamp\"}},\"severity\":{\"terms\":{\"field\":\"severity.text\",\"size\":3}},\"releases\":{\"terms\":{\"field\":\"attributes.release\",\"size\":3}},\"examples\":{\"top_hits\":{\"size\":3,\"sort\":[{\"@timestamp\":\"desc\"}],\"_source\":[\"traceId\",\"@timestamp\"]}}}}}}}}",
+            "reference": null,
+            "data": {
+              "count": 98,
+              "message": "checkout failed: orders returned 502",
+              "releases": [
+                "1.5.3"
+              ],
+              "severity": "ERROR",
+              "last_seen": "2026-10-23T09:16:07Z",
+              "first_seen": "2026-10-23T09:13:45Z",
+              "example_trace_ids": [
+                "de56d9800be16db71b8d60f2d05d39f4",
+                "bc1aae4f967c0c1a00ad192c17b8355a",
+                "f609a28575f5e6587aee1f02525e7751"
+              ]
+            }
+          },
+          {
+            "id": "ev-23d4c2b9c411",
+            "source": "logs",
+            "kind": "log_pattern",
+            "service": "inventory",
+            "observed_at": "2026-10-23T09:13:45.437000Z",
+            "summary": "inventory logged ERROR 'connection pool exhausted' 98 times from 2026-10-23T09:13:45Z to 2026-10-23T09:16:07Z (release 3.1.5); example traces: de56d9800be16db71b8d60f2d05d39f4, bc1aae4f967c0c1a00ad192c17b8355a, f609a28575f5e6587aee1f02525e7751",
+            "query": "POST /otel-logs/_search {\"size\":0,\"query\":{\"bool\":{\"filter\":[{\"range\":{\"@timestamp\":{\"gte\":\"2026-10-23T09:11:42.968555+00:00\",\"lt\":\"2026-10-23T09:16:13.146978+00:00\"}}},{\"range\":{\"severity.number\":{\"gte\":13}}}]}},\"aggs\":{\"services\":{\"terms\":{\"field\":\"resource.service.name\",\"size\":20},\"aggs\":{\"messages\":{\"terms\":{\"field\":\"body.keyword\",\"size\":10},\"aggs\":{\"first_seen\":{\"min\":{\"field\":\"@timestamp\"}},\"last_seen\":{\"max\":{\"field\":\"@timestamp\"}},\"severity\":{\"terms\":{\"field\":\"severity.text\",\"size\":3}},\"releases\":{\"terms\":{\"field\":\"attributes.release\",\"size\":3}},\"examples\":{\"top_hits\":{\"size\":3,\"sort\":[{\"@timestamp\":\"desc\"}],\"_source\":[\"traceId\",\"@timestamp\"]}}}}}}}}",
+            "reference": null,
+            "data": {
+              "count": 98,
+              "message": "connection pool exhausted",
+              "releases": [
+                "3.1.5"
+              ],
+              "severity": "ERROR",
+              "last_seen": "2026-10-23T09:16:07Z",
+              "first_seen": "2026-10-23T09:13:45Z",
+              "example_trace_ids": [
+                "de56d9800be16db71b8d60f2d05d39f4",
+                "bc1aae4f967c0c1a00ad192c17b8355a",
+                "f609a28575f5e6587aee1f02525e7751"
+              ]
+            }
+          },
+          {
+            "id": "ev-2bbdc45c9d49",
+            "source": "logs",
+            "kind": "log_pattern",
+            "service": "orders",
+            "observed_at": "2026-10-23T09:13:45.442000Z",
+            "summary": "orders logged ERROR 'inventory reservation failed with status 500' 98 times from 2026-10-23T09:13:45Z to 2026-10-23T09:16:07Z (release 2.7.0); example traces: de56d9800be16db71b8d60f2d05d39f4, bc1aae4f967c0c1a00ad192c17b8355a, f609a28575f5e6587aee1f02525e7751",
+            "query": "POST /otel-logs/_search {\"size\":0,\"query\":{\"bool\":{\"filter\":[{\"range\":{\"@timestamp\":{\"gte\":\"2026-10-23T09:11:42.968555+00:00\",\"lt\":\"2026-10-23T09:16:13.146978+00:00\"}}},{\"range\":{\"severity.number\":{\"gte\":13}}}]}},\"aggs\":{\"services\":{\"terms\":{\"field\":\"resource.service.name\",\"size\":20},\"aggs\":{\"messages\":{\"terms\":{\"field\":\"body.keyword\",\"size\":10},\"aggs\":{\"first_seen\":{\"min\":{\"field\":\"@timestamp\"}},\"last_seen\":{\"max\":{\"field\":\"@timestamp\"}},\"severity\":{\"terms\":{\"field\":\"severity.text\",\"size\":3}},\"releases\":{\"terms\":{\"field\":\"attributes.release\",\"size\":3}},\"examples\":{\"top_hits\":{\"size\":3,\"sort\":[{\"@timestamp\":\"desc\"}],\"_source\":[\"traceId\",\"@timestamp\"]}}}}}}}}",
+            "reference": null,
+            "data": {
+              "count": 98,
+              "message": "inventory reservation failed with status 500",
+              "releases": [
+                "2.7.0"
+              ],
+              "severity": "ERROR",
+              "last_seen": "2026-10-23T09:16:07Z",
+              "first_seen": "2026-10-23T09:13:45Z",
+              "example_trace_ids": [
+                "de56d9800be16db71b8d60f2d05d39f4",
+                "bc1aae4f967c0c1a00ad192c17b8355a",
+                "f609a28575f5e6587aee1f02525e7751"
+              ]
+            }
+          },
+          {
+            "id": "ev-17ee17817f45",
+            "source": "deployments",
+            "kind": "deployment",
+            "service": "gateway",
+            "observed_at": "2026-10-23T09:13:13.067665Z",
+            "summary": "gateway deployed 1.4.2 -> 1.5.3 at 2026-10-23T09:13:13Z (during the window) by ci-pipeline: 'Deploy gateway 1.5.3'",
+            "query": "POST /deploy-events/_search {\"size\":50,\"sort\":[{\"@timestamp\":\"asc\"}],\"query\":{\"bool\":{\"filter\":[{\"range\":{\"@timestamp\":{\"gte\":\"2026-10-23T08:11:42.968555+00:00\",\"lt\":\"2026-10-23T09:16:13.146978+00:00\"}}}]}}}",
+            "reference": "http://localhost:9200/deploy-events/_doc/OS8JaKEBXkJaxxjbKPJw",
+            "data": {
+              "author": "ci-pipeline",
+              "service": "gateway",
+              "version": "1.5.3",
+              "event_id": "ac5d80d6-af66-4b46-b95a-a90727f05e69",
+              "timestamp": "2026-10-23T09:13:13Z",
+              "change_type": "deploy",
+              "description": "Deploy gateway 1.5.3",
+              "environment": "local-demo",
+              "previous_version": "1.4.2"
+            }
+          }
+        ]
+      },
+      "diagnoses": [
+        {
+          "id": "d50233f4-036f-4564-b090-aaad266a9622",
+          "snapshot_id": "15305400-b9e4-440f-8958-13397f4c13d2",
+          "status": "valid",
+          "created_at": "2026-10-23T09:17:13.146978Z",
+          "completed_at": "2026-10-23T09:17:31.916978Z",
+          "model_requested": "claude-opus-5-5",
+          "model_used": "claude-opus-5-5",
+          "effort": "medium",
+          "prompt_version": "1",
+          "output": {
+            "summary": "Checkout failures originate in inventory, not gateway. Inventory logs 'connection pool exhausted' and returns 500 on POST /reserve. Orders turns that into a 502, and gateway turns that into a 502 to clients, all in the same traces. The gateway 1.5.3 deploy at 09:13:13Z came shortly before the errors, but nothing in the evidence ties gateway's change to inventory's pool exhaustion.",
+            "root_cause": {
+              "statement": "Inventory's connection pool is exhausted, so inventory POST /reserve returns 500. That failure propagates as 502s through orders and gateway on checkout. What exhausted the pool (an inventory resource or its backend, or a change in traffic) is not shown in the evidence.",
+              "service": "inventory",
+              "confidence": "medium",
+              "evidence_ids": [
+                "ev-23d4c2b9c411",
+                "ev-97ec8dd1752c",
+                "ev-2bbdc45c9d49",
+                "ev-b07f2f336800",
+                "ev-4df59038eeb9"
+              ]
+            },
+            "contributing_factors": [
+              {
+                "statement": "Gateway was deployed from 1.4.2 to 1.5.3 at 09:13:13Z, about 32s before the first error logs. The timing is close, but no evidence links the gateway change to inventory's pool exhaustion.",
+                "evidence_ids": [
+                  "ev-17ee17817f45",
+                  "ev-b07f2f336800"
+                ]
+              },
+              {
+                "statement": "Failing requests are fast (7-20ms) and p95 latencies stay low in every service, so the pool appears to fail fast rather than causing a timeout cascade.",
+                "evidence_ids": [
+                  "ev-97ec8dd1752c",
+                  "ev-4df59038eeb9",
+                  "ev-c5447ed2471d",
+                  "ev-6d5399d5f26e"
+                ]
+              }
+            ],
+            "timeline": [
+              {
+                "time": "2026-10-23T09:13:13Z",
+                "event": "Gateway deployed 1.4.2 -> 1.5.3 by ci-pipeline.",
+                "evidence_ids": [
+                  "ev-17ee17817f45"
+                ]
+              },
+              {
+                "time": "2026-10-23T09:13:45Z",
+                "event": "Inventory starts logging 'connection pool exhausted'. Orders logs inventory 500s and gateway logs orders 502s at the same moment (98 each, sharing the same example traces).",
+                "evidence_ids": [
+                  "ev-23d4c2b9c411",
+                  "ev-2bbdc45c9d49",
+                  "ev-b07f2f336800"
+                ]
+              },
+              {
+                "time": "2026-10-23T09:14:12.969000Z",
+                "event": "5xx ratio crosses 5% for inventory, orders and gateway at the same time. Inventory and orders peak at 50%, gateway at 36.8%.",
+                "evidence_ids": [
+                  "ev-4df59038eeb9",
+                  "ev-c5447ed2471d",
+                  "ev-6d5399d5f26e"
+                ]
+              },
+              {
+                "time": "2026-10-23T09:15:42Z",
+                "event": "Sampled error traces show the chain: inventory POST /reserve 500 -> orders POST /orders 502 -> gateway POST /checkout 502.",
+                "evidence_ids": [
+                  "ev-97ec8dd1752c"
+                ]
+              }
+            ],
+            "ruled_out": [
+              {
+                "statement": "Gateway as the origin of the errors is unlikely. Its errors are propagated 502s from orders ('checkout failed: orders returned 502'), and the deepest failing span is inventory's 500.",
+                "evidence_ids": [
+                  "ev-b07f2f336800",
+                  "ev-97ec8dd1752c"
+                ]
+              },
+              {
+                "statement": "Orders as the origin is unlikely. It logs that the inventory reservation failed with status 500, and its error ratio matches inventory's.",
+                "evidence_ids": [
+                  "ev-2bbdc45c9d49",
+                  "ev-c5447ed2471d",
+                  "ev-4df59038eeb9"
+                ]
+              },
+              {
+                "statement": "A latency or timeout cascade is unlikely. Error traces complete in 7-20ms and no service shows a p95 latency onset.",
+                "evidence_ids": [
+                  "ev-97ec8dd1752c",
+                  "ev-4df59038eeb9",
+                  "ev-c5447ed2471d",
+                  "ev-6d5399d5f26e"
+                ]
+              }
+            ],
+            "unknowns": [
+              "What inventory's connection pool connects to (database or other backend), and that backend's health and saturation metrics. None are in the snapshot.",
+              "Whether inventory 3.1.5 or its configuration (pool size) changed recently. Only the gateway deploy is recorded.",
+              "Whether gateway 1.5.3 changed the request pattern sent to inventory (retries, more concurrent reservations). Request rates look flat at about 1.5-2 rps, which argues against a load spike.",
+              "Inventory connection-pool metrics (active/idle/wait) are not available.",
+              "Error ratios before 09:13:13 are not shown separately, so a pre-deploy baseline cannot be confirmed."
+            ],
+            "recommended_actions": [
+              {
+                "action": "Investigate inventory's connection pool and its backend: pool usage, leaked or held connections, and backend availability. Restart inventory or raise the pool size as mitigation if the pool is stuck.",
+                "rationale": "Inventory's pool exhaustion is the deepest error in the failing call chain.",
+                "evidence_ids": [
+                  "ev-23d4c2b9c411",
+                  "ev-97ec8dd1752c"
+                ]
+              },
+              {
+                "action": "Diff gateway 1.4.2 vs 1.5.3 for changes to checkout calls, such as retries or the number of reserve calls. Consider rolling back gateway as a low-cost test if the inventory fix is not quick.",
+                "rationale": "The deploy came about 30s before the errors and is a temporal lead, but no causal link is shown.",
+                "evidence_ids": [
+                  "ev-17ee17817f45",
+                  "ev-b07f2f336800"
+                ]
+              },
+              {
+                "action": "Inspect example traces de56d9800be16db71b8d60f2d05d39f4 and fe18f4cf5d103fa0162e0bcd0d698bad for inventory spans that touch the pool or a database.",
+                "rationale": "These traces would confirm where inside inventory the failure occurs.",
+                "evidence_ids": [
+                  "ev-23d4c2b9c411",
+                  "ev-97ec8dd1752c"
+                ]
+              }
+            ]
+          },
+          "validation_errors": [],
+          "error_message": null,
+          "stop_reason": "end_turn",
+          "fallback_used": false,
+          "input_tokens": 5139,
+          "output_tokens": 2014,
+          "cost_usd": "0.060836",
+          "request_id": "req_011CgKXt9BxFXiUV7hz1yitK"
+        }
+      ]
+    },
+    "invalid": {
+      "incident": {
+        "id": "80be3e4c-469b-425e-9e27-35ee0d38b056",
+        "title": "Checkout requests are failing",
+        "severity": "high",
+        "window": {
+          "start": "2026-10-23T07:16:47.643016Z",
+          "end": "2026-10-23T07:20:47.773471Z"
+        },
+        "services": null,
+        "created_at": "2026-10-23T19:35:35.548586Z",
+        "latest_diagnosis": {
+          "id": "3fd7b7de-6c0a-42b7-8e0d-114b61bb922e",
+          "snapshot_id": "7d04e4d4-91c6-4c8d-a1f6-fe46a508e225",
+          "status": "invalid",
+          "created_at": "2026-10-23T07:21:47.773471Z",
+          "root_cause_service": "inventory",
+          "confidence": "medium"
+        },
+        "description": null,
+        "snapshots": [
+          {
+            "id": "7d04e4d4-91c6-4c8d-a1f6-fe46a508e225",
+            "collected_at": "2026-10-23T07:20:48.106224Z",
+            "evidence_count": 5,
+            "source_counts": {
+              "traces": 1,
+              "metrics": 3,
+              "deployments": 1
+            },
+            "source_errors": [
+              {
+                "source": "logs",
+                "message": "logs: timed out calling the backend"
+              }
+            ]
+          }
+        ]
+      },
+      "snapshot": {
+        "id": "7d04e4d4-91c6-4c8d-a1f6-fe46a508e225",
+        "collected_at": "2026-10-23T07:20:48.106224Z",
+        "evidence_count": 5,
+        "source_counts": {
+          "traces": 1,
+          "metrics": 3,
+          "deployments": 1
+        },
+        "source_errors": [
+          {
+            "source": "logs",
+            "message": "logs: timed out calling the backend"
+          }
+        ],
+        "incident_id": "80be3e4c-469b-425e-9e27-35ee0d38b056",
+        "window": {
+          "start": "2026-10-23T07:16:47.643016Z",
+          "end": "2026-10-23T07:20:47.773471Z"
+        },
+        "services": null,
+        "evidence": [
+          {
+            "id": "ev-c000e6b4f684",
+            "source": "metrics",
+            "kind": "service_http_metrics",
+            "service": "gateway",
+            "observed_at": "2026-10-23T07:18:47.643000Z",
+            "summary": "gateway: 2.09 req/s avg; 5xx ratio avg 33.0%, max 71.8%; first at or above 5.0% at 2026-10-23T07:18:47Z; p95 latency avg 1.33s, max 2.40s; first at or above 1.00s at 2026-10-23T07:18:47Z",
+            "query": "request_rate_rps: sum by (job) (rate(http_server_request_duration_seconds_count[60s]))\nerror_ratio: (sum by (job) (rate(http_server_request_duration_seconds_count{http_response_status_code=~\"5..\"}[60s])) or sum by (job) (rate(http_server_request_duration_seconds_count[60s])) * 0) / sum by (job) (rate(http_server_request_duration_seconds_count[60s]))\np95_latency_s: histogram_quantile(0.95, sum by (job, le) (rate(http_server_request_duration_seconds_bucket[60s])))",
+            "reference": "http://localhost:9090/api/v1/query_range?query=%28sum+by+%28job%29+%28rate%28http_server_request_duration_seconds_count%7Bhttp_response_status_code%3D~%225..%22%7D%5B60s%5D%29%29+or+sum+by+%28job%29+%28rate%28http_server_request_duration_seconds_count%5B60s%5D%29%29+%2A+0%29+%2F+sum+by+%28job%29+%28rate%28http_server_request_duration_seconds_count%5B60s%5D%29%29&start=1792739807.643016&end=1792740047.773471&step=15",
+            "data": {
+              "stats": {
+                "error_ratio": {
+                  "avg": 0.33018135503674517,
+                  "max": 0.7184466019417476,
+                  "last": 0.6942148760330578
+                },
+                "p95_latency_s": {
+                  "avg": 1.3300869401674038,
+                  "max": 2.395608108108108,
+                  "last": 2.3919642857142858
+                },
+                "request_rate_rps": {
+                  "avg": 2.0858152156321346,
+                  "max": 2.459901603935843,
+                  "last": 2.4193709635494773
+                }
+              },
+              "series": {
+                "error_ratio": [
+                  [
+                    "2026-10-23T07:16:47Z",
+                    0
+                  ],
+                  [
+                    "2026-10-23T07:17:02Z",
+                    0
+                  ],
+                  [
+                    "2026-10-23T07:17:17Z",
+                    0
+                  ],
+                  [
+                    "2026-10-23T07:17:32Z",
+                    0
+                  ],
+                  [
+                    "2026-10-23T07:17:47Z",
+                    0
+                  ],
+                  [
+                    "2026-10-23T07:18:02Z",
+                    0
+                  ],
+                  [
+                    "2026-10-23T07:18:17Z",
+                    0
+                  ],
+                  [
+                    "2026-10-23T07:18:32Z",
+                    0.029126
+                  ],
+                  [
+                    "2026-10-23T07:18:47Z",
+                    0.306931
+                  ],
+                  [
+                    "2026-10-23T07:19:02Z",
+                    0.435644
+                  ],
+                  [
+                    "2026-10-23T07:19:17Z",
+                    0.663158
+                  ],
+                  [
+                    "2026-10-23T07:19:32Z",
+                    0.718447
+                  ],
+                  [
+                    "2026-10-23T07:19:47Z",
+                    0.696078
+                  ],
+                  [
+                    "2026-10-23T07:20:02Z",
+                    0.698113
+                  ],
+                  [
+                    "2026-10-23T07:20:17Z",
+                    0.682692
+                  ],
+                  [
+                    "2026-10-23T07:20:32Z",
+                    0.688679
+                  ],
+                  [
+                    "2026-10-23T07:20:47Z",
+                    0.694215
+                  ]
+                ],
+                "p95_latency_s": [
+                  [
+                    "2026-10-23T07:16:47Z",
+                    0.192308
+                  ],
+                  [
+                    "2026-10-23T07:17:02Z",
+                    0.209821
+                  ],
+                  [
+                    "2026-10-23T07:17:17Z",
+                    0.2135
+                  ],
+                  [
+                    "2026-10-23T07:17:32Z",
+                    0.18625
+                  ],
+                  [
+                    "2026-10-23T07:17:47Z",
+                    0.099355
+                  ],
+                  [
+                    "2026-10-23T07:18:02Z",
+                    0.099223
+                  ],
+                  [
+                    "2026-10-23T07:18:17Z",
+                    0.1015
+                  ],
+                  [
+                    "2026-10-23T07:18:32Z",
+                    0.1855
+                  ],
+                  [
+                    "2026-10-23T07:18:47Z",
+                    2.255645
+                  ],
+                  [
+                    "2026-10-23T07:19:02Z",
+                    2.327841
+                  ],
+                  [
+                    "2026-10-23T07:19:17Z",
+                    2.386905
+                  ],
+                  [
+                    "2026-10-23T07:19:32Z",
+                    2.395608
+                  ],
+                  [
+                    "2026-10-23T07:19:47Z",
+                    2.392254
+                  ],
+                  [
+                    "2026-10-23T07:20:02Z",
+                    2.392568
+                  ],
+                  [
+                    "2026-10-23T07:20:17Z",
+                    2.390141
+                  ],
+                  [
+                    "2026-10-23T07:20:32Z",
+                    2.391096
+                  ],
+                  [
+                    "2026-10-23T07:20:47Z",
+                    2.391964
+                  ]
+                ],
+                "request_rate_rps": [
+                  [
+                    "2026-10-23T07:16:47Z",
+                    1.99996
+                  ],
+                  [
+                    "2026-10-23T07:17:02Z",
+                    1.899924
+                  ],
+                  [
+                    "2026-10-23T07:17:17Z",
+                    1.859888
+                  ],
+                  [
+                    "2026-10-23T07:17:32Z",
+                    2.099874
+                  ],
+                  [
+                    "2026-10-23T07:17:47Z",
+                    2.320093
+                  ],
+                  [
+                    "2026-10-23T07:18:02Z",
+                    2.459902
+                  ],
+                  [
+                    "2026-10-23T07:18:17Z",
+                    1.980079
+                  ],
+                  [
+                    "2026-10-23T07:18:32Z",
+                    2.059876
+                  ],
+                  [
+                    "2026-10-23T07:18:47Z",
+                    2.01996
+                  ],
+                  [
+                    "2026-10-23T07:19:02Z",
+                    2.019798
+                  ],
+                  [
+                    "2026-10-23T07:19:17Z",
+                    1.899886
+                  ],
+                  [
+                    "2026-10-23T07:19:32Z",
+                    2.060124
+                  ],
+                  [
+                    "2026-10-23T07:19:47Z",
+                    2.040163
+                  ],
+                  [
+                    "2026-10-23T07:20:02Z",
+                    2.120042
+                  ],
+                  [
+                    "2026-10-23T07:20:17Z",
+                    2.079834
+                  ],
+                  [
+                    "2026-10-23T07:20:32Z",
+                    2.120085
+                  ],
+                  [
+                    "2026-10-23T07:20:47Z",
+                    2.419371
+                  ]
+                ]
+              },
+              "step_s": 15,
+              "error_ratio_onset": "2026-10-23T07:18:47.643000Z",
+              "p95_latency_onset": "2026-10-23T07:18:47.643000Z"
+            }
+          },
+          {
+            "id": "ev-51525d7035d0",
+            "source": "metrics",
+            "kind": "service_http_metrics",
+            "service": "inventory",
+            "observed_at": "2026-10-23T07:18:47.643000Z",
+            "summary": "inventory: 1.43 req/s avg; 5xx ratio avg 0.0%, max 0.0%; p95 latency avg 2.51s, max 4.77s; first at or above 1.00s at 2026-10-23T07:18:47Z",
+            "query": "request_rate_rps: sum by (job) (rate(http_server_request_duration_seconds_count[60s]))\nerror_ratio: (sum by (job) (rate(http_server_request_duration_seconds_count{http_response_status_code=~\"5..\"}[60s])) or sum by (job) (rate(http_server_request_duration_seconds_count[60s])) * 0) / sum by (job) (rate(http_server_request_duration_seconds_count[60s]))\np95_latency_s: histogram_quantile(0.95, sum by (job, le) (rate(http_server_request_duration_seconds_bucket[60s])))",
+            "reference": "http://localhost:9090/api/v1/query_range?query=%28sum+by+%28job%29+%28rate%28http_server_request_duration_seconds_count%7Bhttp_response_status_code%3D~%225..%22%7D%5B60s%5D%29%29+or+sum+by+%28job%29+%28rate%28http_server_request_duration_seconds_count%5B60s%5D%29%29+%2A+0%29+%2F+sum+by+%28job%29+%28rate%28http_server_request_duration_seconds_count%5B60s%5D%29%29&start=1792739807.643016&end=1792740047.773471&step=15",
+            "data": {
+              "stats": {
+                "error_ratio": {
+                  "avg": 0,
+                  "max": 0,
+                  "last": 0
+                },
+                "p95_latency_s": {
+                  "avg": 2.511663484516555,
+                  "max": 4.774456521739131,
+                  "last": 4.774456521739131
+                },
+                "request_rate_rps": {
+                  "avg": 1.429366504812276,
+                  "max": 1.659933602655894,
+                  "last": 1.6595685121868313
+                }
+              },
+              "series": {
+                "error_ratio": [
+                  [
+                    "2026-10-23T07:16:47Z",
+                    0
+                  ],
+                  [
+                    "2026-10-23T07:17:02Z",
+                    0
+                  ],
+                  [
+                    "2026-10-23T07:17:17Z",
+                    0
+                  ],
+                  [
+                    "2026-10-23T07:17:32Z",
+                    0
+                  ],
+                  [
+                    "2026-10-23T07:17:47Z",
+                    0
+                  ],
+                  [
+                    "2026-10-23T07:18:02Z",
+                    0
+                  ],
+                  [
+                    "2026-10-23T07:18:17Z",
+                    0
+                  ],
+                  [
+                    "2026-10-23T07:18:32Z",
+                    0
+                  ],
+                  [
+                    "2026-10-23T07:18:47Z",
+                    0
+                  ],
+                  [
+                    "2026-10-23T07:19:02Z",
+                    0
+                  ],
+                  [
+                    "2026-10-23T07:19:17Z",
+                    0
+                  ],
+                  [
+                    "2026-10-23T07:19:32Z",
+                    0
+                  ],
+                  [
+                    "2026-10-23T07:19:47Z",
+                    0
+                  ],
+                  [
+                    "2026-10-23T07:20:02Z",
+                    0
+                  ],
+                  [
+                    "2026-10-23T07:20:17Z",
+                    0
+                  ],
+                  [
+                    "2026-10-23T07:20:32Z",
+                    0
+                  ],
+                  [
+                    "2026-10-23T07:20:47Z",
+                    0
+                  ]
+                ],
+                "p95_latency_s": [
+                  [
+                    "2026-10-23T07:16:47Z",
+                    0.046389
+                  ],
+                  [
+                    "2026-10-23T07:17:02Z",
+                    0.046645
+                  ],
+                  [
+                    "2026-10-23T07:17:17Z",
+                    0.045568
+                  ],
+                  [
+                    "2026-10-23T07:17:32Z",
+                    0.043229
+                  ],
+                  [
+                    "2026-10-23T07:17:47Z",
+                    0.043214
+                  ],
+                  [
+                    "2026-10-23T07:18:02Z",
+                    0.042589
+                  ],
+                  [
+                    "2026-10-23T07:18:17Z",
+                    0.044375
+                  ],
+                  [
+                    "2026-10-23T07:18:32Z",
+                    0.047019
+                  ],
+                  [
+                    "2026-10-23T07:18:47Z",
+                    4.5
+                  ],
+                  [
+                    "2026-10-23T07:19:02Z",
+                    4.635417
+                  ],
+                  [
+                    "2026-10-23T07:19:17Z",
+                    4.764706
+                  ],
+                  [
+                    "2026-10-23T07:19:32Z",
+                    4.756757
+                  ],
+                  [
+                    "2026-10-23T07:19:47Z",
+                    4.717742
+                  ],
+                  [
+                    "2026-10-23T07:20:02Z",
+                    4.710937
+                  ],
+                  [
+                    "2026-10-23T07:20:17Z",
+                    4.722656
+                  ],
+                  [
+                    "2026-10-23T07:20:32Z",
+                    4.756579
+                  ],
+                  [
+                    "2026-10-23T07:20:47Z",
+                    4.774457
+                  ]
+                ],
+                "request_rate_rps": [
+                  [
+                    "2026-10-23T07:16:47Z",
+                    1.439971
+                  ],
+                  [
+                    "2026-10-23T07:17:02Z",
+                    1.419943
+                  ],
+                  [
+                    "2026-10-23T07:17:17Z",
+                    1.179929
+                  ],
+                  [
+                    "2026-10-23T07:17:32Z",
+                    1.299922
+                  ],
+                  [
+                    "2026-10-23T07:17:47Z",
+                    1.520061
+                  ],
+                  [
+                    "2026-10-23T07:18:02Z",
+                    1.659934
+                  ],
+                  [
+                    "2026-10-23T07:18:17Z",
+                    1.440058
+                  ],
+                  [
+                    "2026-10-23T07:18:32Z",
+                    1.419915
+                  ],
+                  [
+                    "2026-10-23T07:18:47Z",
+                    1.359973
+                  ],
+                  [
+                    "2026-10-23T07:19:02Z",
+                    1.39986
+                  ],
+                  [
+                    "2026-10-23T07:19:17Z",
+                    1.279923
+                  ],
+                  [
+                    "2026-10-23T07:19:32Z",
+                    1.440086
+                  ],
+                  [
+                    "2026-10-23T07:19:47Z",
+                    1.400112
+                  ],
+                  [
+                    "2026-10-23T07:20:02Z",
+                    1.48003
+                  ],
+                  [
+                    "2026-10-23T07:20:17Z",
+                    1.419886
+                  ],
+                  [
+                    "2026-10-23T07:20:32Z",
+                    1.480059
+                  ],
+                  [
+                    "2026-10-23T07:20:47Z",
+                    1.659569
+                  ]
+                ]
+              },
+              "step_s": 15,
+              "error_ratio_onset": null,
+              "p95_latency_onset": "2026-10-23T07:18:47.643000Z"
+            }
+          },
+          {
+            "id": "ev-1da116a62fee",
+            "source": "metrics",
+            "kind": "service_http_metrics",
+            "service": "orders",
+            "observed_at": "2026-10-23T07:18:32.643000Z",
+            "summary": "orders: 1.43 req/s avg; 5xx ratio avg 47.9%, max 100.0%; first at or above 5.0% at 2026-10-23T07:18:32Z; p95 latency avg 1.39s, max 2.43s; first at or above 1.00s at 2026-10-23T07:18:32Z",
+            "query": "request_rate_rps: sum by (job) (rate(http_server_request_duration_seconds_count[60s]))\nerror_ratio: (sum by (job) (rate(http_server_request_duration_seconds_count{http_response_status_code=~\"5..\"}[60s])) or sum by (job) (rate(http_server_request_duration_seconds_count[60s])) * 0) / sum by (job) (rate(http_server_request_duration_seconds_count[60s]))\np95_latency_s: histogram_quantile(0.95, sum by (job, le) (rate(http_server_request_duration_seconds_bucket[60s])))",
+            "reference": "http://localhost:9090/api/v1/query_range?query=%28sum+by+%28job%29+%28rate%28http_server_request_duration_seconds_count%7Bhttp_response_status_code%3D~%225..%22%7D%5B60s%5D%29%29+or+sum+by+%28job%29+%28rate%28http_server_request_duration_seconds_count%5B60s%5D%29%29+%2A+0%29+%2F+sum+by+%28job%29+%28rate%28http_server_request_duration_seconds_count%5B60s%5D%29%29&start=1792739807.643016&end=1792740047.773471&step=15",
+            "data": {
+              "stats": {
+                "error_ratio": {
+                  "avg": 0.47877931188591477,
+                  "max": 1,
+                  "last": 1
+                },
+                "p95_latency_s": {
+                  "avg": 1.3914607427281762,
+                  "max": 2.4250000000000003,
+                  "last": 2.4250000000000003
+                },
+                "request_rate_rps": {
+                  "avg": 1.430543304821689,
+                  "max": 1.6595685121868313,
+                  "last": 1.6595685121868313
+                }
+              },
+              "series": {
+                "error_ratio": [
+                  [
+                    "2026-10-23T07:16:47Z",
+                    0
+                  ],
+                  [
+                    "2026-10-23T07:17:02Z",
+                    0
+                  ],
+                  [
+                    "2026-10-23T07:17:17Z",
+                    0
+                  ],
+                  [
+                    "2026-10-23T07:17:32Z",
+                    0
+                  ],
+                  [
+                    "2026-10-23T07:17:47Z",
+                    0
+                  ],
+                  [
+                    "2026-10-23T07:18:02Z",
+                    0
+                  ],
+                  [
+                    "2026-10-23T07:18:17Z",
+                    0
+                  ],
+                  [
+                    "2026-10-23T07:18:32Z",
+                    0.054795
+                  ],
+                  [
+                    "2026-10-23T07:18:47Z",
+                    0.455882
+                  ],
+                  [
+                    "2026-10-23T07:19:02Z",
+                    0.628571
+                  ],
+                  [
+                    "2026-10-23T07:19:17Z",
+                    1
+                  ],
+                  [
+                    "2026-10-23T07:19:32Z",
+                    1
+                  ],
+                  [
+                    "2026-10-23T07:19:47Z",
+                    1
+                  ],
+                  [
+                    "2026-10-23T07:20:02Z",
+                    1
+                  ],
+                  [
+                    "2026-10-23T07:20:17Z",
+                    1
+                  ],
+                  [
+                    "2026-10-23T07:20:32Z",
+                    1
+                  ],
+                  [
+                    "2026-10-23T07:20:47Z",
+                    1
+                  ]
+                ],
+                "p95_latency_s": [
+                  [
+                    "2026-10-23T07:16:47Z",
+                    0.099458
+                  ],
+                  [
+                    "2026-10-23T07:17:02Z",
+                    0.125
+                  ],
+                  [
+                    "2026-10-23T07:17:17Z",
+                    0.176875
+                  ],
+                  [
+                    "2026-10-23T07:17:32Z",
+                    0.1375
+                  ],
+                  [
+                    "2026-10-23T07:17:47Z",
+                    0.098125
+                  ],
+                  [
+                    "2026-10-23T07:18:02Z",
+                    0.097277
+                  ],
+                  [
+                    "2026-10-23T07:18:17Z",
+                    0.098182
+                  ],
+                  [
+                    "2026-10-23T07:18:32Z",
+                    1.13125
+                  ],
+                  [
+                    "2026-10-23T07:18:47Z",
+                    2.335484
+                  ],
+                  [
+                    "2026-10-23T07:19:02Z",
+                    2.380682
+                  ],
+                  [
+                    "2026-10-23T07:19:17Z",
+                    2.425
+                  ],
+                  [
+                    "2026-10-23T07:19:32Z",
+                    2.425
+                  ],
+                  [
+                    "2026-10-23T07:19:47Z",
+                    2.425
+                  ],
+                  [
+                    "2026-10-23T07:20:02Z",
+                    2.425
+                  ],
+                  [
+                    "2026-10-23T07:20:17Z",
+                    2.425
+                  ],
+                  [
+                    "2026-10-23T07:20:32Z",
+                    2.425
+                  ],
+                  [
+                    "2026-10-23T07:20:47Z",
+                    2.425
+                  ]
+                ],
+                "request_rate_rps": [
+                  [
+                    "2026-10-23T07:16:47Z",
+                    1.459971
+                  ],
+                  [
+                    "2026-10-23T07:17:02Z",
+                    1.399944
+                  ],
+                  [
+                    "2026-10-23T07:17:17Z",
+                    1.179929
+                  ],
+                  [
+                    "2026-10-23T07:17:32Z",
+                    1.299922
+                  ],
+                  [
+                    "2026-10-23T07:17:47Z",
+                    1.520061
+                  ],
+                  [
+                    "2026-10-23T07:18:02Z",
+                    1.619935
+                  ],
+                  [
+                    "2026-10-23T07:18:17Z",
+                    1.440058
+                  ],
+                  [
+                    "2026-10-23T07:18:32Z",
+                    1.459912
+                  ],
+                  [
+                    "2026-10-23T07:18:47Z",
+                    1.359973
+                  ],
+                  [
+                    "2026-10-23T07:19:02Z",
+                    1.39986
+                  ],
+                  [
+                    "2026-10-23T07:19:17Z",
+                    1.239926
+                  ],
+                  [
+                    "2026-10-23T07:19:32Z",
+                    1.480089
+                  ],
+                  [
+                    "2026-10-23T07:19:47Z",
+                    1.420114
+                  ],
+                  [
+                    "2026-10-23T07:20:02Z",
+                    1.50003
+                  ],
+                  [
+                    "2026-10-23T07:20:17Z",
+                    1.419886
+                  ],
+                  [
+                    "2026-10-23T07:20:32Z",
+                    1.460058
+                  ],
+                  [
+                    "2026-10-23T07:20:47Z",
+                    1.659569
+                  ]
+                ]
+              },
+              "step_s": 15,
+              "error_ratio_onset": "2026-10-23T07:18:32.643000Z",
+              "p95_latency_onset": "2026-10-23T07:18:32.643000Z"
+            }
+          },
+          {
+            "id": "ev-5fa58511a1e2",
+            "source": "traces",
+            "kind": "trace_pattern",
+            "service": "inventory",
+            "observed_at": "2026-10-23T07:20:33.997261Z",
+            "summary": "20 of 20 sampled error/slow traces: gateway POST /checkout returned 502 in 2.01s-2.24s; failing: gateway POST /checkout (502) <- orders POST /orders (504); most self time in inventory POST /reserve (avg 2.58s, release 3.2.1)",
+            "query": "Jaeger /api/traces for services ['gateway', 'inventory', 'orders']: tags error=true, and minDuration=1000ms; limit 20 per query",
+            "reference": "http://localhost:16686/trace/e1af7fdd63c588af3940a164158d28c1",
+            "data": {
+              "root": {
+                "service": "gateway",
+                "operation": "POST /checkout",
+                "status_code": 502
+              },
+              "releases": {
+                "orders=2.7.0": 20,
+                "gateway=1.4.2": 20,
+                "inventory=3.2.1": 20
+              },
+              "last_seen": "2026-10-23T07:20:43Z",
+              "duration_s": {
+                "max": 2.241766,
+                "min": 2.012893
+              },
+              "error_path": [
+                [
+                  "gateway",
+                  "POST /checkout",
+                  502
+                ],
+                [
+                  "orders",
+                  "POST /orders",
+                  504
+                ]
+              ],
+              "first_seen": "2026-10-23T07:20:33Z",
+              "trace_count": 20,
+              "example_traces": [
+                {
+                  "url": "http://localhost:16686/trace/e1af7fdd63c588af3940a164158d28c1",
+                  "start": "2026-10-23T07:20:40Z",
+                  "trace_id": "e1af7fdd63c588af3940a164158d28c1",
+                  "duration_s": 2.241766,
+                  "top_self_time": [
+                    {
+                      "release": "3.2.1",
+                      "service": "inventory",
+                      "operation": "POST /reserve",
+                      "self_time_s": 2.367814
+                    },
+                    {
+                      "release": null,
+                      "service": "orders",
+                      "operation": "POST",
+                      "self_time_s": 0.214928
+                    },
+                    {
+                      "release": null,
+                      "service": "inventory",
+                      "operation": "inventory.db.query",
+                      "self_time_s": 0.011533
+                    }
+                  ]
+                },
+                {
+                  "url": "http://localhost:16686/trace/efc519b65a223a76d1b5de89ca1498b3",
+                  "start": "2026-10-23T07:20:40Z",
+                  "trace_id": "efc519b65a223a76d1b5de89ca1498b3",
+                  "duration_s": 2.07974,
+                  "top_self_time": [
+                    {
+                      "release": "3.2.1",
+                      "service": "inventory",
+                      "operation": "POST /reserve",
+                      "self_time_s": 2.751144
+                    },
+                    {
+                      "release": null,
+                      "service": "gateway",
+                      "operation": "POST",
+                      "self_time_s": 0.056273
+                    },
+                    {
+                      "release": null,
+                      "service": "inventory",
+                      "operation": "inventory.db.query",
+                      "self_time_s": 0.022241
+                    }
+                  ]
+                },
+                {
+                  "url": "http://localhost:16686/trace/25d71612576e2c86fe700a34f8ae1011",
+                  "start": "2026-10-23T07:20:38Z",
+                  "trace_id": "25d71612576e2c86fe700a34f8ae1011",
+                  "duration_s": 2.040284,
+                  "top_self_time": [
+                    {
+                      "release": "3.2.1",
+                      "service": "inventory",
+                      "operation": "POST /reserve",
+                      "self_time_s": 2.288698
+                    },
+                    {
+                      "release": null,
+                      "service": "inventory",
+                      "operation": "inventory.db.query",
+                      "self_time_s": 0.013435
+                    },
+                    {
+                      "release": "1.4.2",
+                      "service": "gateway",
+                      "operation": "POST /checkout",
+                      "self_time_s": 0.006989
+                    }
+                  ]
+                }
+              ],
+              "sampled_traces": 20,
+              "dominant_self_time": {
+                "release": "3.2.1",
+                "service": "inventory",
+                "operation": "POST /reserve",
+                "self_time_s": 2.394883
+              },
+              "incomplete_traces_skipped": 0
+            }
+          },
+          {
+            "id": "ev-190058c637be",
+            "source": "deployments",
+            "kind": "deployment",
+            "service": "inventory",
+            "observed_at": "2026-10-23T07:18:17.704769Z",
+            "summary": "inventory deployed 3.1.5 -> 3.2.1 at 2026-10-23T07:18:17Z (during the window) by ci-pipeline: 'Deploy inventory 3.2.1'",
+            "query": "POST /deploy-events/_search {\"size\":50,\"sort\":[{\"@timestamp\":\"asc\"}],\"query\":{\"bool\":{\"filter\":[{\"range\":{\"@timestamp\":{\"gte\":\"2026-10-23T06:16:47.643016+00:00\",\"lt\":\"2026-10-23T07:20:47.773471+00:00\"}}}]}}}",
+            "reference": "http://localhost:9200/deploy-events/_doc/Uy-fZ6EBXkJaxxjb8dV3",
+            "data": {
+              "author": "ci-pipeline",
+              "service": "inventory",
+              "version": "3.2.1",
+              "event_id": "7468e7bd-23f3-43c6-b719-7ebc99f00ddf",
+              "timestamp": "2026-10-23T07:18:17Z",
+              "change_type": "deploy",
+              "description": "Deploy inventory 3.2.1",
+              "environment": "local-demo",
+              "previous_version": "3.1.5"
+            }
+          }
+        ]
+      },
+      "diagnoses": [
+        {
+          "id": "3fd7b7de-6c0a-42b7-8e0d-114b61bb922e",
+          "snapshot_id": "7d04e4d4-91c6-4c8d-a1f6-fe46a508e225",
+          "status": "invalid",
+          "created_at": "2026-10-23T07:21:47.773471Z",
+          "completed_at": "2026-10-23T07:22:05.073471Z",
+          "model_requested": "claude-opus-5-5",
+          "model_used": "claude-opus-5-5",
+          "effort": "medium",
+          "prompt_version": "1",
+          "output": {
+            "summary": "Checkout failures are a timeout cascade that starts in inventory. Inventory 3.2.1 was deployed at 07:18:17Z. About 15\u201330s later inventory p95 latency rose to 4.77s while it still returned no 5xx. Orders then returned 504s (up to 100%), and the gateway returned 502s on POST /checkout (up to 71.8%). The most likely cause is a latency regression in inventory POST /reserve in release 3.2.1; consider rolling back inventory to 3.1.5.",
+            "root_cause": {
+              "statement": "Inventory release 3.2.1, deployed at 07:18:17Z, most likely introduced a latency regression in POST /reserve. Orders times out waiting on it and returns 504, which surfaces as gateway 502s on checkout. What links the deploy to the symptoms: latency and error onsets at 07:18:32\u201307:18:47 come 15\u201330s after the deploy, sampled failing traces put most self time in inventory POST /reserve on release 3.2.1, and inventory is slow but returns no errors itself, which fits a timeout cascade.",
+              "service": "inventory",
+              "confidence": "medium",
+              "evidence_ids": [
+                "ev-190058c637be",
+                "ev-5fa58511a1e2",
+                "ev-51525d7035d0",
+                "ev-1da116a62fee",
+                "ev-c000e6b4f684"
+              ]
+            },
+            "contributing_factors": [
+              {
+                "statement": "Orders' timeout toward inventory appears to be about 2s. Failing traces end at 2.01\u20132.24s, while inventory p95 reaches 4.77s, so slow inventory calls become 504s instead of slow successes.",
+                "evidence_ids": [
+                  "ev-5fa58511a1e2",
+                  "ev-51525d7035d0"
+                ]
+              },
+              {
+                "statement": "The gateway passes orders' 504s through to clients as 502s on POST /checkout.",
+                "evidence_ids": [
+                  "ev-5fa58511a1e2",
+                  "ev-c000e6b4f684"
+                ]
+              }
+            ],
+            "timeline": [
+              {
+                "time": "2026-10-23T07:18:17Z",
+                "event": "Inventory deployed, 3.1.5 -> 3.2.1, by ci-pipeline.",
+                "evidence_ids": [
+                  "ev-190058c637be"
+                ]
+              },
+              {
+                "time": "2026-10-23T07:18:32Z",
+                "event": "Orders 5xx ratio crosses 5% and p95 latency crosses 1s.",
+                "evidence_ids": [
+                  "ev-1da116a62fee"
+                ]
+              },
+              {
+                "time": "2026-10-23T07:18:47Z",
+                "event": "Inventory p95 crosses 1s with no 5xx. Gateway 5xx ratio crosses 5% and p95 crosses 1s.",
+                "evidence_ids": [
+                  "ev-51525d7035d0",
+                  "ev-c000e6b4f684"
+                ]
+              },
+              {
+                "time": "2026-10-23T07:20:33Z",
+                "event": "Sampled failing traces (20 of 20) show gateway 502 <- orders 504, with dominant self time in inventory POST /reserve on 3.2.1.",
+                "evidence_ids": [
+                  "ev-5fa58511a1e2"
+                ]
+              }
+            ],
+            "ruled_out": [
+              {
+                "statement": "Orders is not the origin even though it reports the most errors. Its 504s match timeouts waiting on inventory, and trace self time is concentrated in inventory.",
+                "evidence_ids": [
+                  "ev-5fa58511a1e2",
+                  "ev-1da116a62fee"
+                ]
+              },
+              {
+                "statement": "The gateway is not the origin. Its 502s mirror orders' 504s on the error path.",
+                "evidence_ids": [
+                  "ev-5fa58511a1e2",
+                  "ev-c000e6b4f684"
+                ]
+              },
+              {
+                "statement": "A traffic surge is unlikely. Request rates stay modest and steady: gateway ~2.1 rps avg (max 2.46), orders and inventory ~1.43 rps avg (max ~1.66).",
+                "evidence_ids": [
+                  "ev-c000e6b4f684",
+                  "ev-1da116a62fee",
+                  "ev-51525d7035d0"
+                ]
+              }
+            ],
+            "unknowns": [
+              "Logs could not be queried (backend timeout), so inventory error or slow-query messages and orders timeout logs are unavailable.",
+              "There are no traces from before the deploy to compare POST /reserve latency on 3.1.5 against 3.2.1.",
+              "Inventory's downstream dependencies (database, locks) are not covered by this evidence, so the slowness could be in a dependency that 3.2.1 calls differently.",
+              "No infrastructure metrics (CPU, memory, connection pools) for inventory are available."
+            ],
+            "recommended_actions": [
+              {
+                "action": "Roll back inventory from 3.2.1 to 3.1.5.",
+                "rationale": "Onset closely follows the deploy, and trace self time points to inventory POST /reserve on 3.2.1. Rollback is the fastest mitigation and also tests the hypothesis.",
+                "evidence_ids": [
+                  "ev-190058c637be",
+                  "ev-5fa58511a1e2"
+                ]
+              },
+              {
+                "action": "After the rollback, confirm recovery: inventory p95 back under 1s and orders and gateway 5xx ratios below 5%.",
+                "rationale": "This validates that the deploy was the cause.",
+                "evidence_ids": [
+                  "ev-51525d7035d0",
+                  "ev-1da116a62fee",
+                  "ev-c000e6b4f684"
+                ]
+              },
+              {
+                "action": "Review the 3.1.5 -> 3.2.1 diff for changes in the POST /reserve path, and inspect example traces e1af7fdd63c588af3940a164158d28c1 and efc519b65a223a76d1b5de89ca1498b3.",
+                "rationale": "This would identify the specific regression behind the extra self time.",
+                "evidence_ids": [
+                  "ev-5fa58511a1e2"
+                ]
+              },
+              {
+                "action": "Re-run the log query for inventory and orders once the log backend is available.",
+                "rationale": "Logs are missing and could confirm or refute the inventory regression.",
+                "evidence_ids": []
+              }
+            ]
+          },
+          "validation_errors": [
+            "recommended_actions[3]: no evidence cited"
+          ],
+          "error_message": null,
+          "stop_reason": "end_turn",
+          "fallback_used": false,
+          "input_tokens": 4117,
+          "output_tokens": 1925,
+          "cost_usd": "0.054968",
+          "request_id": "req_011CgKZ9QrZbG9WZpSDvhrRK"
+        }
+      ]
+    },
+    "healthy": {
+      "incident": {
+        "id": "a17f6726-34c5-4702-9c02-fab3e79fa9d4",
+        "title": "Checkout is completely down",
+        "severity": "critical",
+        "window": {
+          "start": "2026-10-23T09:49:46.620396Z",
+          "end": "2026-10-23T09:53:46.627420Z"
+        },
+        "services": null,
+        "created_at": "2026-10-23T19:35:23.238645Z",
+        "latest_diagnosis": {
+          "id": "0b20b7ec-661e-41bf-8e66-016416277c81",
+          "snapshot_id": "d9a5c89c-2f04-4610-b837-fa5bbe1ddb3f",
+          "status": "valid",
+          "created_at": "2026-10-23T09:54:46.627420Z",
+          "root_cause_service": null,
+          "confidence": null
+        },
+        "description": "Customers cannot check out at all.",
+        "snapshots": [
+          {
+            "id": "d9a5c89c-2f04-4610-b837-fa5bbe1ddb3f",
+            "collected_at": "2026-10-23T09:53:46.959971Z",
+            "evidence_count": 3,
+            "source_counts": {
+              "metrics": 3
+            },
+            "source_errors": []
+          }
+        ]
+      },
+      "snapshot": {
+        "id": "d9a5c89c-2f04-4610-b837-fa5bbe1ddb3f",
+        "collected_at": "2026-10-23T09:53:46.959971Z",
+        "evidence_count": 3,
+        "source_counts": {
+          "metrics": 3
+        },
+        "source_errors": [],
+        "incident_id": "a17f6726-34c5-4702-9c02-fab3e79fa9d4",
+        "window": {
+          "start": "2026-10-23T09:49:46.620396Z",
+          "end": "2026-10-23T09:53:46.627420Z"
+        },
+        "services": null,
+        "evidence": [
+          {
+            "id": "ev-be0e298b6f6f",
+            "source": "metrics",
+            "kind": "service_http_metrics",
+            "service": "gateway",
+            "observed_at": null,
+            "summary": "gateway: 1.95 req/s avg; 5xx ratio avg 0.0%, max 0.0%; p95 latency avg 136ms, max 182ms",
+            "query": "request_rate_rps: sum by (job) (rate(http_server_request_duration_seconds_count[60s]))\nerror_ratio: (sum by (job) (rate(http_server_request_duration_seconds_count{http_response_status_code=~\"5..\"}[60s])) or sum by (job) (rate(http_server_request_duration_seconds_count[60s])) * 0) / sum by (job) (rate(http_server_request_duration_seconds_count[60s]))\np95_latency_s: histogram_quantile(0.95, sum by (job, le) (rate(http_server_request_duration_seconds_bucket[60s])))",
+            "reference": "http://localhost:9090/api/v1/query_range?query=%28sum+by+%28job%29+%28rate%28http_server_request_duration_seconds_count%7Bhttp_response_status_code%3D~%225..%22%7D%5B60s%5D%29%29+or+sum+by+%28job%29+%28rate%28http_server_request_duration_seconds_count%5B60s%5D%29%29+%2A+0%29+%2F+sum+by+%28job%29+%28rate%28http_server_request_duration_seconds_count%5B60s%5D%29%29&start=1792748986.620396&end=1792749226.62742&step=15",
+            "data": {
+              "stats": {
+                "error_ratio": {
+                  "avg": 0,
+                  "max": 0,
+                  "last": 0
+                },
+                "p95_latency_s": {
+                  "avg": 0.13610527015345117,
+                  "max": 0.1817499999999999,
+                  "last": 0.13299999999999998
+                },
+                "request_rate_rps": {
+                  "avg": 1.94705648450759,
+                  "max": 2.2401792143371466,
+                  "last": 1.5600624024960998
+                }
+              },
+              "series": {
+                "error_ratio": [
+                  [
+                    "2026-10-23T09:49:46Z",
+                    0
+                  ],
+                  [
+                    "2026-10-23T09:50:01Z",
+                    0
+                  ],
+                  [
+                    "2026-10-23T09:50:16Z",
+                    0
+                  ],
+                  [
+                    "2026-10-23T09:50:31Z",
+                    0
+                  ],
+                  [
+                    "2026-10-23T09:50:46Z",
+                    0
+                  ],
+                  [
+                    "2026-10-23T09:51:01Z",
+                    0
+                  ],
+                  [
+                    "2026-10-23T09:51:16Z",
+                    0
+                  ],
+                  [
+                    "2026-10-23T09:51:31Z",
+                    0
+                  ],
+                  [
+                    "2026-10-23T09:51:46Z",
+                    0
+                  ],
+                  [
+                    "2026-10-23T09:52:01Z",
+                    0
+                  ],
+                  [
+                    "2026-10-23T09:52:16Z",
+                    0
+                  ],
+                  [
+                    "2026-10-23T09:52:31Z",
+                    0
+                  ],
+                  [
+                    "2026-10-23T09:52:46Z",
+                    0
+                  ],
+                  [
+                    "2026-10-23T09:53:01Z",
+                    0
+                  ],
+                  [
+                    "2026-10-23T09:53:16Z",
+                    0
+                  ],
+                  [
+                    "2026-10-23T09:53:31Z",
+                    0
+                  ],
+                  [
+                    "2026-10-23T09:53:46Z",
+                    0
+                  ]
+                ],
+                "p95_latency_s": [
+                  [
+                    "2026-10-23T09:49:46Z",
+                    0.16375
+                  ],
+                  [
+                    "2026-10-23T09:50:01Z",
+                    0.17
+                  ],
+                  [
+                    "2026-10-23T09:50:16Z",
+                    0.18175
+                  ],
+                  [
+                    "2026-10-23T09:50:31Z",
+                    0.16
+                  ],
+                  [
+                    "2026-10-23T09:50:46Z",
+                    0.14
+                  ],
+                  [
+                    "2026-10-23T09:51:01Z",
+                    0.135
+                  ],
+                  [
+                    "2026-10-23T09:51:16Z",
+                    0.146071
+                  ],
+                  [
+                    "2026-10-23T09:51:31Z",
+                    0.099595
+                  ],
+                  [
+                    "2026-10-23T09:51:46Z",
+                    0.099638
+                  ],
+                  [
+                    "2026-10-23T09:52:01Z",
+                    0.099943
+                  ],
+                  [
+                    "2026-10-23T09:52:16Z",
+                    0.165
+                  ],
+                  [
+                    "2026-10-23T09:52:31Z",
+                    0.1175
+                  ],
+                  [
+                    "2026-10-23T09:52:46Z",
+                    0.151562
+                  ],
+                  [
+                    "2026-10-23T09:53:01Z",
+                    0.11875
+                  ],
+                  [
+                    "2026-10-23T09:53:16Z",
+                    0.1325
+                  ],
+                  [
+                    "2026-10-23T09:53:31Z",
+                    0.09973
+                  ],
+                  [
+                    "2026-10-23T09:53:46Z",
+                    0.133
+                  ]
+                ],
+                "request_rate_rps": [
+                  [
+                    "2026-10-23T09:49:46Z",
+                    1.839632
+                  ],
+                  [
+                    "2026-10-23T09:50:01Z",
+                    1.920038
+                  ],
+                  [
+                    "2026-10-23T09:50:16Z",
+                    1.819891
+                  ],
+                  [
+                    "2026-10-23T09:50:31Z",
+                    1.920269
+                  ],
+                  [
+                    "2026-10-23T09:50:46Z",
+                    1.759894
+                  ],
+                  [
+                    "2026-10-23T09:51:01Z",
+                    1.84
+                  ],
+                  [
+                    "2026-10-23T09:51:16Z",
+                    1.940155
+                  ],
+                  [
+                    "2026-10-23T09:51:31Z",
+                    2.240179
+                  ],
+                  [
+                    "2026-10-23T09:51:46Z",
+                    2.220222
+                  ],
+                  [
+                    "2026-10-23T09:52:01Z",
+                    2.040122
+                  ],
+                  [
+                    "2026-10-23T09:52:16Z",
+                    2.039755
+                  ],
+                  [
+                    "2026-10-23T09:52:31Z",
+                    2.119788
+                  ],
+                  [
+                    "2026-10-23T09:52:46Z",
+                    2.099958
+                  ],
+                  [
+                    "2026-10-23T09:53:01Z",
+                    2.099958
+                  ],
+                  [
+                    "2026-10-23T09:53:16Z",
+                    1.88
+                  ],
+                  [
+                    "2026-10-23T09:53:31Z",
+                    1.760035
+                  ],
+                  [
+                    "2026-10-23T09:53:46Z",
+                    1.560062
+                  ]
+                ]
+              },
+              "step_s": 15,
+              "error_ratio_onset": null,
+              "p95_latency_onset": null
+            }
+          },
+          {
+            "id": "ev-5859ba914c39",
+            "source": "metrics",
+            "kind": "service_http_metrics",
+            "service": "inventory",
+            "observed_at": null,
+            "summary": "inventory: 1.33 req/s avg; 5xx ratio avg 0.0%, max 0.0%; p95 latency avg 45ms, max 47ms",
+            "query": "request_rate_rps: sum by (job) (rate(http_server_request_duration_seconds_count[60s]))\nerror_ratio: (sum by (job) (rate(http_server_request_duration_seconds_count{http_response_status_code=~\"5..\"}[60s])) or sum by (job) (rate(http_server_request_duration_seconds_count[60s])) * 0) / sum by (job) (rate(http_server_request_duration_seconds_count[60s]))\np95_latency_s: histogram_quantile(0.95, sum by (job, le) (rate(http_server_request_duration_seconds_bucket[60s])))",
+            "reference": "http://localhost:9090/api/v1/query_range?query=%28sum+by+%28job%29+%28rate%28http_server_request_duration_seconds_count%7Bhttp_response_status_code%3D~%225..%22%7D%5B60s%5D%29%29+or+sum+by+%28job%29+%28rate%28http_server_request_duration_seconds_count%5B60s%5D%29%29+%2A+0%29+%2F+sum+by+%28job%29+%28rate%28http_server_request_duration_seconds_count%5B60s%5D%29%29&start=1792748986.620396&end=1792749226.62742&step=15",
+            "data": {
+              "stats": {
+                "error_ratio": {
+                  "avg": 0,
+                  "max": 0,
+                  "last": 0
+                },
+                "p95_latency_s": {
+                  "avg": 0.04517041683863244,
+                  "max": 0.04682291666666667,
+                  "last": 0.045416666666666675
+                },
+                "request_rate_rps": {
+                  "avg": 1.3282324329642565,
+                  "max": 1.5398152221733392,
+                  "last": 1.1000440017600703
+                }
+              },
+              "series": {
+                "error_ratio": [
+                  [
+                    "2026-10-23T09:49:46Z",
+                    0
+                  ],
+                  [
+                    "2026-10-23T09:50:01Z",
+                    0
+                  ],
+                  [
+                    "2026-10-23T09:50:16Z",
+                    0
+                  ],
+                  [
+                    "2026-10-23T09:50:31Z",
+                    0
+                  ],
+                  [
+                    "2026-10-23T09:50:46Z",
+                    0
+                  ],
+                  [
+                    "2026-10-23T09:51:01Z",
+                    0
+                  ],
+                  [
+                    "2026-10-23T09:51:16Z",
+                    0
+                  ],
+                  [
+                    "2026-10-23T09:51:31Z",
+                    0
+                  ],
+                  [
+                    "2026-10-23T09:51:46Z",
+                    0
+                  ],
+                  [
+                    "2026-10-23T09:52:01Z",
+                    0
+                  ],
+                  [
+                    "2026-10-23T09:52:16Z",
+                    0
+                  ],
+                  [
+                    "2026-10-23T09:52:31Z",
+                    0
+                  ],
+                  [
+                    "2026-10-23T09:52:46Z",
+                    0
+                  ],
+                  [
+                    "2026-10-23T09:53:01Z",
+                    0
+                  ],
+                  [
+                    "2026-10-23T09:53:16Z",
+                    0
+                  ],
+                  [
+                    "2026-10-23T09:53:31Z",
+                    0
+                  ],
+                  [
+                    "2026-10-23T09:53:46Z",
+                    0
+                  ]
+                ],
+                "p95_latency_s": [
+                  [
+                    "2026-10-23T09:49:46Z",
+                    0.046823
+                  ],
+                  [
+                    "2026-10-23T09:50:01Z",
+                    0.046667
+                  ],
+                  [
+                    "2026-10-23T09:50:16Z",
+                    0.046364
+                  ],
+                  [
+                    "2026-10-23T09:50:31Z",
+                    0.045078
+                  ],
+                  [
+                    "2026-10-23T09:50:46Z",
+                    0.044643
+                  ],
+                  [
+                    "2026-10-23T09:51:01Z",
+                    0.045234
+                  ],
+                  [
+                    "2026-10-23T09:51:16Z",
+                    0.044844
+                  ],
+                  [
+                    "2026-10-23T09:51:31Z",
+                    0.044375
+                  ],
+                  [
+                    "2026-10-23T09:51:46Z",
+                    0.044219
+                  ],
+                  [
+                    "2026-10-23T09:52:01Z",
+                    0.044632
+                  ],
+                  [
+                    "2026-10-23T09:52:16Z",
+                    0.044934
+                  ],
+                  [
+                    "2026-10-23T09:52:31Z",
+                    0.044453
+                  ],
+                  [
+                    "2026-10-23T09:52:46Z",
+                    0.045
+                  ],
+                  [
+                    "2026-10-23T09:53:01Z",
+                    0.044706
+                  ],
+                  [
+                    "2026-10-23T09:53:16Z",
+                    0.045592
+                  ],
+                  [
+                    "2026-10-23T09:53:31Z",
+                    0.044917
+                  ],
+                  [
+                    "2026-10-23T09:53:46Z",
+                    0.045417
+                  ]
+                ],
+                "request_rate_rps": [
+                  [
+                    "2026-10-23T09:49:46Z",
+                    1.219756
+                  ],
+                  [
+                    "2026-10-23T09:50:01Z",
+                    1.280026
+                  ],
+                  [
+                    "2026-10-23T09:50:16Z",
+                    1.279923
+                  ],
+                  [
+                    "2026-10-23T09:50:31Z",
+                    1.260176
+                  ],
+                  [
+                    "2026-10-23T09:50:46Z",
+                    1.199928
+                  ],
+                  [
+                    "2026-10-23T09:51:01Z",
+                    1.22
+                  ],
+                  [
+                    "2026-10-23T09:51:16Z",
+                    1.320106
+                  ],
+                  [
+                    "2026-10-23T09:51:31Z",
+                    1.440115
+                  ],
+                  [
+                    "2026-10-23T09:51:46Z",
+                    1.480148
+                  ],
+                  [
+                    "2026-10-23T09:52:01Z",
+                    1.460088
+                  ],
+                  [
+                    "2026-10-23T09:52:16Z",
+                    1.539815
+                  ],
+                  [
+                    "2026-10-23T09:52:31Z",
+                    1.419858
+                  ],
+                  [
+                    "2026-10-23T09:52:46Z",
+                    1.359973
+                  ],
+                  [
+                    "2026-10-23T09:53:01Z",
+                    1.439971
+                  ],
+                  [
+                    "2026-10-23T09:53:16Z",
+                    1.34
+                  ],
+                  [
+                    "2026-10-23T09:53:31Z",
+                    1.220024
+                  ],
+                  [
+                    "2026-10-23T09:53:46Z",
+                    1.100044
+                  ]
+                ]
+              },
+              "step_s": 15,
+              "error_ratio_onset": null,
+              "p95_latency_onset": null
+            }
+          },
+          {
+            "id": "ev-ec0b0895dc48",
+            "source": "metrics",
+            "kind": "service_http_metrics",
+            "service": "orders",
+            "observed_at": null,
+            "summary": "orders: 1.33 req/s avg; 5xx ratio avg 0.0%, max 0.0%; p95 latency avg 98ms, max 100ms",
+            "query": "request_rate_rps: sum by (job) (rate(http_server_request_duration_seconds_count[60s]))\nerror_ratio: (sum by (job) (rate(http_server_request_duration_seconds_count{http_response_status_code=~\"5..\"}[60s])) or sum by (job) (rate(http_server_request_duration_seconds_count[60s])) * 0) / sum by (job) (rate(http_server_request_duration_seconds_count[60s]))\np95_latency_s: histogram_quantile(0.95, sum by (job, le) (rate(http_server_request_duration_seconds_bucket[60s])))",
+            "reference": "http://localhost:9090/api/v1/query_range?query=%28sum+by+%28job%29+%28rate%28http_server_request_duration_seconds_count%7Bhttp_response_status_code%3D~%225..%22%7D%5B60s%5D%29%29+or+sum+by+%28job%29+%28rate%28http_server_request_duration_seconds_count%5B60s%5D%29%29+%2A+0%29+%2F+sum+by+%28job%29+%28rate%28http_server_request_duration_seconds_count%5B60s%5D%29%29&start=1792748986.620396&end=1792749226.62742&step=15",
+            "data": {
+              "stats": {
+                "error_ratio": {
+                  "avg": 0,
+                  "max": 0,
+                  "last": 0
+                },
+                "p95_latency_s": {
+                  "avg": 0.09819912588072703,
+                  "max": 0.1,
+                  "last": 0.09595588235294118
+                },
+                "request_rate_rps": {
+                  "avg": 1.3258796799986197,
+                  "max": 1.5398152221733392,
+                  "last": 1.1000440017600703
+                }
+              },
+              "series": {
+                "error_ratio": [
+                  [
+                    "2026-10-23T09:49:46Z",
+                    0
+                  ],
+                  [
+                    "2026-10-23T09:50:01Z",
+                    0
+                  ],
+                  [
+                    "2026-10-23T09:50:16Z",
+                    0
+                  ],
+                  [
+                    "2026-10-23T09:50:31Z",
+                    0
+                  ],
+                  [
+                    "2026-10-23T09:50:46Z",
+                    0
+                  ],
+                  [
+                    "2026-10-23T09:51:01Z",
+                    0
+                  ],
+                  [
+                    "2026-10-23T09:51:16Z",
+                    0
+                  ],
+                  [
+                    "2026-10-23T09:51:31Z",
+                    0
+                  ],
+                  [
+                    "2026-10-23T09:51:46Z",
+                    0
+                  ],
+                  [
+                    "2026-10-23T09:52:01Z",
+                    0
+                  ],
+                  [
+                    "2026-10-23T09:52:16Z",
+                    0
+                  ],
+                  [
+                    "2026-10-23T09:52:31Z",
+                    0
+                  ],
+                  [
+                    "2026-10-23T09:52:46Z",
+                    0
+                  ],
+                  [
+                    "2026-10-23T09:53:01Z",
+                    0
+                  ],
+                  [
+                    "2026-10-23T09:53:16Z",
+                    0
+                  ],
+                  [
+                    "2026-10-23T09:53:31Z",
+                    0
+                  ],
+                  [
+                    "2026-10-23T09:53:46Z",
+                    0
+                  ]
+                ],
+                "p95_latency_s": [
+                  [
+                    "2026-10-23T09:49:46Z",
+                    0.1
+                  ],
+                  [
+                    "2026-10-23T09:50:01Z",
+                    0.098846
+                  ],
+                  [
+                    "2026-10-23T09:50:16Z",
+                    0.0998
+                  ],
+                  [
+                    "2026-10-23T09:50:31Z",
+                    0.098571
+                  ],
+                  [
+                    "2026-10-23T09:50:46Z",
+                    0.097619
+                  ],
+                  [
+                    "2026-10-23T09:51:01Z",
+                    0.096875
+                  ],
+                  [
+                    "2026-10-23T09:51:16Z",
+                    0.097262
+                  ],
+                  [
+                    "2026-10-23T09:51:31Z",
+                    0.097895
+                  ],
+                  [
+                    "2026-10-23T09:51:46Z",
+                    0.098125
+                  ],
+                  [
+                    "2026-10-23T09:52:01Z",
+                    0.098669
+                  ],
+                  [
+                    "2026-10-23T09:52:16Z",
+                    0.098715
+                  ],
+                  [
+                    "2026-10-23T09:52:31Z",
+                    0.098243
+                  ],
+                  [
+                    "2026-10-23T09:52:46Z",
+                    0.099
+                  ],
+                  [
+                    "2026-10-23T09:53:01Z",
+                    0.098789
+                  ],
+                  [
+                    "2026-10-23T09:53:16Z",
+                    0.09865
+                  ],
+                  [
+                    "2026-10-23T09:53:31Z",
+                    0.096369
+                  ],
+                  [
+                    "2026-10-23T09:53:46Z",
+                    0.095956
+                  ]
+                ],
+                "request_rate_rps": [
+                  [
+                    "2026-10-23T09:49:46Z",
+                    1.19976
+                  ],
+                  [
+                    "2026-10-23T09:50:01Z",
+                    1.280026
+                  ],
+                  [
+                    "2026-10-23T09:50:16Z",
+                    1.279923
+                  ],
+                  [
+                    "2026-10-23T09:50:31Z",
+                    1.280179
+                  ],
+                  [
+                    "2026-10-23T09:50:46Z",
+                    1.199928
+                  ],
+                  [
+                    "2026-10-23T09:51:01Z",
+                    1.2
+                  ],
+                  [
+                    "2026-10-23T09:51:16Z",
+                    1.320106
+                  ],
+                  [
+                    "2026-10-23T09:51:31Z",
+                    1.440115
+                  ],
+                  [
+                    "2026-10-23T09:51:46Z",
+                    1.460146
+                  ],
+                  [
+                    "2026-10-23T09:52:01Z",
+                    1.460088
+                  ],
+                  [
+                    "2026-10-23T09:52:16Z",
+                    1.539815
+                  ],
+                  [
+                    "2026-10-23T09:52:31Z",
+                    1.439856
+                  ],
+                  [
+                    "2026-10-23T09:52:46Z",
+                    1.359973
+                  ],
+                  [
+                    "2026-10-23T09:53:01Z",
+                    1.419972
+                  ],
+                  [
+                    "2026-10-23T09:53:16Z",
+                    1.34
+                  ],
+                  [
+                    "2026-10-23T09:53:31Z",
+                    1.220024
+                  ],
+                  [
+                    "2026-10-23T09:53:46Z",
+                    1.100044
+                  ]
+                ]
+              },
+              "step_s": 15,
+              "error_ratio_onset": null,
+              "p95_latency_onset": null
+            }
+          }
+        ]
+      },
+      "diagnoses": [
+        {
+          "id": "0b20b7ec-661e-41bf-8e66-016416277c81",
+          "snapshot_id": "d9a5c89c-2f04-4610-b837-fa5bbe1ddb3f",
+          "status": "valid",
+          "created_at": "2026-10-23T09:54:46.627420Z",
+          "completed_at": "2026-10-23T09:55:00.917420Z",
+          "model_requested": "claude-opus-5-5",
+          "model_used": "claude-opus-5-5",
+          "effort": "medium",
+          "prompt_version": "1",
+          "output": {
+            "summary": "The available metrics show no failure: gateway, orders, and inventory all report a 0% 5xx ratio, normal p95 latency (45-182ms), and steady traffic throughout the window. Nothing here explains a full checkout outage. Either the failure is outside these services and signals (for example client-side, payment, DNS/CDN, or non-5xx errors), or the incident report needs to be verified.",
+            "root_cause": null,
+            "contributing_factors": [],
+            "timeline": [],
+            "ruled_out": [
+              {
+                "statement": "Gateway is not returning 5xx errors or showing elevated latency. Its 5xx ratio was 0% (max 0%), p95 averaged 136ms (max 182ms), and traffic held at about 1.95 req/s.",
+                "evidence_ids": [
+                  "ev-be0e298b6f6f"
+                ]
+              },
+              {
+                "statement": "Orders shows no server errors or latency degradation. Its 5xx ratio was 0% and p95 averaged 98ms (max 100ms).",
+                "evidence_ids": [
+                  "ev-ec0b0895dc48"
+                ]
+              },
+              {
+                "statement": "Inventory shows no server errors or latency degradation. Its 5xx ratio was 0% and p95 averaged 45ms (max 47ms).",
+                "evidence_ids": [
+                  "ev-5859ba914c39"
+                ]
+              },
+              {
+                "statement": "Traffic is still reaching the backend, so a total loss of inbound requests is not visible at the gateway. Request rate stayed between about 1.5 and 2.2 req/s.",
+                "evidence_ids": [
+                  "ev-be0e298b6f6f",
+                  "ev-ec0b0895dc48",
+                  "ev-5859ba914c39"
+                ]
+              }
+            ],
+            "unknowns": [
+              "No traces, logs, or deployment records were included in the snapshot, so error bodies, non-5xx failures (4xx, or 200 responses with error payloads), and recent changes cannot be assessed.",
+              "It is unknown whether a checkout or payment service exists outside the three measured services. If it does, it has no metrics in this snapshot.",
+              "The 4xx rate is not shown. Checkout could be failing with 4xx errors (for example auth or validation) that a 5xx ratio would not capture.",
+              "It is unclear whether the outage is upstream of the gateway (CDN, DNS, frontend/client, load balancer) and requests never arrive. Gateway traffic continues, but a baseline to compare it against is not shown.",
+              "Whether the customer reports have been confirmed with synthetic checks or real-user monitoring is unknown."
+            ],
+            "recommended_actions": [
+              {
+                "action": "Run a synthetic end-to-end checkout and capture the exact error and the component that returns it.",
+                "rationale": "Backend metrics show no errors, so the failure point has to be confirmed directly.",
+                "evidence_ids": [
+                  "ev-be0e298b6f6f"
+                ]
+              },
+              {
+                "action": "Query gateway 4xx rates and response codes by route, specifically checkout endpoints, and pull gateway and orders logs and traces for checkout requests in the window.",
+                "rationale": "A 0% 5xx ratio does not rule out 4xx errors or application-level failures returned with 2xx status.",
+                "evidence_ids": [
+                  "ev-be0e298b6f6f",
+                  "ev-ec0b0895dc48"
+                ]
+              },
+              {
+                "action": "Check the health of components in front of the gateway (CDN, DNS, load balancer, frontend) and of any payment or third-party dependency, and review recent deploys and config changes.",
+                "rationale": "The measured services look healthy, so the cause is likely outside them or in signals not collected here.",
+                "evidence_ids": [
+                  "ev-be0e298b6f6f",
+                  "ev-5859ba914c39",
+                  "ev-ec0b0895dc48"
+                ]
+              },
+              {
+                "action": "Compare the current request rate with the normal baseline for this time of day.",
+                "rationale": "About 1.95 req/s at the gateway may be well below normal, which would point to failures upstream of the gateway.",
+                "evidence_ids": [
+                  "ev-be0e298b6f6f"
+                ]
+              }
+            ]
+          },
+          "validation_errors": [],
+          "error_message": null,
+          "stop_reason": "end_turn",
+          "fallback_used": false,
+          "input_tokens": 3054,
+          "output_tokens": 1289,
+          "cost_usd": "0.037996",
+          "request_id": "req_011CgKXu88EWHngugnA97u5s"
+        }
+      ]
+    }
+  },
+  "incidents": {
+    "items": [
+      {
+        "id": "4e588dfa-89c3-45ba-97f1-c3bc0d3560eb",
+        "title": "Checkout failing since the gateway release",
+        "severity": "high",
+        "window": {
+          "start": "2026-10-23T09:11:42.968555Z",
+          "end": "2026-10-23T09:16:13.146978Z"
+        },
+        "services": null,
+        "created_at": "2026-10-23T19:35:23.238645Z",
+        "latest_diagnosis": {
+          "id": "d50233f4-036f-4564-b090-aaad266a9622",
+          "snapshot_id": "15305400-b9e4-440f-8958-13397f4c13d2",
+          "status": "valid",
+          "created_at": "2026-10-23T09:17:13.146978Z",
+          "root_cause_service": "inventory",
+          "confidence": "medium"
+        }
+      },
+      {
+        "id": "80be3e4c-469b-425e-9e27-35ee0d38b056",
+        "title": "Checkout requests are failing",
+        "severity": "high",
+        "window": {
+          "start": "2026-10-23T07:16:47.643016Z",
+          "end": "2026-10-23T07:20:47.773471Z"
+        },
+        "services": null,
+        "created_at": "2026-10-23T19:35:35.548586Z",
+        "latest_diagnosis": {
+          "id": "3fd7b7de-6c0a-42b7-8e0d-114b61bb922e",
+          "snapshot_id": "7d04e4d4-91c6-4c8d-a1f6-fe46a508e225",
+          "status": "invalid",
+          "created_at": "2026-10-23T07:21:47.773471Z",
+          "root_cause_service": "inventory",
+          "confidence": "medium"
+        }
+      },
+      {
+        "id": "a17f6726-34c5-4702-9c02-fab3e79fa9d4",
+        "title": "Checkout is completely down",
+        "severity": "critical",
+        "window": {
+          "start": "2026-10-23T09:49:46.620396Z",
+          "end": "2026-10-23T09:53:46.627420Z"
+        },
+        "services": null,
+        "created_at": "2026-10-23T19:35:23.238645Z",
+        "latest_diagnosis": {
+          "id": "0b20b7ec-661e-41bf-8e66-016416277c81",
+          "snapshot_id": "d9a5c89c-2f04-4610-b837-fa5bbe1ddb3f",
+          "status": "valid",
+          "created_at": "2026-10-23T09:54:46.627420Z",
+          "root_cause_service": null,
+          "confidence": null
+        }
+      }
+    ],
+    "total": 3,
+    "limit": 50,
+    "offset": 0
+  }
+}

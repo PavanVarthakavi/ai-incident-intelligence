@@ -11,6 +11,7 @@ import httpx
 from fastapi import FastAPI
 
 from app import __version__
+from app.api.budget import router as budget_router
 from app.api.diagnoses import router as diagnoses_router
 from app.api.evidence import router as evidence_router
 from app.api.health import router as health_router
@@ -18,10 +19,13 @@ from app.api.incidents import router as incidents_router
 from app.backends import Backends
 from app.config import Settings, get_settings
 from app.db.session import Database
-from app.diagnosis.llm import AnthropicDiagnosisModel
+from app.diagnosis.llm import AnthropicDiagnosisModel, DiagnosisModel
+from app.diagnosis.offline import OfflineDiagnosisModel
 
 
-def build_diagnosis_model(settings: Settings) -> AnthropicDiagnosisModel | None:
+def build_diagnosis_model(settings: Settings) -> DiagnosisModel | None:
+    if settings.llm_provider == "offline":
+        return OfflineDiagnosisModel()
     if settings.anthropic_api_key is None:
         return None
     client = anthropic.AsyncAnthropic(
@@ -72,6 +76,7 @@ def create_app(
     app.include_router(evidence_router)
     app.include_router(incidents_router)
     app.include_router(diagnoses_router)
+    app.include_router(budget_router)
     return app
 
 

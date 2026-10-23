@@ -1,0 +1,26 @@
+.page {
+  max-width: 640px;
+  margin: var(--s-10) auto;
+  background: var(--paper);
+  border: 1px solid var(--rule);
+  padding: var(--s-6) var(--s-8);
+}
+
+.inline {
+  margin-top: var(--s-6);
+  color: var(--ink-2);
+}
+
+.title {
+  font-size: var(--text-lg);
+  font-weight: 700;
+}
+
+.detail {
+  margin-top: var(--s-2);
+  color: var(--ink-2);
+}
+
+[role="alert"].inline .title {
+  color: var(--red);
+}

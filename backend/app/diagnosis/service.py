@@ -43,6 +43,19 @@ async def spent_today(session: AsyncSession) -> Decimal:
     return Decimal(total)
 
 
+async def typical_cost(session: AsyncSession, last: int = 20) -> Decimal | None:
+    """Median cost of the most recent completed diagnoses, or None before any."""
+    recent = (
+        select(Diagnosis.cost_usd)
+        .where(Diagnosis.cost_usd.is_not(None))
+        .order_by(Diagnosis.created_at.desc())
+        .limit(last)
+        .subquery()
+    )
+    median = await session.scalar(select(func.percentile_cont(0.5).within_group(recent.c.cost_usd)))
+    return None if median is None else Decimal(str(median)).quantize(Decimal("0.0001"))
+
+
 async def reserve(
     session: AsyncSession,
     snapshot: EvidenceSnapshot,

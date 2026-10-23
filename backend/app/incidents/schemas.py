@@ -7,6 +7,7 @@ from typing import Annotated
 
 from pydantic import BaseModel, ConfigDict, Field, StringConstraints
 
+from app.diagnosis.schemas import DiagnosisBrief
 from app.evidence.models import Evidence, EvidenceSource, SourceError, TimeWindow
 
 ServiceName = Annotated[str, StringConstraints(min_length=1, max_length=128, strip_whitespace=True)]
@@ -49,6 +50,9 @@ class IncidentSummary(BaseModel):
     window: TimeWindow
     services: list[str] | None
     created_at: datetime
+    latest_diagnosis: DiagnosisBrief | None = Field(
+        description="Newest diagnosis across the incident's snapshots."
+    )
 
 
 class IncidentRead(IncidentSummary):

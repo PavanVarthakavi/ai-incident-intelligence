@@ -1,0 +1,1759 @@
+{
+  "components": {
+    "schemas": {
+      "BudgetRead": {
+        "description": "Today's diagnosis budget (UTC day).",
+        "properties": {
+          "day": {
+            "description": "UTC date, YYYY-MM-DD.",
+            "title": "Day",
+            "type": "string"
+          },
+          "enabled": {
+            "description": "False when no model is configured.",
+            "title": "Enabled",
+            "type": "boolean"
+          },
+          "limit_usd": {
+            "title": "Limit Usd",
+            "type": "string"
+          },
+          "model": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Model"
+          },
+          "remaining_usd": {
+            "title": "Remaining Usd",
+            "type": "string"
+          },
+          "spent_usd": {
+            "description": "Spent or reserved by diagnoses today.",
+            "title": "Spent Usd",
+            "type": "string"
+          },
+          "typical_cost_usd": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Median cost of the last 20 completed diagnoses; null before any.",
+            "title": "Typical Cost Usd"
+          }
+        },
+        "required": [
+          "day",
+          "limit_usd",
+          "spent_usd",
+          "remaining_usd",
+          "typical_cost_usd",
+          "enabled",
+          "model"
+        ],
+        "title": "BudgetRead",
+        "type": "object"
+      },
+      "CitedClaim": {
+        "properties": {
+          "evidence_ids": {
+            "description": "IDs of the evidence supporting the claim.",
+            "items": {
+              "type": "string"
+            },
+            "title": "Evidence Ids",
+            "type": "array"
+          },
+          "statement": {
+            "description": "One factual claim, stated plainly.",
+            "title": "Statement",
+            "type": "string"
+          }
+        },
+        "required": [
+          "statement",
+          "evidence_ids"
+        ],
+        "title": "CitedClaim",
+        "type": "object"
+      },
+      "DependencyStatus": {
+        "properties": {
+          "error": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Error"
+          },
+          "ok": {
+            "title": "Ok",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "ok"
+        ],
+        "title": "DependencyStatus",
+        "type": "object"
+      },
+      "DiagnosisBrief": {
+        "description": "The newest diagnosis of an incident, for lists and headers.",
+        "properties": {
+          "confidence": {
+            "anyOf": [
+              {
+                "enum": [
+                  "high",
+                  "medium",
+                  "low"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Confidence"
+          },
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "root_cause_service": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Null when there is no root cause.",
+            "title": "Root Cause Service"
+          },
+          "snapshot_id": {
+            "format": "uuid",
+            "title": "Snapshot Id",
+            "type": "string"
+          },
+          "status": {
+            "$ref": "#/components/schemas/DiagnosisStatus"
+          }
+        },
+        "required": [
+          "id",
+          "snapshot_id",
+          "status",
+          "created_at",
+          "root_cause_service",
+          "confidence"
+        ],
+        "title": "DiagnosisBrief",
+        "type": "object"
+      },
+      "DiagnosisOutput": {
+        "properties": {
+          "contributing_factors": {
+            "items": {
+              "$ref": "#/components/schemas/CitedClaim"
+            },
+            "title": "Contributing Factors",
+            "type": "array"
+          },
+          "recommended_actions": {
+            "items": {
+              "$ref": "#/components/schemas/RecommendedAction"
+            },
+            "title": "Recommended Actions",
+            "type": "array"
+          },
+          "root_cause": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/RootCause"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Null when the evidence does not support any root cause."
+          },
+          "ruled_out": {
+            "description": "Plausible causes the evidence argues against.",
+            "items": {
+              "$ref": "#/components/schemas/CitedClaim"
+            },
+            "title": "Ruled Out",
+            "type": "array"
+          },
+          "summary": {
+            "description": "Two or three sentences for an on-call engineer.",
+            "title": "Summary",
+            "type": "string"
+          },
+          "timeline": {
+            "description": "Ordered by time.",
+            "items": {
+              "$ref": "#/components/schemas/TimelineEntry"
+            },
+            "title": "Timeline",
+            "type": "array"
+          },
+          "unknowns": {
+            "description": "Open questions and evidence that is missing or would change the conclusion.",
+            "items": {
+              "type": "string"
+            },
+            "title": "Unknowns",
+            "type": "array"
+          }
+        },
+        "required": [
+          "summary",
+          "root_cause",
+          "contributing_factors",
+          "timeline",
+          "ruled_out",
+          "unknowns",
+          "recommended_actions"
+        ],
+        "title": "DiagnosisOutput",
+        "type": "object"
+      },
+      "DiagnosisRead": {
+        "properties": {
+          "completed_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Completed At"
+          },
+          "cost_usd": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Cost Usd"
+          },
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "effort": {
+            "title": "Effort",
+            "type": "string"
+          },
+          "error_message": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Error Message"
+          },
+          "fallback_used": {
+            "title": "Fallback Used",
+            "type": "boolean"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "input_tokens": {
+            "title": "Input Tokens",
+            "type": "integer"
+          },
+          "model_requested": {
+            "title": "Model Requested",
+            "type": "string"
+          },
+          "model_used": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Model Used"
+          },
+          "output": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/DiagnosisOutput"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "output_tokens": {
+            "title": "Output Tokens",
+            "type": "integer"
+          },
+          "prompt_version": {
+            "title": "Prompt Version",
+            "type": "string"
+          },
+          "request_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Request Id"
+          },
+          "snapshot_id": {
+            "format": "uuid",
+            "title": "Snapshot Id",
+            "type": "string"
+          },
+          "status": {
+            "$ref": "#/components/schemas/DiagnosisStatus"
+          },
+          "stop_reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Stop Reason"
+          },
+          "validation_errors": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Validation Errors",
+            "type": "array"
+          }
+        },
+        "required": [
+          "id",
+          "snapshot_id",
+          "status",
+          "created_at",
+          "completed_at",
+          "model_requested",
+          "model_used",
+          "effort",
+          "prompt_version",
+          "output",
+          "validation_errors",
+          "error_message",
+          "stop_reason",
+          "fallback_used",
+          "input_tokens",
+          "output_tokens",
+          "cost_usd",
+          "request_id"
+        ],
+        "title": "DiagnosisRead",
+        "type": "object"
+      },
+      "DiagnosisStatus": {
+        "enum": [
+          "running",
+          "valid",
+          "invalid",
+          "refused",
+          "error"
+        ],
+        "title": "DiagnosisStatus",
+        "type": "string"
+      },
+      "Evidence": {
+        "description": "One citable observation, traceable back to the exact query that produced it.",
+        "properties": {
+          "data": {
+            "additionalProperties": true,
+            "title": "Data",
+            "type": "object"
+          },
+          "id": {
+            "description": "Stable ID: same source, kind, key, and window give the same ID.",
+            "title": "Id",
+            "type": "string"
+          },
+          "kind": {
+            "description": "What the observation is, e.g. 'log_pattern'.",
+            "title": "Kind",
+            "type": "string"
+          },
+          "observed_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "When the observed behaviour started, if known.",
+            "title": "Observed At"
+          },
+          "query": {
+            "description": "The backend query that produced this evidence.",
+            "title": "Query",
+            "type": "string"
+          },
+          "reference": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "URL to inspect the raw data.",
+            "title": "Reference"
+          },
+          "service": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Service"
+          },
+          "source": {
+            "$ref": "#/components/schemas/EvidenceSource"
+          },
+          "summary": {
+            "description": "Factual one-line description, derived only from `data`.",
+            "title": "Summary",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "source",
+          "kind",
+          "summary",
+          "query"
+        ],
+        "title": "Evidence",
+        "type": "object"
+      },
+      "EvidenceBundle": {
+        "properties": {
+          "collected_at": {
+            "format": "date-time",
+            "title": "Collected At",
+            "type": "string"
+          },
+          "errors": {
+            "description": "Sources that could not be queried. Their evidence is missing, not empty.",
+            "items": {
+              "$ref": "#/components/schemas/SourceError"
+            },
+            "title": "Errors",
+            "type": "array"
+          },
+          "evidence": {
+            "items": {
+              "$ref": "#/components/schemas/Evidence"
+            },
+            "title": "Evidence",
+            "type": "array"
+          },
+          "services": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Services requested; null means all.",
+            "title": "Services"
+          },
+          "window": {
+            "$ref": "#/components/schemas/TimeWindow"
+          }
+        },
+        "required": [
+          "window",
+          "services",
+          "collected_at",
+          "evidence",
+          "errors"
+        ],
+        "title": "EvidenceBundle",
+        "type": "object"
+      },
+      "EvidenceSource": {
+        "enum": [
+          "metrics",
+          "traces",
+          "logs",
+          "deployments"
+        ],
+        "title": "EvidenceSource",
+        "type": "string"
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "title": "Detail",
+            "type": "array"
+          }
+        },
+        "title": "HTTPValidationError",
+        "type": "object"
+      },
+      "HealthResponse": {
+        "properties": {
+          "environment": {
+            "title": "Environment",
+            "type": "string"
+          },
+          "service": {
+            "title": "Service",
+            "type": "string"
+          },
+          "status": {
+            "const": "ok",
+            "title": "Status",
+            "type": "string"
+          },
+          "version": {
+            "title": "Version",
+            "type": "string"
+          }
+        },
+        "required": [
+          "status",
+          "service",
+          "version",
+          "environment"
+        ],
+        "title": "HealthResponse",
+        "type": "object"
+      },
+      "IncidentCreate": {
+        "properties": {
+          "collect_evidence": {
+            "default": true,
+            "description": "Collect and store an evidence snapshot on creation.",
+            "title": "Collect Evidence",
+            "type": "boolean"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "maxLength": 5000,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
+          },
+          "services": {
+            "anyOf": [
+              {
+                "items": {
+                  "maxLength": 128,
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "maxItems": 20,
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Services in scope; null means all.",
+            "title": "Services"
+          },
+          "severity": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/Severity"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "title": {
+            "maxLength": 200,
+            "minLength": 1,
+            "title": "Title",
+            "type": "string"
+          },
+          "window": {
+            "$ref": "#/components/schemas/TimeWindow"
+          }
+        },
+        "required": [
+          "title",
+          "window"
+        ],
+        "title": "IncidentCreate",
+        "type": "object"
+      },
+      "IncidentPage": {
+        "properties": {
+          "items": {
+            "description": "Newest first.",
+            "items": {
+              "$ref": "#/components/schemas/IncidentSummary"
+            },
+            "title": "Items",
+            "type": "array"
+          },
+          "limit": {
+            "title": "Limit",
+            "type": "integer"
+          },
+          "offset": {
+            "title": "Offset",
+            "type": "integer"
+          },
+          "total": {
+            "title": "Total",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "items",
+          "total",
+          "limit",
+          "offset"
+        ],
+        "title": "IncidentPage",
+        "type": "object"
+      },
+      "IncidentRead": {
+        "properties": {
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "latest_diagnosis": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/DiagnosisBrief"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Newest diagnosis across the incident's snapshots."
+          },
+          "services": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Services"
+          },
+          "severity": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/Severity"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "snapshots": {
+            "description": "Oldest first.",
+            "items": {
+              "$ref": "#/components/schemas/SnapshotSummary"
+            },
+            "title": "Snapshots",
+            "type": "array"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "window": {
+            "$ref": "#/components/schemas/TimeWindow"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "severity",
+          "window",
+          "services",
+          "created_at",
+          "latest_diagnosis",
+          "description",
+          "snapshots"
+        ],
+        "title": "IncidentRead",
+        "type": "object"
+      },
+      "IncidentSummary": {
+        "properties": {
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "latest_diagnosis": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/DiagnosisBrief"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Newest diagnosis across the incident's snapshots."
+          },
+          "services": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Services"
+          },
+          "severity": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/Severity"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "window": {
+            "$ref": "#/components/schemas/TimeWindow"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "severity",
+          "window",
+          "services",
+          "created_at",
+          "latest_diagnosis"
+        ],
+        "title": "IncidentSummary",
+        "type": "object"
+      },
+      "ReadinessResponse": {
+        "properties": {
+          "dependencies": {
+            "additionalProperties": {
+              "$ref": "#/components/schemas/DependencyStatus"
+            },
+            "title": "Dependencies",
+            "type": "object"
+          },
+          "status": {
+            "enum": [
+              "ready",
+              "not_ready"
+            ],
+            "title": "Status",
+            "type": "string"
+          }
+        },
+        "required": [
+          "status",
+          "dependencies"
+        ],
+        "title": "ReadinessResponse",
+        "type": "object"
+      },
+      "RecommendedAction": {
+        "properties": {
+          "action": {
+            "title": "Action",
+            "type": "string"
+          },
+          "evidence_ids": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Evidence Ids",
+            "type": "array"
+          },
+          "rationale": {
+            "title": "Rationale",
+            "type": "string"
+          }
+        },
+        "required": [
+          "action",
+          "rationale",
+          "evidence_ids"
+        ],
+        "title": "RecommendedAction",
+        "type": "object"
+      },
+      "RootCause": {
+        "properties": {
+          "confidence": {
+            "enum": [
+              "high",
+              "medium",
+              "low"
+            ],
+            "title": "Confidence",
+            "type": "string"
+          },
+          "evidence_ids": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Evidence Ids",
+            "type": "array"
+          },
+          "service": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Service where the cause lies, if one.",
+            "title": "Service"
+          },
+          "statement": {
+            "description": "The most likely root cause.",
+            "title": "Statement",
+            "type": "string"
+          }
+        },
+        "required": [
+          "statement",
+          "service",
+          "confidence",
+          "evidence_ids"
+        ],
+        "title": "RootCause",
+        "type": "object"
+      },
+      "Severity": {
+        "enum": [
+          "critical",
+          "high",
+          "medium",
+          "low"
+        ],
+        "title": "Severity",
+        "type": "string"
+      },
+      "SnapshotRead": {
+        "properties": {
+          "collected_at": {
+            "format": "date-time",
+            "title": "Collected At",
+            "type": "string"
+          },
+          "evidence": {
+            "description": "In the order they were collected.",
+            "items": {
+              "$ref": "#/components/schemas/Evidence"
+            },
+            "title": "Evidence",
+            "type": "array"
+          },
+          "evidence_count": {
+            "title": "Evidence Count",
+            "type": "integer"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "incident_id": {
+            "format": "uuid",
+            "title": "Incident Id",
+            "type": "string"
+          },
+          "services": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Services"
+          },
+          "source_counts": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "propertyNames": {
+              "$ref": "#/components/schemas/EvidenceSource"
+            },
+            "title": "Source Counts",
+            "type": "object"
+          },
+          "source_errors": {
+            "items": {
+              "$ref": "#/components/schemas/SourceError"
+            },
+            "title": "Source Errors",
+            "type": "array"
+          },
+          "window": {
+            "$ref": "#/components/schemas/TimeWindow"
+          }
+        },
+        "required": [
+          "id",
+          "collected_at",
+          "evidence_count",
+          "source_counts",
+          "source_errors",
+          "incident_id",
+          "window",
+          "services",
+          "evidence"
+        ],
+        "title": "SnapshotRead",
+        "type": "object"
+      },
+      "SnapshotSummary": {
+        "properties": {
+          "collected_at": {
+            "format": "date-time",
+            "title": "Collected At",
+            "type": "string"
+          },
+          "evidence_count": {
+            "title": "Evidence Count",
+            "type": "integer"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "source_counts": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "propertyNames": {
+              "$ref": "#/components/schemas/EvidenceSource"
+            },
+            "title": "Source Counts",
+            "type": "object"
+          },
+          "source_errors": {
+            "items": {
+              "$ref": "#/components/schemas/SourceError"
+            },
+            "title": "Source Errors",
+            "type": "array"
+          }
+        },
+        "required": [
+          "id",
+          "collected_at",
+          "evidence_count",
+          "source_counts",
+          "source_errors"
+        ],
+        "title": "SnapshotSummary",
+        "type": "object"
+      },
+      "SourceError": {
+        "properties": {
+          "message": {
+            "title": "Message",
+            "type": "string"
+          },
+          "source": {
+            "$ref": "#/components/schemas/EvidenceSource"
+          }
+        },
+        "required": [
+          "source",
+          "message"
+        ],
+        "title": "SourceError",
+        "type": "object"
+      },
+      "TimeWindow": {
+        "properties": {
+          "end": {
+            "format": "date-time",
+            "title": "End",
+            "type": "string"
+          },
+          "start": {
+            "format": "date-time",
+            "title": "Start",
+            "type": "string"
+          }
+        },
+        "required": [
+          "start",
+          "end"
+        ],
+        "title": "TimeWindow",
+        "type": "object"
+      },
+      "TimelineEntry": {
+        "properties": {
+          "event": {
+            "title": "Event",
+            "type": "string"
+          },
+          "evidence_ids": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Evidence Ids",
+            "type": "array"
+          },
+          "time": {
+            "description": "ISO 8601 timestamp taken from the evidence.",
+            "title": "Time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "time",
+          "event",
+          "evidence_ids"
+        ],
+        "title": "TimelineEntry",
+        "type": "object"
+      },
+      "ValidationError": {
+        "properties": {
+          "ctx": {
+            "title": "Context",
+            "type": "object"
+          },
+          "input": {
+            "title": "Input"
+          },
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "title": "Location",
+            "type": "array"
+          },
+          "msg": {
+            "title": "Message",
+            "type": "string"
+          },
+          "type": {
+            "title": "Error Type",
+            "type": "string"
+          }
+        },
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError",
+        "type": "object"
+      }
+    }
+  },
+  "info": {
+    "description": "Incident investigation backend (local).",
+    "title": "AI Incident Intelligence API",
+    "version": "0.1.0"
+  },
+  "openapi": "3.1.0",
+  "paths": {
+    "/health": {
+      "get": {
+        "operationId": "health_health_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HealthResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Health",
+        "tags": [
+          "health"
+        ]
+      }
+    },
+    "/ready": {
+      "get": {
+        "operationId": "ready_ready_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReadinessResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReadinessResponse"
+                }
+              }
+            },
+            "description": "A dependency is unavailable."
+          }
+        },
+        "summary": "Ready",
+        "tags": [
+          "health"
+        ]
+      }
+    },
+    "/v1/budget": {
+      "get": {
+        "operationId": "get_budget_v1_budget_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BudgetRead"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Get Budget",
+        "tags": [
+          "diagnoses"
+        ]
+      }
+    },
+    "/v1/evidence": {
+      "get": {
+        "description": "Collect metrics, traces, logs, and deployments for a time window.\n\nDefaults to the last 15 minutes. Sources that fail are listed in `errors`.",
+        "operationId": "collect_evidence_v1_evidence_get",
+        "parameters": [
+          {
+            "description": "Window start (ISO 8601 with timezone).",
+            "in": "query",
+            "name": "start",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "format": "date-time",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Window start (ISO 8601 with timezone).",
+              "title": "Start"
+            }
+          },
+          {
+            "description": "Window end; defaults to now.",
+            "in": "query",
+            "name": "end",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "format": "date-time",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Window end; defaults to now.",
+              "title": "End"
+            }
+          },
+          {
+            "description": "Limit to these services; repeatable.",
+            "in": "query",
+            "name": "service",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "items": {
+                    "type": "string"
+                  },
+                  "type": "array"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Limit to these services; repeatable.",
+              "title": "Service"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EvidenceBundle"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Collect Evidence",
+        "tags": [
+          "evidence"
+        ]
+      }
+    },
+    "/v1/incidents": {
+      "get": {
+        "operationId": "list_incidents_v1_incidents_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 50,
+              "maximum": 200,
+              "minimum": 1,
+              "title": "Limit",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "offset",
+            "required": false,
+            "schema": {
+              "default": 0,
+              "minimum": 0,
+              "title": "Offset",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IncidentPage"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "List Incidents",
+        "tags": [
+          "incidents"
+        ]
+      },
+      "post": {
+        "description": "Create an incident and, by default, snapshot the evidence for its window.\n\nBackend failures do not block creation: they are stored in the snapshot's\n`source_errors`.",
+        "operationId": "create_incident_v1_incidents_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/IncidentCreate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IncidentRead"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Create Incident",
+        "tags": [
+          "incidents"
+        ]
+      }
+    },
+    "/v1/incidents/{incident_id}": {
+      "get": {
+        "operationId": "get_incident_v1_incidents__incident_id__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "incident_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Incident Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IncidentRead"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Get Incident",
+        "tags": [
+          "incidents"
+        ]
+      }
+    },
+    "/v1/incidents/{incident_id}/snapshots": {
+      "post": {
+        "description": "Collect evidence for the incident's window again and store it as a new snapshot.\n\nUseful when telemetry arrived after the incident was created. Earlier\nsnapshots are kept unchanged.",
+        "operationId": "create_snapshot_v1_incidents__incident_id__snapshots_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "incident_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Incident Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SnapshotRead"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Create Snapshot",
+        "tags": [
+          "incidents"
+        ]
+      }
+    },
+    "/v1/incidents/{incident_id}/snapshots/{snapshot_id}": {
+      "get": {
+        "operationId": "get_snapshot_v1_incidents__incident_id__snapshots__snapshot_id__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "incident_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Incident Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "snapshot_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Snapshot Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SnapshotRead"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Get Snapshot",
+        "tags": [
+          "incidents"
+        ]
+      }
+    },
+    "/v1/incidents/{incident_id}/snapshots/{snapshot_id}/diagnoses": {
+      "get": {
+        "description": "Diagnoses of this snapshot, newest first.",
+        "operationId": "list_diagnoses_v1_incidents__incident_id__snapshots__snapshot_id__diagnoses_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "incident_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Incident Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "snapshot_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Snapshot Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/DiagnosisRead"
+                  },
+                  "title": "Response List Diagnoses V1 Incidents  Incident Id  Snapshots  Snapshot Id  Diagnoses Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "List Diagnoses",
+        "tags": [
+          "diagnoses"
+        ]
+      },
+      "post": {
+        "description": "Diagnose the snapshot with the configured model. This calls a paid API.\n\nThe result is stored whatever the outcome; check `status`. Only `valid`\ndiagnoses passed citation checks.",
+        "operationId": "create_diagnosis_v1_incidents__incident_id__snapshots__snapshot_id__diagnoses_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "incident_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Incident Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "snapshot_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Snapshot Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DiagnosisRead"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          },
+          "429": {
+            "description": "The daily LLM budget would be exceeded."
+          }
+        },
+        "summary": "Create Diagnosis",
+        "tags": [
+          "diagnoses"
+        ]
+      }
+    },
+    "/v1/incidents/{incident_id}/snapshots/{snapshot_id}/diagnoses/{diagnosis_id}": {
+      "get": {
+        "operationId": "get_diagnosis_v1_incidents__incident_id__snapshots__snapshot_id__diagnoses__diagnosis_id__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "incident_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Incident Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "snapshot_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Snapshot Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "diagnosis_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Diagnosis Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DiagnosisRead"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Get Diagnosis",
+        "tags": [
+          "diagnoses"
+        ]
+      }
+    }
+  }
+}

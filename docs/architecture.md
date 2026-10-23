@@ -243,3 +243,30 @@ a person approved, and a spend cap reserves each call's worst case. Failed calls
 separately so they cannot be mistaken for wrong answers. Evaluations are run by hand, never
 in CI.
 
+### D-033: React, Vite, and hand-written CSS for the frontend (M6)
+A single-page app is enough for an internal tool that reads one JSON API. Styles are CSS
+modules over a small token set rather than Tailwind or a component kit, so the interface follows
+its own design system instead of a starter kit's defaults. TanStack Query handles server state;
+there is no client-side store.
+
+### D-034: Frontend types are generated from the backend's OpenAPI schema (M6)
+`python -m app.openapi` exports the schema and `openapi-typescript` generates the types the
+client uses. Both are committed, and CI regenerates them and fails on any difference, so an
+API change cannot silently break the frontend.
+
+### D-035: An offline stand-in model for end-to-end tests (M6)
+`APP_LLM_PROVIDER=offline` returns a fixed, labelled diagnosis that cites the snapshot's
+evidence, so end-to-end tests exercise the full flow, including citation validation and
+storage, with no network calls or cost. Settings refuse it in production.
+
+### D-036: Exhibit numbers follow collection order (M6)
+`EX-5` always names the same evidence item in a snapshot, in every view and every diagnosis of
+it, so a number can be quoted and checked. Numbering by first citation would read more neatly
+but would change between diagnoses of the same snapshot.
+
+### D-037: Design direction chosen by the project owner from concrete alternatives (M6)
+Four visual directions were sketched with real diagnosis data, including the category
+standard (sidebar, cards, pills), and the owner chose the investigation-report direction. A
+separate design review then checked the build against that direction, and DESIGN.md records
+the system as built rather than as planned.
+

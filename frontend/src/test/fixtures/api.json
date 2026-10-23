@@ -1082,7 +1082,8 @@
               "previous_version": "1.4.2"
             }
           }
-        ]
+        ],
+        "empty_sources": []
       },
       "diagnoses": [
         {
@@ -2175,7 +2176,8 @@
               "previous_version": "3.1.5"
             }
           }
-        ]
+        ],
+        "empty_sources": []
       },
       "diagnoses": [
         {
@@ -3103,6 +3105,11 @@
               "p95_latency_onset": null
             }
           }
+        ],
+        "empty_sources": [
+          "traces",
+          "logs",
+          "deployments"
         ]
       },
       "diagnoses": [

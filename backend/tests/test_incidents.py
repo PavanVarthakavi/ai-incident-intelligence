@@ -88,10 +88,13 @@ def test_backend_failure_is_recorded_in_snapshot(
 ) -> None:
     transport.overrides["opensearch_search_otel_logs"] = 500
 
-    [snapshot] = create(db_client)["snapshots"]
+    body = create(db_client)
+    [snapshot] = body["snapshots"]
 
     assert [e["source"] for e in snapshot["source_errors"]] == ["logs"]
     assert "logs" not in snapshot["source_counts"]
+    url = f"/v1/incidents/{body['id']}/snapshots/{snapshot['id']}"
+    assert db_client.get(url).json()["empty_sources"] == []  # logs failed; it is not empty
 
 
 def test_service_scope_limits_collection(

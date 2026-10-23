@@ -50,3 +50,63 @@ Cost: $1.223 total, $0.0510 per case. Latency: median 16.8s, max 32.6s. Output t
 | H04 | healthy, vague-report | none | none | yes | - | yes | $0.037 | 13s |
 | H05 | healthy, misleading-report | none | none | yes | - | yes | $0.038 | 14s |
 | H06 | healthy, scoped | none | none | yes | - | yes | $0.025 | 8s |
+
+## v1
+
+`claude-opus-5-5`, effort `medium`, prompt v2, 9 graded rows ({'ok': 9}), 0 errors.
+
+| Metric | Score (95% interval) |
+|---|---|
+| Correct | 100% (70%-100%, n=9) |
+| Recall (faulty) | 100% (68%-100%, n=8) |
+| Specificity (healthy) | 100% (21%-100%, n=1) |
+| Release named | 100% (51%-100%, n=4) |
+| Citations valid | 89% (56%-98%, n=9) |
+
+Cost: $0.525 total, $0.0583 per case. Latency: median 18.8s, max 26.5s. Output tokens: median 2028, max 2732.
+
+| Group | Cases | Correct |
+|---|---|---|
+| decoy-deploy | 1 | 100% (21%-100%, n=1) |
+| deploy-caused | 1 | 100% (21%-100%, n=1) |
+| healthy | 1 | 100% (21%-100%, n=1) |
+| missing-source | 6 | 100% (61%-100%, n=6) |
+
+| Case | Tags | Expected | Diagnosed | Correct | Release | Citations | Cost | Time |
+|---|---|---|---|---|---|---|---|---|
+| F01 | deploy-caused, latency, cascade | inventory 3.2.1 | inventory (high) | yes | yes | yes | $0.053 | 14s |
+| F14 | decoy-deploy, errors, misleading-report | inventory | inventory (medium) | yes | - | yes | $0.056 | 17s |
+| F17 | missing-source, latency, cascade | inventory 3.2.1 | inventory (medium) | yes | yes | yes | $0.057 | 19s |
+| F17 | missing-source, latency, cascade | inventory 3.2.1 | inventory (medium) | yes | yes | yes | $0.055 | 18s |
+| F17 | missing-source, latency, cascade | inventory 3.2.1 | inventory (medium) | yes | yes | yes | $0.058 | 19s |
+| F18 | missing-source, errors | inventory | inventory (medium) | yes | - | yes | $0.071 | 27s |
+| F18 | missing-source, errors | inventory | inventory (medium) | yes | - | yes | $0.061 | 21s |
+| F18 | missing-source, errors | inventory | inventory (medium) | yes | - | yes | $0.072 | 26s |
+| H05 | healthy, misleading-report | none | none | yes | - | NO | $0.041 | 15s |
+
+## v2
+
+`claude-opus-5-5`, effort `medium`, prompt v3, 5 graded rows ({'ok': 5}), 0 errors.
+
+| Metric | Score (95% interval) |
+|---|---|
+| Correct | 100% (57%-100%, n=5) |
+| Recall (faulty) | 100% (34%-100%, n=2) |
+| Specificity (healthy) | 100% (44%-100%, n=3) |
+| Release named | 100% (21%-100%, n=1) |
+| Citations valid | 100% (57%-100%, n=5) |
+
+Cost: $0.253 total, $0.0505 per case. Latency: median 17.9s, max 21.2s. Output tokens: median 1647, max 2267.
+
+| Group | Cases | Correct |
+|---|---|---|
+| healthy | 3 | 100% (44%-100%, n=3) |
+| missing-source | 2 | 100% (34%-100%, n=2) |
+
+| Case | Tags | Expected | Diagnosed | Correct | Release | Citations | Cost | Time |
+|---|---|---|---|---|---|---|---|---|
+| F17 | missing-source, latency, cascade | inventory 3.2.1 | inventory (medium) | yes | yes | yes | $0.054 | 17s |
+| F18 | missing-source, errors | inventory | inventory (medium) | yes | - | yes | $0.063 | 21s |
+| H05 | healthy, misleading-report | none | none | yes | - | yes | $0.044 | 17s |
+| H05 | healthy, misleading-report | none | none | yes | - | yes | $0.046 | 18s |
+| H05 | healthy, misleading-report | none | none | yes | - | yes | $0.045 | 18s |

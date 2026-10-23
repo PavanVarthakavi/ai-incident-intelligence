@@ -20,9 +20,11 @@ the exact query, a link to the source system, and every claim that cites it.
 States are shown as they are, never softened: a diagnosis that failed the backend's citation
 check is boxed in red with each problem named and marked on the claim it belongs to; refusals
 and errors say so; a healthy window says "No probable cause"; sources that could not be
-collected are listed above the exhibits. Running a diagnosis is a paid call, so the button
-states the typical cost and the budget left, and is disabled when there is no model or no
-evidence to diagnose.
+collected are listed above the exhibits, with those that returned nothing below them. A claim
+that cites a missing source shows a red "logs missing" tag, and one citing a source that
+returned nothing shows "deployments: none found"; both link to that list. Running a diagnosis
+is a paid call, so the button states the typical cost and the budget left, and is disabled when
+there is no model or no evidence to diagnose.
 
 ## Design
 
@@ -71,7 +73,7 @@ No test calls the Claude API.
 - **API contract.** The backend exports its OpenAPI schema (`backend/app/openapi.py`) and the
   frontend's types are generated from it. CI regenerates both and fails if they differ from the
   committed files, so a backend change that breaks the frontend fails the pull request.
-- **Component tests** (28) render the real routes with responses recorded from three seeded
+- **Component tests** (30) render the real routes with responses recorded from three seeded
   evaluation cases (`src/test/fixtures/api.json`): a valid diagnosis, the invalid F17, and a
   healthy window. They cover every diagnosis state, the exhibit interaction, running a diagnosis
   (success, budget refusal, no model), the form, and worst cases (no evidence, a 2,000-character

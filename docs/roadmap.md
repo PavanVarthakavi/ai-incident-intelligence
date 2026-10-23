@@ -65,8 +65,9 @@ Goal: measure diagnosis quality objectively.
 - [x] Resumable runner with harness approval, spend cap, timeouts, and served-model check
 - [x] Baseline run and report with 95% intervals; latency and cost per case
 - [x] Documentation: [`evaluation.md`](evaluation.md), including known limitations
-- Next: allow actions that respond to a source error to cite it (finding from F17), measured
-  as variant `v1`; harder cases to add headroom
+- [x] Claims about failed or empty sources cite them (`src-<source>`), fixing the F17
+  finding; measured as variants `v1` and `v2`
+- Next: harder cases to add headroom
 - Not planned: running paid evaluations in CI
 
 ## M6: Frontend

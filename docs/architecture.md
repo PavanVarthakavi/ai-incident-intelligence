@@ -1,39 +1,39 @@
 # Architecture
 
-> **Implemented vs. planned.** As of Milestone 1, the **API service skeleton** and the
-> **synthetic telemetry environment** (demo services, collector, Prometheus, Jaeger, OpenSearch)
-> exist. The backend does not read telemetry yet. Components marked Planned are proposals and
-> may change as later milestones are designed.
+> **Implemented vs. planned.** As of Milestone 2, the **synthetic telemetry environment** and
+> **evidence collection** (read-only adapters, evidence model, readiness, `GET /v1/evidence`)
+> exist. Nothing is persisted and there is no LLM agent yet. Components marked Planned are
+> proposals and may change as later milestones are designed.
 
 ## Goal
 
 Given an incident (an alert, a time window, or an affected service), the platform gathers
-relevant telemetry — logs, metrics, traces, and deployment events — and produces a diagnosis in
+relevant telemetry (logs, metrics, traces, and deployment events) and produces a diagnosis in
 which every claim cites the specific evidence that supports it. The LLM is a reasoning layer
 over retrieved evidence, not a source of facts.
 
 ## Proposed system overview
 
 ```
- ┌──────────────────────── Demo environment (synthetic) ────────────────────────┐
- │  Sample microservices ──OTel SDK──▶ OpenTelemetry Collector                   │
- │  Fault injection / load generator                                            │
- └──────────────────────────────────────┬───────────────────────────────────────┘
-                                        │
-            ┌───────────────┬───────────┴──────────┬────────────────┐
-            ▼               ▼                      ▼                ▼
+ +------------------------ Demo environment (synthetic) ------------------------+
+ |  Sample microservices --OTel SDK--> OpenTelemetry Collector                   |
+ |  Fault injection / load generator                                            |
+ +--------------------------------------+---------------------------------------+
+                                        |
+            +---------------+-----------+----------+----------------+
+            v               v                      v                v
        Prometheus        Jaeger               OpenSearch      Deployment events
-       (metrics)        (traces)                (logs)        (webhook / file)
-            └───────────────┴───────────┬──────────┴────────────────┘
-                                        │  read-only query adapters
-                                        ▼
- ┌──────────────────────────── API service (FastAPI) ───────────────────────────┐
- │  Incident API ── Evidence collectors ── Investigation agent (LLM + tools)    │
- │                          │                          │                        │
- │                          └──────── PostgreSQL ──────┘                        │
- │                    (incidents, evidence snapshots, diagnoses)                │
- └──────────────────────────────────────┬───────────────────────────────────────┘
-                                        ▼
+       (metrics)        (traces)                (logs)        (OpenSearch)
+            +---------------+-----------+----------+----------------+
+                                        |  read-only query adapters
+                                        v
+ +---------------------------- API service (FastAPI) ---------------------------+
+ |  Incident API -- Evidence collectors -- Investigation agent (LLM + tools)    |
+ |                          |                          |                        |
+ |                          +-------- PostgreSQL ------+                        |
+ |                    (incidents, evidence snapshots, diagnoses)                |
+ +--------------------------------------+---------------------------------------+
+                                        v
                                 Frontend (later)
 ```
 
@@ -46,7 +46,8 @@ over retrieved evidence, not a source of facts.
 | Demo environment | Three instrumented services + load generator + fault injection producing synthetic telemetry ([details](demo-environment.md)) | **Implemented (M1)** |
 | OpenTelemetry Collector | Receives OTLP from services; routes to backends | **Implemented (M1)** |
 | Prometheus / Jaeger / OpenSearch | Metrics / traces / logs + deploy events storage and query | **Implemented (M1)** |
-| Evidence collectors | Typed, read-only adapters that query each backend for a time window and service set and normalize results | Planned (M2) |
+| Evidence collectors | Typed, read-only adapters that query each backend for a time window and service set and normalize results ([details](evidence.md)) | **Implemented (M2)** |
+| Readiness endpoint | `/ready` checks Prometheus, Jaeger, and OpenSearch | **Implemented (M2)** |
 | PostgreSQL | Incidents, evidence snapshots, diagnoses, audit trail | Planned (M3) |
 | Investigation agent | LLM that calls evidence collectors as tools and produces a cited diagnosis | Planned (M4) |
 | Evaluation harness | Replays injected faults and scores diagnoses against known root causes | Planned (M5) |
@@ -133,3 +134,33 @@ Services opt into the stable OpenTelemetry HTTP conventions
 collectors do not depend on deprecated names. A one-shot `opensearch-init` container installs
 index templates (strings as `keyword`, zero replicas for single-node) before any data arrives,
 so field types are predictable for querying.
+
+### D-014: One evidence model with stable IDs, queries, and references (M2)
+Every observation, from any backend, becomes an `Evidence` record with a deterministic ID, the
+exact query that produced it, and a link to the raw data. The agent (M4) will cite evidence
+IDs, and anyone can re-run the query to check a claim. Summaries are computed from the
+record's own `data` and contain no interpretation.
+
+### D-015: Jaeger's `/api` endpoints instead of `/api/v3` (M2)
+`/api/v3` (OTLP JSON) was the first choice as Jaeger's stable query API, but in Jaeger 2.3 it
+accepted and silently ignored attribute filters (verified: `error=true` returned successful
+traces). The UI's `/api` endpoints filter correctly. The format is isolated in
+`app/integrations/jaeger.py`, so switching back after an upgrade touches one file.
+
+### D-016: Partial results instead of all-or-nothing (M2)
+Collectors run concurrently. A backend failure becomes a `SourceError` in the bundle and the
+other sources are still returned, so an outage of one backend does not block an
+investigation, and callers can tell "missing" from "empty". Only `BackendError` is caught;
+programming errors still fail the request.
+
+### D-017: Self time to attribute latency in traces (M2)
+In a timeout cascade every caller reports an error, so error spans alone point at the wrong
+service. Grouping slow traces by the span with the most self time (duration minus time
+covered by children, clipped to the span) points at where time was actually spent. Fast
+error traces are grouped by failing path only, because their largest span is noise.
+
+### D-018: Fixtures recorded from the demo stack; integration tests pinned to a release (M2)
+Unit tests replay real backend responses recorded during an incident, trimmed to the fields
+the code reads, so they exercise real API formats without a network. Integration tests assert
+on the specific release they deployed, because evidence from earlier incidents in the same
+window would otherwise make them pass vacuously (observed during development).

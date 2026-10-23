@@ -10,22 +10,22 @@ the platform will investigate. Nothing here touches real systems or real data.
 | `gateway` | Public entry point (`POST /checkout`, `GET /products`) | http://localhost:8080 |
 | `orders` | Creates orders; calls inventory, simulates payment authorization | http://localhost:8081 |
 | `inventory` | Reserves stock (simulated database query) | http://localhost:8082 |
-| `loadgen` | Steady synthetic traffic to the gateway (default ~2 req/s) | — |
-| `otel-collector` | Receives OTLP from services; routes each signal to its backend | — |
+| `loadgen` | Steady synthetic traffic to the gateway (default ~2 req/s) | n/a |
+| `otel-collector` | Receives OTLP from services; routes each signal to its backend | n/a |
 | `jaeger` | Trace storage and UI | http://localhost:16686 |
 | `prometheus` | Metrics storage and query | http://localhost:9090 |
 | `opensearch` | Log and deployment-event storage | http://localhost:9200 |
-| `opensearch-init` | One-shot: installs index templates, then exits | — |
+| `opensearch-init` | One-shot: installs index templates, then exits | n/a |
 | `opensearch-dashboards` | Optional log UI (`ui` profile) | http://localhost:5601 |
 
-Request flow: `loadgen → gateway → orders → inventory`. Every hop is traced, so one checkout
+Request flow: `loadgen -> gateway -> orders -> inventory`. Every hop is traced, so one checkout
 produces a single distributed trace spanning all three services.
 
 ```
-services ──OTLP/HTTP──▶ otel-collector ──┬── traces  ──▶ Jaeger
-                                         ├── metrics ──▶ (scraped by) Prometheus
-                                         └── logs    ──▶ OpenSearch  index: otel-logs
-incidentctl ── deploy events ────────────────────────▶ OpenSearch  index: deploy-events
+services --OTLP/HTTP--> otel-collector --+-- traces  --> Jaeger
+                                         +-- metrics --> (scraped by) Prometheus
+                                         +-- logs    --> OpenSearch  index: otel-logs
+incidentctl -- deploy events ------------------------> OpenSearch  index: deploy-events
 ```
 
 ## Running it
@@ -68,12 +68,12 @@ python3 demo/tools/incidentctl.py clear                    # remove faults every
 `deploy inventory 3.2.0 --latency-ms 2500` exceeds the 2 s timeout orders uses for inventory
 (the gateway waits 3 s for orders). Observed within a minute:
 
-- **Deploy event:** `inventory 3.1.5 → 3.2.0` in `deploy-events`.
+- **Deploy event:** `inventory 3.1.5 -> 3.2.0` in `deploy-events`.
 - **Metrics:** gateway checkouts switch from 201 to 502, orders returns 504, and p95 latency
   rises above 2 s for all three services; `orders_created_total{status="inventory_timeout"}` rises.
 - **Logs:** `orders` logs "timed out reserving inventory"; `gateway` logs "checkout failed:
   orders returned 504". Each log line carries the `traceId` of its request.
-- **Traces:** gateway 502 → orders 504 at ~2.0 s → inventory `POST /reserve` taking ~2.5 s
+- **Traces:** gateway 502 -> orders 504 at ~2.0 s -> inventory `POST /reserve` taking ~2.5 s
   with `app.release=3.2.0`.
 
 ## Where the data lives

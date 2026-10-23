@@ -4,6 +4,7 @@ import uuid
 from collections import Counter
 
 from sqlalchemy import func, select
+from sqlalchemy.dialects.postgresql import distinct_on
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
@@ -74,6 +75,22 @@ async def list_incidents(
         .offset(offset)
     )
     return list(rows), total or 0
+
+
+async def latest_diagnoses(
+    session: AsyncSession, incident_ids: list[uuid.UUID]
+) -> dict[uuid.UUID, Diagnosis]:
+    """The newest diagnosis of each incident (across its snapshots), keyed by incident."""
+    if not incident_ids:
+        return {}
+    rows = await session.execute(
+        select(EvidenceSnapshot.incident_id, Diagnosis)
+        .join(Diagnosis, Diagnosis.snapshot_id == EvidenceSnapshot.id)
+        .where(EvidenceSnapshot.incident_id.in_(incident_ids))
+        .ext(distinct_on(EvidenceSnapshot.incident_id))
+        .order_by(EvidenceSnapshot.incident_id, Diagnosis.created_at.desc(), Diagnosis.id)
+    )
+    return {incident_id: diagnosis for incident_id, diagnosis in rows}
 
 
 async def get_snapshot(

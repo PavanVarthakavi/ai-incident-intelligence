@@ -73,5 +73,12 @@ Goal: measure diagnosis quality objectively.
 
 Goal: a UI for reviewing incidents and diagnoses.
 
-- Incident list and timeline view
-- Diagnosis view with links to underlying evidence
+- [x] Incident list, incident report with numbered exhibits, and new incident form (React,
+  TypeScript, Vite)
+- [x] Every claim links to the evidence it cites; invalid, refused, and failed diagnoses shown
+  as such; cost and budget shown before a paid run
+- [x] Types generated from the backend's OpenAPI schema, with a CI check that they match
+- [x] Component tests, end-to-end tests with axe (WCAG 2.2 AA), offline model for tests
+- [x] Documentation: [`frontend.md`](frontend.md), [`PRODUCT.md`](PRODUCT.md),
+  [`DESIGN.md`](DESIGN.md), including known limitations
+- Not planned: authentication, live updates

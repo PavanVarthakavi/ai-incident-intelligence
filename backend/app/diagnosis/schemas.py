@@ -62,6 +62,31 @@ class DiagnosisStatus(StrEnum):
     ERROR = "error"  # API error, timeout, or output that could not be parsed
 
 
+class DiagnosisBrief(BaseModel):
+    """The newest diagnosis of an incident, for lists and headers."""
+
+    id: uuid.UUID
+    snapshot_id: uuid.UUID
+    status: DiagnosisStatus
+    created_at: datetime
+    root_cause_service: str | None = Field(description="Null when there is no root cause.")
+    confidence: Confidence | None
+
+
+class BudgetRead(BaseModel):
+    """Today's diagnosis budget (UTC day)."""
+
+    day: str = Field(description="UTC date, YYYY-MM-DD.")
+    limit_usd: Decimal
+    spent_usd: Decimal = Field(description="Spent or reserved by diagnoses today.")
+    remaining_usd: Decimal
+    typical_cost_usd: Decimal | None = Field(
+        description="Median cost of the last 20 completed diagnoses; null before any."
+    )
+    enabled: bool = Field(description="False when no model is configured.")
+    model: str | None
+
+
 class DiagnosisRead(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 

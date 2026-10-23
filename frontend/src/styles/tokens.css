@@ -1,0 +1,51 @@
+/* Design tokens. The world: an investigation report on a cool grey desk. */
+:root {
+  /* Ground and paper */
+  --ground: #f4f5f7;
+  --paper: #ffffff;
+  --paper-sunk: #f8f9fa;
+
+  /* Ink */
+  --ink: #16181d;
+  --ink-2: #3c4250; /* secondary text, 10.1:1 on paper */
+  --ink-3: #5d6470; /* captions and meta, 6.0:1 on paper, 5.2:1 on the washes */
+  --rule: #d9dde3;
+  --rule-strong: #16181d;
+
+  /* World colours, each with one job */
+  --navy: #1f3a5f; /* bar, section headings, primary actions */
+  --navy-ink: #c9d4e3; /* secondary text on navy, 7.7:1 */
+  --navy-deep: #16304f; /* primary action hover */
+  --navy-wash: #eef2f7; /* secondary action hover */
+  --on-navy: #ffffff; /* text on the navy bar and buttons */
+  --field-stroke: #b8bec8; /* form field borders and the scrollbar thumb */
+  --tag: #f2b705; /* exhibit tags and nothing else */
+  --tag-wash: #fff6d6; /* the active exhibit */
+  --red: #b42318; /* high or critical severity, invalid and failed states */
+  --red-wash: #fdeceb;
+
+  /* Type */
+  --font-sans: "Public Sans", system-ui, sans-serif;
+  --font-mono: "Source Code Pro", ui-monospace, monospace;
+  --text-xs: 0.75rem; /* 12 */
+  --text-sm: 0.8125rem; /* 13 */
+  --text-md: 0.875rem; /* 14 */
+  --text-lg: 1rem; /* 16 */
+  --text-cause: 1.3125rem; /* 21 */
+  --text-title: 1.625rem; /* 26 */
+
+  /* Space (4px base) */
+  --s-1: 4px;
+  --s-2: 8px;
+  --s-3: 12px;
+  --s-4: 16px;
+  --s-5: 20px;
+  --s-6: 24px;
+  --s-8: 32px;
+  --s-10: 40px;
+
+  --bar-h: 48px;
+  --exhibits-w: 470px;
+  --focus: 0 0 0 2px var(--paper), 0 0 0 4px var(--navy);
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+}

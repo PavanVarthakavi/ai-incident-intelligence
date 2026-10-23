@@ -184,3 +184,63 @@ def test_unknown_snapshot_or_diagnosis_returns_404(client: TestClient, model: Fa
     assert client.post(f"{incident_url}/snapshots/{missing}/diagnoses").status_code == 404
     assert client.get(f"{other_url}/diagnoses/{diagnosis['id']}").status_code == 404
     assert client.get(f"{url}/diagnoses/{missing}").status_code == 404
+
+
+def test_incidents_report_their_latest_diagnosis(client: TestClient, model: FakeModel) -> None:
+    url, ids = snapshot_url(client)
+    incident_url = url.split("/snapshots/")[0]
+    assert client.get(incident_url).json()["latest_diagnosis"] is None
+
+    model.next = reply(output_citing(ids))
+    first = client.post(f"{url}/diagnoses").json()
+    model.next = reply(None, stop_reason="refusal", refusal_category="cyber")
+    second = client.post(f"{url}/diagnoses").json()
+
+    latest = client.get(incident_url).json()["latest_diagnosis"]
+    assert latest["id"] == second["id"] != first["id"]
+    assert (latest["status"], latest["root_cause_service"], latest["confidence"]) == (
+        "refused",
+        None,
+        None,
+    )
+    listed = client.get("/v1/incidents").json()["items"][0]["latest_diagnosis"]
+    assert listed == latest
+
+
+def test_budget_reports_spend_and_typical_cost(make_client, model: FakeModel) -> None:
+    client = make_client(llm_daily_budget_usd=1.0)
+    before = client.get("/v1/budget").json()
+    assert Decimal(before["spent_usd"]) == 0
+    assert Decimal(before["remaining_usd"]) == 1
+    assert before["typical_cost_usd"] is None
+    assert before["enabled"] is True
+
+    url, ids = snapshot_url(client)
+    model.next = reply(output_citing(ids))
+    client.post(f"{url}/diagnoses")
+
+    after = client.get("/v1/budget").json()
+    assert Decimal(after["spent_usd"]) == Decimal("0.08")
+    assert Decimal(after["remaining_usd"]) == Decimal("0.92")
+    assert Decimal(after["typical_cost_usd"]) == Decimal("0.08")
+
+
+def test_budget_without_a_model_is_disabled(client: TestClient) -> None:
+    client.app.state.diagnosis_model = None
+    body = client.get("/v1/budget").json()
+    assert (body["enabled"], body["model"]) == (False, None)
+
+
+def test_offline_provider_runs_the_full_flow_at_no_cost(
+    make_db_client: Callable[..., TestClient],
+) -> None:
+    client = make_db_client(llm_provider="offline")
+    url, ids = snapshot_url(client)
+
+    body = client.post(f"{url}/diagnoses").json()
+
+    assert body["status"] == "valid"
+    assert body["model_used"] == "offline-stand-in"
+    assert Decimal(body["cost_usd"]) == 0
+    assert body["output"]["root_cause"]["evidence_ids"] == ids[:2]
+    assert body["output"]["summary"].startswith("Offline stand-in")

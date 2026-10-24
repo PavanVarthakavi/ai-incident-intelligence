@@ -43,7 +43,7 @@ self-hosted; monospace is used only for IDs, queries, and releases. Text contras
 ```bash
 # Backend with the demo stack and database (see the README), plus demo data:
 cd backend
-python -m eval.seed          # 24 evaluation incidents with their real diagnoses (free)
+python -m eval.seed          # 31 evaluation incidents; the original 24 with real diagnoses (free)
 uvicorn app.main:app         # or APP_LLM_PROVIDER=offline to make runs free stand-ins
 
 # Frontend (Node 22 or newer)

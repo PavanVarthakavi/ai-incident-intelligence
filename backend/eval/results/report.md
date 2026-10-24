@@ -110,3 +110,38 @@ Cost: $0.253 total, $0.0505 per case. Latency: median 17.9s, max 21.2s. Output t
 | H05 | healthy, misleading-report | none | none | yes | - | yes | $0.044 | 17s |
 | H05 | healthy, misleading-report | none | none | yes | - | yes | $0.046 | 18s |
 | H05 | healthy, misleading-report | none | none | yes | - | yes | $0.045 | 18s |
+
+## v3
+
+`claude-opus-5-5`, effort `medium`, prompt v3, 14 graded rows ({'ok': 14}), 0 errors.
+
+| Metric | Score (95% interval) |
+|---|---|
+| Correct | 100% (78%-100%, n=14) |
+| Recall (faulty) | 100% (78%-100%, n=14) |
+| Specificity (healthy) | n/a |
+| Release named | 100% (34%-100%, n=2) |
+| Citations valid | 100% (78%-100%, n=14) |
+
+Cost: $0.824 total, $0.0589 per case. Latency: median 20.1s, max 24.5s. Output tokens: median 1872, max 2735.
+
+| Group | Cases | Correct |
+|---|---|---|
+| hard | 14 | 100% (78%-100%, n=14) |
+
+| Case | Tags | Expected | Diagnosed | Correct | Release | Citations | Cost | Time |
+|---|---|---|---|---|---|---|---|---|
+| F19 | hard, errors, low-rate | inventory | inventory (medium) | yes | - | yes | $0.057 | 24s |
+| F19 | hard, errors, low-rate | inventory | inventory (medium) | yes | - | yes | $0.051 | 20s |
+| F20 | hard, errors, flapping | inventory | inventory (medium) | yes | - | yes | $0.072 | 24s |
+| F20 | hard, errors, flapping | inventory | inventory (medium) | yes | - | yes | $0.069 | 23s |
+| F21 | hard, latency, cascade, fixed-by-redeploy | inventory 3.3.0 | inventory (high) | yes | yes | yes | $0.063 | 18s |
+| F21 | hard, latency, cascade, fixed-by-redeploy | inventory 3.3.0 | inventory (high) | yes | yes | yes | $0.061 | 17s |
+| F22 | hard, latency, no-errors, cascade | inventory | inventory (medium) | yes | - | yes | $0.047 | 16s |
+| F22 | hard, latency, no-errors, cascade | inventory | inventory (medium) | yes | - | yes | $0.046 | 15s |
+| F23 | hard, errors, misleading-report, decoy-deploy | inventory | inventory (medium) | yes | - | yes | $0.070 | 22s |
+| F23 | hard, errors, misleading-report, decoy-deploy | inventory | inventory (medium) | yes | - | yes | $0.076 | 24s |
+| F24 | hard, errors, latency, two-faults | orders | orders (medium) | yes | - | yes | $0.049 | 20s |
+| F24 | hard, errors, latency, two-faults | orders | orders (medium) | yes | - | yes | $0.055 | 23s |
+| F25 | hard, latency, cascade, pre-existing, decoy-deploy | inventory | inventory (medium) | yes | - | yes | $0.055 | 16s |
+| F25 | hard, latency, cascade, pre-existing, decoy-deploy | inventory | inventory (medium) | yes | - | yes | $0.053 | 15s |

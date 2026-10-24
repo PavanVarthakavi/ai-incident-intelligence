@@ -1,0 +1,985 @@
+{
+ "id": "F19",
+ "tags": [
+  "hard",
+  "errors",
+  "low-rate"
+ ],
+ "incident": {
+  "title": "A few checkout errors reported",
+  "severity": "medium",
+  "description": null,
+  "services": null
+ },
+ "snapshot": {
+  "window": {
+   "start": "2026-10-24T00:05:43.446598+00:00",
+   "end": "2026-10-24T00:09:43.539051+00:00"
+  },
+  "collected_at": "2026-10-24T00:09:44.735130+00:00",
+  "source_errors": [],
+  "evidence": [
+   {
+    "id": "ev-0d8694989d39",
+    "source": "metrics",
+    "kind": "service_http_metrics",
+    "service": "gateway",
+    "observed_at": null,
+    "summary": "gateway: 1.94 req/s avg; 5xx ratio avg 0.9%, max 3.4%; p95 latency avg 173ms, max 197ms",
+    "query": "request_rate_rps: sum by (job) (rate(http_server_request_duration_seconds_count[60s]))\nerror_ratio: (sum by (job) (rate(http_server_request_duration_seconds_count{http_response_status_code=~\"5..\"}[60s])) or sum by (job) (rate(http_server_request_duration_seconds_count[60s])) * 0) / sum by (job) (rate(http_server_request_duration_seconds_count[60s]))\np95_latency_s: histogram_quantile(0.95, sum by (job, le) (rate(http_server_request_duration_seconds_bucket[60s])))",
+    "reference": "http://localhost:9090/api/v1/query_range?query=%28sum+by+%28job%29+%28rate%28http_server_request_duration_seconds_count%7Bhttp_response_status_code%3D~%225..%22%7D%5B60s%5D%29%29+or+sum+by+%28job%29+%28rate%28http_server_request_duration_seconds_count%5B60s%5D%29%29+%2A+0%29+%2F+sum+by+%28job%29+%28rate%28http_server_request_duration_seconds_count%5B60s%5D%29%29&start=1792800343.446598&end=1792800583.539051&step=15",
+    "data": {
+     "step_s": 15,
+     "stats": {
+      "request_rate_rps": {
+       "avg": 1.9436092923975266,
+       "max": 2.3199072037118516,
+       "last": 2.0
+      },
+      "error_ratio": {
+       "avg": 0.009127913123676371,
+       "max": 0.034482758620689655,
+       "last": 0.01
+      },
+      "p95_latency_s": {
+       "avg": 0.17335046938355755,
+       "max": 0.19692307692307684,
+       "last": 0.18181818181818174
+      }
+     },
+     "error_ratio_onset": null,
+     "p95_latency_onset": null,
+     "series": {
+      "request_rate_rps": [
+       [
+        "2026-10-24T00:05:43Z",
+        1.920269
+       ],
+       [
+        "2026-10-24T00:05:58Z",
+        2.02
+       ],
+       [
+        "2026-10-24T00:06:13Z",
+        1.739896
+       ],
+       [
+        "2026-10-24T00:06:28Z",
+        1.84
+       ],
+       [
+        "2026-10-24T00:06:43Z",
+        1.640131
+       ],
+       [
+        "2026-10-24T00:06:58Z",
+        1.800144
+       ],
+       [
+        "2026-10-24T00:07:13Z",
+        1.86026
+       ],
+       [
+        "2026-10-24T00:07:28Z",
+        1.89981
+       ],
+       [
+        "2026-10-24T00:07:43Z",
+        2.239686
+       ],
+       [
+        "2026-10-24T00:07:58Z",
+        2.319907
+       ],
+       [
+        "2026-10-24T00:08:13Z",
+        2.240448
+       ],
+       [
+        "2026-10-24T00:08:28Z",
+        2.040367
+       ],
+       [
+        "2026-10-24T00:08:43Z",
+        1.880226
+       ],
+       [
+        "2026-10-24T00:08:58Z",
+        1.860149
+       ],
+       [
+        "2026-10-24T00:09:13Z",
+        1.740104
+       ],
+       [
+        "2026-10-24T00:09:28Z",
+        1.99996
+       ],
+       [
+        "2026-10-24T00:09:43Z",
+        2.0
+       ]
+      ],
+      "error_ratio": [
+       [
+        "2026-10-24T00:05:43Z",
+        0.0
+       ],
+       [
+        "2026-10-24T00:05:58Z",
+        0.0
+       ],
+       [
+        "2026-10-24T00:06:13Z",
+        0.0
+       ],
+       [
+        "2026-10-24T00:06:28Z",
+        0.0
+       ],
+       [
+        "2026-10-24T00:06:43Z",
+        0.0
+       ],
+       [
+        "2026-10-24T00:06:58Z",
+        0.0
+       ],
+       [
+        "2026-10-24T00:07:13Z",
+        0.0
+       ],
+       [
+        "2026-10-24T00:07:28Z",
+        0.0
+       ],
+       [
+        "2026-10-24T00:07:43Z",
+        0.0
+       ],
+       [
+        "2026-10-24T00:07:58Z",
+        0.008621
+       ],
+       [
+        "2026-10-24T00:08:13Z",
+        0.008929
+       ],
+       [
+        "2026-10-24T00:08:28Z",
+        0.019608
+       ],
+       [
+        "2026-10-24T00:08:43Z",
+        0.021277
+       ],
+       [
+        "2026-10-24T00:08:58Z",
+        0.032258
+       ],
+       [
+        "2026-10-24T00:09:13Z",
+        0.034483
+       ],
+       [
+        "2026-10-24T00:09:28Z",
+        0.02
+       ],
+       [
+        "2026-10-24T00:09:43Z",
+        0.01
+       ]
+      ],
+      "p95_latency_s": [
+       [
+        "2026-10-24T00:05:43Z",
+        0.147143
+       ],
+       [
+        "2026-10-24T00:05:58Z",
+        0.17425
+       ],
+       [
+        "2026-10-24T00:06:13Z",
+        0.190682
+       ],
+       [
+        "2026-10-24T00:06:28Z",
+        0.196923
+       ],
+       [
+        "2026-10-24T00:06:43Z",
+        0.173125
+       ],
+       [
+        "2026-10-24T00:06:58Z",
+        0.165625
+       ],
+       [
+        "2026-10-24T00:07:13Z",
+        0.186591
+       ],
+       [
+        "2026-10-24T00:07:28Z",
+        0.185227
+       ],
+       [
+        "2026-10-24T00:07:43Z",
+        0.173636
+       ],
+       [
+        "2026-10-24T00:07:58Z",
+        0.153333
+       ],
+       [
+        "2026-10-24T00:08:13Z",
+        0.156667
+       ],
+       [
+        "2026-10-24T00:08:28Z",
+        0.165
+       ],
+       [
+        "2026-10-24T00:08:43Z",
+        0.161875
+       ],
+       [
+        "2026-10-24T00:08:58Z",
+        0.162812
+       ],
+       [
+        "2026-10-24T00:09:13Z",
+        0.18475
+       ],
+       [
+        "2026-10-24T00:09:28Z",
+        0.1875
+       ],
+       [
+        "2026-10-24T00:09:43Z",
+        0.181818
+       ]
+      ]
+     }
+    }
+   },
+   {
+    "id": "ev-da4f27b25849",
+    "source": "metrics",
+    "kind": "service_http_metrics",
+    "service": "inventory",
+    "observed_at": "2026-10-24T00:09:13.447000Z",
+    "summary": "inventory: 1.29 req/s avg; 5xx ratio avg 1.4%, max 5.3%; first at or above 5.0% at 2026-10-24T00:09:13Z; p95 latency avg 46ms, max 48ms",
+    "query": "request_rate_rps: sum by (job) (rate(http_server_request_duration_seconds_count[60s]))\nerror_ratio: (sum by (job) (rate(http_server_request_duration_seconds_count{http_response_status_code=~\"5..\"}[60s])) or sum by (job) (rate(http_server_request_duration_seconds_count[60s])) * 0) / sum by (job) (rate(http_server_request_duration_seconds_count[60s]))\np95_latency_s: histogram_quantile(0.95, sum by (job, le) (rate(http_server_request_duration_seconds_bucket[60s])))",
+    "reference": "http://localhost:9090/api/v1/query_range?query=%28sum+by+%28job%29+%28rate%28http_server_request_duration_seconds_count%7Bhttp_response_status_code%3D~%225..%22%7D%5B60s%5D%29%29+or+sum+by+%28job%29+%28rate%28http_server_request_duration_seconds_count%5B60s%5D%29%29+%2A+0%29+%2F+sum+by+%28job%29+%28rate%28http_server_request_duration_seconds_count%5B60s%5D%29%29&start=1792800343.446598&end=1792800583.539051&step=15",
+    "data": {
+     "step_s": 15,
+     "stats": {
+      "request_rate_rps": {
+       "avg": 1.2941698262419425,
+       "max": 1.5799368025278988,
+       "last": 1.44
+      },
+      "error_ratio": {
+       "avg": 0.01357862057035657,
+       "max": 0.052631578947368425,
+       "last": 0.01388888888888889
+      },
+      "p95_latency_s": {
+       "avg": 0.045989366295365416,
+       "max": 0.04812500000000001,
+       "last": 0.04470588235294117
+      }
+     },
+     "error_ratio_onset": "2026-10-24T00:09:13.447000Z",
+     "p95_latency_onset": null,
+     "series": {
+      "request_rate_rps": [
+       [
+        "2026-10-24T00:05:43Z",
+        1.260176
+       ],
+       [
+        "2026-10-24T00:05:58Z",
+        1.36
+       ],
+       [
+        "2026-10-24T00:06:13Z",
+        1.119933
+       ],
+       [
+        "2026-10-24T00:06:28Z",
+        1.2
+       ],
+       [
+        "2026-10-24T00:06:43Z",
+        1.100088
+       ],
+       [
+        "2026-10-24T00:06:58Z",
+        1.100088
+       ],
+       [
+        "2026-10-24T00:07:13Z",
+        1.200168
+       ],
+       [
+        "2026-10-24T00:07:28Z",
+        1.279872
+       ],
+       [
+        "2026-10-24T00:07:43Z",
+        1.519787
+       ],
+       [
+        "2026-10-24T00:07:58Z",
+        1.579937
+       ],
+       [
+        "2026-10-24T00:08:13Z",
+        1.460292
+       ],
+       [
+        "2026-10-24T00:08:28Z",
+        1.420256
+       ],
+       [
+        "2026-10-24T00:08:43Z",
+        1.200144
+       ],
+       [
+        "2026-10-24T00:08:58Z",
+        1.300104
+       ],
+       [
+        "2026-10-24T00:09:13Z",
+        1.140068
+       ],
+       [
+        "2026-10-24T00:09:28Z",
+        1.319974
+       ],
+       [
+        "2026-10-24T00:09:43Z",
+        1.44
+       ]
+      ],
+      "error_ratio": [
+       [
+        "2026-10-24T00:05:43Z",
+        0.0
+       ],
+       [
+        "2026-10-24T00:05:58Z",
+        0.0
+       ],
+       [
+        "2026-10-24T00:06:13Z",
+        0.0
+       ],
+       [
+        "2026-10-24T00:06:28Z",
+        0.0
+       ],
+       [
+        "2026-10-24T00:06:43Z",
+        0.0
+       ],
+       [
+        "2026-10-24T00:06:58Z",
+        0.0
+       ],
+       [
+        "2026-10-24T00:07:13Z",
+        0.0
+       ],
+       [
+        "2026-10-24T00:07:28Z",
+        0.0
+       ],
+       [
+        "2026-10-24T00:07:43Z",
+        0.0
+       ],
+       [
+        "2026-10-24T00:07:58Z",
+        0.012658
+       ],
+       [
+        "2026-10-24T00:08:13Z",
+        0.013699
+       ],
+       [
+        "2026-10-24T00:08:28Z",
+        0.028169
+       ],
+       [
+        "2026-10-24T00:08:43Z",
+        0.033333
+       ],
+       [
+        "2026-10-24T00:08:58Z",
+        0.046154
+       ],
+       [
+        "2026-10-24T00:09:13Z",
+        0.052632
+       ],
+       [
+        "2026-10-24T00:09:28Z",
+        0.030303
+       ],
+       [
+        "2026-10-24T00:09:43Z",
+        0.013889
+       ]
+      ],
+      "p95_latency_s": [
+       [
+        "2026-10-24T00:05:43Z",
+        0.04625
+       ],
+       [
+        "2026-10-24T00:05:58Z",
+        0.047391
+       ],
+       [
+        "2026-10-24T00:06:13Z",
+        0.048125
+       ],
+       [
+        "2026-10-24T00:06:28Z",
+        0.047917
+       ],
+       [
+        "2026-10-24T00:06:43Z",
+        0.045703
+       ],
+       [
+        "2026-10-24T00:06:58Z",
+        0.045089
+       ],
+       [
+        "2026-10-24T00:07:13Z",
+        0.045312
+       ],
+       [
+        "2026-10-24T00:07:28Z",
+        0.045294
+       ],
+       [
+        "2026-10-24T00:07:43Z",
+        0.045
+       ],
+       [
+        "2026-10-24T00:07:58Z",
+        0.045298
+       ],
+       [
+        "2026-10-24T00:08:13Z",
+        0.045197
+       ],
+       [
+        "2026-10-24T00:08:28Z",
+        0.046141
+       ],
+       [
+        "2026-10-24T00:08:43Z",
+        0.045588
+       ],
+       [
+        "2026-10-24T00:08:58Z",
+        0.046307
+       ],
+       [
+        "2026-10-24T00:09:13Z",
+        0.04625
+       ],
+       [
+        "2026-10-24T00:09:28Z",
+        0.04625
+       ],
+       [
+        "2026-10-24T00:09:43Z",
+        0.044706
+       ]
+      ]
+     }
+    }
+   },
+   {
+    "id": "ev-c322de0f0330",
+    "source": "metrics",
+    "kind": "service_http_metrics",
+    "service": "orders",
+    "observed_at": "2026-10-24T00:09:13.447000Z",
+    "summary": "orders: 1.28 req/s avg; 5xx ratio avg 1.5%, max 6.7%; first at or above 5.0% at 2026-10-24T00:09:13Z; p95 latency avg 110ms, max 164ms",
+    "query": "request_rate_rps: sum by (job) (rate(http_server_request_duration_seconds_count[60s]))\nerror_ratio: (sum by (job) (rate(http_server_request_duration_seconds_count{http_response_status_code=~\"5..\"}[60s])) or sum by (job) (rate(http_server_request_duration_seconds_count[60s])) * 0) / sum by (job) (rate(http_server_request_duration_seconds_count[60s]))\np95_latency_s: histogram_quantile(0.95, sum by (job, le) (rate(http_server_request_duration_seconds_bucket[60s])))",
+    "reference": "http://localhost:9090/api/v1/query_range?query=%28sum+by+%28job%29+%28rate%28http_server_request_duration_seconds_count%7Bhttp_response_status_code%3D~%225..%22%7D%5B60s%5D%29%29+or+sum+by+%28job%29+%28rate%28http_server_request_duration_seconds_count%5B60s%5D%29%29+%2A+0%29+%2F+sum+by+%28job%29+%28rate%28http_server_request_duration_seconds_count%5B60s%5D%29%29&start=1792800343.446598&end=1792800583.539051&step=15",
+    "data": {
+     "step_s": 15,
+     "stats": {
+      "request_rate_rps": {
+       "avg": 1.2765211201656708,
+       "max": 1.5799368025278988,
+       "last": 1.3800000000000001
+      },
+      "error_ratio": {
+       "avg": 0.014716670398405421,
+       "max": 0.06666666666666667,
+       "last": 0.014492753623188404
+      },
+      "p95_latency_s": {
+       "avg": 0.10954090725409478,
+       "max": 0.16449999999999995,
+       "last": 0.09788793103448276
+      }
+     },
+     "error_ratio_onset": "2026-10-24T00:09:13.447000Z",
+     "p95_latency_onset": null,
+     "series": {
+      "request_rate_rps": [
+       [
+        "2026-10-24T00:05:43Z",
+        1.160162
+       ],
+       [
+        "2026-10-24T00:05:58Z",
+        1.28
+       ],
+       [
+        "2026-10-24T00:06:13Z",
+        1.139932
+       ],
+       [
+        "2026-10-24T00:06:28Z",
+        1.18
+       ],
+       [
+        "2026-10-24T00:06:43Z",
+        1.160093
+       ],
+       [
+        "2026-10-24T00:06:58Z",
+        1.040083
+       ],
+       [
+        "2026-10-24T00:07:13Z",
+        1.160162
+       ],
+       [
+        "2026-10-24T00:07:28Z",
+        1.319868
+       ],
+       [
+        "2026-10-24T00:07:43Z",
+        1.519787
+       ],
+       [
+        "2026-10-24T00:07:58Z",
+        1.579937
+       ],
+       [
+        "2026-10-24T00:08:13Z",
+        1.440288
+       ],
+       [
+        "2026-10-24T00:08:28Z",
+        1.420256
+       ],
+       [
+        "2026-10-24T00:08:43Z",
+        1.180142
+       ],
+       [
+        "2026-10-24T00:08:58Z",
+        1.280102
+       ],
+       [
+        "2026-10-24T00:09:13Z",
+        1.200072
+       ],
+       [
+        "2026-10-24T00:09:28Z",
+        1.259975
+       ],
+       [
+        "2026-10-24T00:09:43Z",
+        1.38
+       ]
+      ],
+      "error_ratio": [
+       [
+        "2026-10-24T00:05:43Z",
+        0.0
+       ],
+       [
+        "2026-10-24T00:05:58Z",
+        0.0
+       ],
+       [
+        "2026-10-24T00:06:13Z",
+        0.0
+       ],
+       [
+        "2026-10-24T00:06:28Z",
+        0.0
+       ],
+       [
+        "2026-10-24T00:06:43Z",
+        0.0
+       ],
+       [
+        "2026-10-24T00:06:58Z",
+        0.0
+       ],
+       [
+        "2026-10-24T00:07:13Z",
+        0.0
+       ],
+       [
+        "2026-10-24T00:07:28Z",
+        0.0
+       ],
+       [
+        "2026-10-24T00:07:43Z",
+        0.0
+       ],
+       [
+        "2026-10-24T00:07:58Z",
+        0.012658
+       ],
+       [
+        "2026-10-24T00:08:13Z",
+        0.013889
+       ],
+       [
+        "2026-10-24T00:08:28Z",
+        0.014085
+       ],
+       [
+        "2026-10-24T00:08:43Z",
+        0.033898
+       ],
+       [
+        "2026-10-24T00:08:58Z",
+        0.046875
+       ],
+       [
+        "2026-10-24T00:09:13Z",
+        0.066667
+       ],
+       [
+        "2026-10-24T00:09:28Z",
+        0.047619
+       ],
+       [
+        "2026-10-24T00:09:43Z",
+        0.014493
+       ]
+      ],
+      "p95_latency_s": [
+       [
+        "2026-10-24T00:05:43Z",
+        0.105
+       ],
+       [
+        "2026-10-24T00:05:58Z",
+        0.154
+       ],
+       [
+        "2026-10-24T00:06:13Z",
+        0.1645
+       ],
+       [
+        "2026-10-24T00:06:28Z",
+        0.1615
+       ],
+       [
+        "2026-10-24T00:06:43Z",
+        0.097841
+       ],
+       [
+        "2026-10-24T00:06:58Z",
+        0.09675
+       ],
+       [
+        "2026-10-24T00:07:13Z",
+        0.098977
+       ],
+       [
+        "2026-10-24T00:07:28Z",
+        0.098646
+       ],
+       [
+        "2026-10-24T00:07:43Z",
+        0.098393
+       ],
+       [
+        "2026-10-24T00:07:58Z",
+        0.097457
+       ],
+       [
+        "2026-10-24T00:08:13Z",
+        0.096786
+       ],
+       [
+        "2026-10-24T00:08:28Z",
+        0.09745
+       ],
+       [
+        "2026-10-24T00:08:43Z",
+        0.097434
+       ],
+       [
+        "2026-10-24T00:08:58Z",
+        0.099737
+       ],
+       [
+        "2026-10-24T00:09:13Z",
+        0.1
+       ],
+       [
+        "2026-10-24T00:09:28Z",
+        0.099837
+       ],
+       [
+        "2026-10-24T00:09:43Z",
+        0.097888
+       ]
+      ]
+     }
+    }
+   },
+   {
+    "id": "ev-19d7f31f2517",
+    "source": "traces",
+    "kind": "trace_pattern",
+    "service": "gateway",
+    "observed_at": "2026-10-24T00:07:38.098425Z",
+    "summary": "5 of 5 sampled error/slow traces: gateway POST /checkout returned 502 in 14ms-38ms; failing: gateway POST /checkout (502) <- orders POST /orders (502) <- inventory POST /reserve (500)",
+    "query": "Jaeger /api/traces for services ['gateway', 'inventory', 'orders']: tags error=true, and minDuration=1000ms; limit 20 per query",
+    "reference": "http://localhost:16686/trace/7e87b4c6f71412b029ec72a3cae9f2a9",
+    "data": {
+     "trace_count": 5,
+     "sampled_traces": 5,
+     "incomplete_traces_skipped": 0,
+     "root": {
+      "service": "gateway",
+      "operation": "POST /checkout",
+      "status_code": 502
+     },
+     "error_path": [
+      [
+       "gateway",
+       "POST /checkout",
+       502
+      ],
+      [
+       "orders",
+       "POST /orders",
+       502
+      ],
+      [
+       "inventory",
+       "POST /reserve",
+       500
+      ]
+     ],
+     "duration_s": {
+      "min": 0.013982,
+      "max": 0.037618
+     },
+     "dominant_self_time": null,
+     "releases": {
+      "gateway=1.4.2": 5,
+      "inventory=3.1.5": 5,
+      "orders=2.7.0": 5
+     },
+     "first_seen": "2026-10-24T00:07:38Z",
+     "last_seen": "2026-10-24T00:08:56Z",
+     "example_traces": [
+      {
+       "trace_id": "7e87b4c6f71412b029ec72a3cae9f2a9",
+       "url": "http://localhost:16686/trace/7e87b4c6f71412b029ec72a3cae9f2a9",
+       "start": "2026-10-24T00:07:38Z",
+       "duration_s": 0.037618,
+       "top_self_time": [
+        {
+         "service": "inventory",
+         "operation": "POST /reserve",
+         "self_time_s": 0.018383,
+         "release": "3.1.5"
+        },
+        {
+         "service": "gateway",
+         "operation": "POST /checkout",
+         "self_time_s": 0.007166,
+         "release": "1.4.2"
+        },
+        {
+         "service": "orders",
+         "operation": "POST /orders",
+         "self_time_s": 0.004888,
+         "release": "2.7.0"
+        }
+       ]
+      },
+      {
+       "trace_id": "dfd268889a3a2dfb7d9c5db170426b6f",
+       "url": "http://localhost:16686/trace/dfd268889a3a2dfb7d9c5db170426b6f",
+       "start": "2026-10-24T00:08:56Z",
+       "duration_s": 0.027753,
+       "top_self_time": [
+        {
+         "service": "gateway",
+         "operation": "POST /checkout",
+         "self_time_s": 0.008465,
+         "release": "1.4.2"
+        },
+        {
+         "service": "orders",
+         "operation": "POST /orders",
+         "self_time_s": 0.006161,
+         "release": "2.7.0"
+        },
+        {
+         "service": "inventory",
+         "operation": "POST /reserve",
+         "self_time_s": 0.006027,
+         "release": "3.1.5"
+        }
+       ]
+      },
+      {
+       "trace_id": "c306688cbed0593eb93c23dd5d2b9a0a",
+       "url": "http://localhost:16686/trace/c306688cbed0593eb93c23dd5d2b9a0a",
+       "start": "2026-10-24T00:08:24Z",
+       "duration_s": 0.018256,
+       "top_self_time": [
+        {
+         "service": "orders",
+         "operation": "POST",
+         "self_time_s": 0.004829,
+         "release": null
+        },
+        {
+         "service": "inventory",
+         "operation": "POST /reserve",
+         "self_time_s": 0.004001,
+         "release": "3.1.5"
+        },
+        {
+         "service": "orders",
+         "operation": "POST /orders",
+         "self_time_s": 0.003466,
+         "release": "2.7.0"
+        }
+       ]
+      }
+     ]
+    }
+   },
+   {
+    "id": "ev-095eb88a2809",
+    "source": "logs",
+    "kind": "log_pattern",
+    "service": "gateway",
+    "observed_at": "2026-10-24T00:07:38.132000Z",
+    "summary": "gateway logged ERROR 'checkout failed: orders returned 502' 5 times from 2026-10-24T00:07:38Z to 2026-10-24T00:08:56Z (release 1.4.2); example traces: dfd268889a3a2dfb7d9c5db170426b6f, 842e94010b463130ba0b1b36a22c5734, c306688cbed0593eb93c23dd5d2b9a0a",
+    "query": "POST /otel-logs/_search {\"size\":0,\"query\":{\"bool\":{\"filter\":[{\"range\":{\"@timestamp\":{\"gte\":\"2026-10-24T00:05:43.446598+00:00\",\"lt\":\"2026-10-24T00:09:43.539051+00:00\"}}},{\"range\":{\"severity.number\":{\"gte\":13}}}]}},\"aggs\":{\"services\":{\"terms\":{\"field\":\"resource.service.name\",\"size\":20},\"aggs\":{\"messages\":{\"terms\":{\"field\":\"body.keyword\",\"size\":10},\"aggs\":{\"first_seen\":{\"min\":{\"field\":\"@timestamp\"}},\"last_seen\":{\"max\":{\"field\":\"@timestamp\"}},\"severity\":{\"terms\":{\"field\":\"severity.text\",\"size\":3}},\"releases\":{\"terms\":{\"field\":\"attributes.release\",\"size\":3}},\"examples\":{\"top_hits\":{\"size\":3,\"sort\":[{\"@timestamp\":\"desc\"}],\"_source\":[\"traceId\",\"@timestamp\"]}}}}}}}}",
+    "reference": null,
+    "data": {
+     "message": "checkout failed: orders returned 502",
+     "count": 5,
+     "severity": "ERROR",
+     "first_seen": "2026-10-24T00:07:38Z",
+     "last_seen": "2026-10-24T00:08:56Z",
+     "releases": [
+      "1.4.2"
+     ],
+     "example_trace_ids": [
+      "dfd268889a3a2dfb7d9c5db170426b6f",
+      "842e94010b463130ba0b1b36a22c5734",
+      "c306688cbed0593eb93c23dd5d2b9a0a"
+     ]
+    }
+   },
+   {
+    "id": "ev-7b87ce3c8b85",
+    "source": "logs",
+    "kind": "log_pattern",
+    "service": "inventory",
+    "observed_at": "2026-10-24T00:07:38.126000Z",
+    "summary": "inventory logged ERROR 'deadlock detected' 5 times from 2026-10-24T00:07:38Z to 2026-10-24T00:08:56Z (release 3.1.5); example traces: dfd268889a3a2dfb7d9c5db170426b6f, 842e94010b463130ba0b1b36a22c5734, c306688cbed0593eb93c23dd5d2b9a0a",
+    "query": "POST /otel-logs/_search {\"size\":0,\"query\":{\"bool\":{\"filter\":[{\"range\":{\"@timestamp\":{\"gte\":\"2026-10-24T00:05:43.446598+00:00\",\"lt\":\"2026-10-24T00:09:43.539051+00:00\"}}},{\"range\":{\"severity.number\":{\"gte\":13}}}]}},\"aggs\":{\"services\":{\"terms\":{\"field\":\"resource.service.name\",\"size\":20},\"aggs\":{\"messages\":{\"terms\":{\"field\":\"body.keyword\",\"size\":10},\"aggs\":{\"first_seen\":{\"min\":{\"field\":\"@timestamp\"}},\"last_seen\":{\"max\":{\"field\":\"@timestamp\"}},\"severity\":{\"terms\":{\"field\":\"severity.text\",\"size\":3}},\"releases\":{\"terms\":{\"field\":\"attributes.release\",\"size\":3}},\"examples\":{\"top_hits\":{\"size\":3,\"sort\":[{\"@timestamp\":\"desc\"}],\"_source\":[\"traceId\",\"@timestamp\"]}}}}}}}}",
+    "reference": null,
+    "data": {
+     "message": "deadlock detected",
+     "count": 5,
+     "severity": "ERROR",
+     "first_seen": "2026-10-24T00:07:38Z",
+     "last_seen": "2026-10-24T00:08:56Z",
+     "releases": [
+      "3.1.5"
+     ],
+     "example_trace_ids": [
+      "dfd268889a3a2dfb7d9c5db170426b6f",
+      "842e94010b463130ba0b1b36a22c5734",
+      "c306688cbed0593eb93c23dd5d2b9a0a"
+     ]
+    }
+   },
+   {
+    "id": "ev-d2f554a49364",
+    "source": "logs",
+    "kind": "log_pattern",
+    "service": "orders",
+    "observed_at": "2026-10-24T00:07:38.130000Z",
+    "summary": "orders logged ERROR 'inventory reservation failed with status 500' 5 times from 2026-10-24T00:07:38Z to 2026-10-24T00:08:56Z (release 2.7.0); example traces: dfd268889a3a2dfb7d9c5db170426b6f, 842e94010b463130ba0b1b36a22c5734, c306688cbed0593eb93c23dd5d2b9a0a",
+    "query": "POST /otel-logs/_search {\"size\":0,\"query\":{\"bool\":{\"filter\":[{\"range\":{\"@timestamp\":{\"gte\":\"2026-10-24T00:05:43.446598+00:00\",\"lt\":\"2026-10-24T00:09:43.539051+00:00\"}}},{\"range\":{\"severity.number\":{\"gte\":13}}}]}},\"aggs\":{\"services\":{\"terms\":{\"field\":\"resource.service.name\",\"size\":20},\"aggs\":{\"messages\":{\"terms\":{\"field\":\"body.keyword\",\"size\":10},\"aggs\":{\"first_seen\":{\"min\":{\"field\":\"@timestamp\"}},\"last_seen\":{\"max\":{\"field\":\"@timestamp\"}},\"severity\":{\"terms\":{\"field\":\"severity.text\",\"size\":3}},\"releases\":{\"terms\":{\"field\":\"attributes.release\",\"size\":3}},\"examples\":{\"top_hits\":{\"size\":3,\"sort\":[{\"@timestamp\":\"desc\"}],\"_source\":[\"traceId\",\"@timestamp\"]}}}}}}}}",
+    "reference": null,
+    "data": {
+     "message": "inventory reservation failed with status 500",
+     "count": 5,
+     "severity": "ERROR",
+     "first_seen": "2026-10-24T00:07:38Z",
+     "last_seen": "2026-10-24T00:08:56Z",
+     "releases": [
+      "2.7.0"
+     ],
+     "example_trace_ids": [
+      "dfd268889a3a2dfb7d9c5db170426b6f",
+      "842e94010b463130ba0b1b36a22c5734",
+      "c306688cbed0593eb93c23dd5d2b9a0a"
+     ]
+    }
+   }
+  ]
+ },
+ "expected": {
+  "root_cause_service": "inventory",
+  "also_accepted": [],
+  "release": null
+ },
+ "scenario": {
+  "before_window": [],
+  "onset": [
+   {
+    "kind": "fault",
+    "service": "inventory",
+    "version": null,
+    "latency_ms": 0,
+    "error_rate": 0.03,
+    "message": "deadlock detected",
+    "description": null,
+    "wait_after_s": 0
+   }
+  ],
+  "notes": "About 3% of reservations fail: below the 5% onset threshold, few log lines."
+ },
+ "provenance": {
+  "captured_at": "2026-10-24T00:09:43.539051+00:00",
+  "git_commit": "fbf08eb"
+ }
+}

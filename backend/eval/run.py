@@ -4,6 +4,7 @@
     python -m eval.run --check null            # free: constant answers must score low
     python -m eval.run --variant baseline      # paid: one diagnosis per case
     python -m eval.run --variant v1 --effort high --reps 1
+    python -m eval.run --variant baseline --regrade   # free: re-grade stored replies
 
 Paid runs refuse to start until the current harness (runner, grader, prompt,
 client, and case files) has been approved with --approve-harness, so a run
@@ -30,6 +31,7 @@ from app.db.models import EvidenceItem, EvidenceSnapshot, Incident
 from app.diagnosis import pricing
 from app.diagnosis.llm import OUTPUT_SCHEMA_CHARS, DiagnosisModel, LLMError
 from app.diagnosis.prompt import PROMPT_VERSION, SYSTEM_PROMPT, render_user_message
+from app.diagnosis.schemas import DiagnosisOutput
 from app.main import build_diagnosis_model
 from eval.grade import constant_output, grade, oracle_output
 
@@ -307,9 +309,36 @@ def run_check(kind: str) -> int:
     return 0
 
 
+def regrade(variant: str) -> int:
+    """Recompute stored grades from each run's saved reply, for a changed grader. Free."""
+    out = RESULTS_DIR / variant
+    path = out / "results.jsonl"
+    if not path.exists():
+        print(f"{variant}: no results", file=sys.stderr)
+        return 2
+    cases = {c["id"]: c for c in load_cases()}
+    rows = [json.loads(line) for line in path.read_text().splitlines()]
+    changed = 0
+    for row in rows:
+        if row["status"] != "ok":
+            continue
+        trace = json.loads(
+            (out / "traces" / f"{row['prompt_id']}_rep{row['rep']}.json").read_text()
+        )
+        new = grade(
+            cases[row["prompt_id"]], DiagnosisOutput.model_validate_json(trace[-1]["content"])
+        )
+        changed += new != row["grade"]
+        row["grade"] = new
+    path.write_text("".join(json.dumps(r, sort_keys=True) + "\n" for r in rows))
+    print(f"{variant}: regraded {len(rows)} rows, {changed} changed")
+    return 0
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument("--check", choices=["oracle", "null"])
+    parser.add_argument("--regrade", action="store_true", help="recompute stored grades (free)")
     parser.add_argument("--variant", default="baseline")
     parser.add_argument("--model")
     parser.add_argument("--effort")
@@ -324,6 +353,8 @@ def main() -> None:
         args.variant.startswith("v") and args.variant[1:].isdigit()
     ):
         parser.error("--variant must be 'baseline' or v<N>")
+    if args.regrade:
+        sys.exit(regrade(args.variant))
     sys.exit(run_check(args.check) if args.check else asyncio.run(run_variant(args)))
 
 

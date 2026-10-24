@@ -66,6 +66,7 @@ class TestGrade:
             "specificity": None,
             "release": 1.0,
             "citations": 1.0,
+            "complete": None,
         }
 
     def test_wrong_service(self) -> None:
@@ -208,3 +209,42 @@ def test_a_second_real_fault_is_accepted_when_listed() -> None:
     }
     assert grade(two_faults, constant_output("inventory"))["correct"] == 1.0
     assert grade(two_faults, constant_output("gateway"))["correct"] == 0.0
+
+
+TWO_FAULTS = {
+    "id": "X1",
+    "snapshot": {"evidence": [{"id": "ev-1", "source": "metrics"}], "source_errors": []},
+    "expected": {"root_cause_service": "orders", "also_accepted": ["inventory"], "release": None},
+}
+
+
+def test_complete_requires_every_fault_named_outside_ruled_out() -> None:
+    output = oracle_output(TWO_FAULTS)  # names inventory as a contributing factor
+    assert grade(TWO_FAULTS, output)["complete"] == 1.0
+
+    data = output.model_dump()
+    data["contributing_factors"] = []
+    data["ruled_out"] = [{"statement": "inventory is healthy", "evidence_ids": ["ev-1"]}]
+    output = DiagnosisOutput.model_validate(data)
+    assert grade(TWO_FAULTS, output)["complete"] == 0.0
+
+    single = {**TWO_FAULTS, "expected": {**TWO_FAULTS["expected"], "also_accepted": []}}
+    assert grade(single, output)["complete"] is None
+
+
+def test_regrade_recomputes_stored_grades_from_traces(tmp_path: Path, monkeypatch) -> None:
+    out = tmp_path / "v9"
+    (out / "traces").mkdir(parents=True)
+    output = oracle_output(TWO_FAULTS)
+    trace = [{"role": "assistant", "content": output.model_dump_json()}]
+    (out / "traces" / "X1_rep0.json").write_text(json.dumps(trace))
+    row = {"prompt_id": "X1", "rep": 0, "status": "ok", "grade": {"correct": 0.0}}
+    (out / "results.jsonl").write_text(json.dumps(row) + "\n")
+    monkeypatch.setattr(runner, "RESULTS_DIR", tmp_path)
+    monkeypatch.setattr(runner, "load_cases", lambda ids=None: [TWO_FAULTS])
+
+    assert runner.regrade("v9") == 0
+
+    [stored] = [json.loads(line) for line in (out / "results.jsonl").read_text().splitlines()]
+    assert stored["grade"]["correct"] == 1.0
+    assert stored["grade"]["complete"] == 1.0

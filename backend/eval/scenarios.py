@@ -43,6 +43,8 @@ class Scenario:
     before_window: tuple[Step, ...] = ()  # applied, then settled, before the window opens
     services: tuple[str, ...] | None = None  # incident scope; None means all
     notes: str = ""
+    # Other services that also count as correct, for cases with more than one real fault.
+    also_accepted: tuple[Service, ...] = ()
 
 
 def _deploy(service: Service, version: str, **faults) -> Step:
@@ -244,6 +246,111 @@ SCENARIOS: tuple[Scenario, ...] = (
             _deploy("inventory", "3.2.5", latency_ms=2500),
         ),
         notes="Two deploys a minute apart; only the second is bad.",
+    ),
+    # Hard cases: weak signals, mixed signals, or a fault the window does not start with.
+    Scenario(
+        "F19",
+        "hard",
+        ("errors", "low-rate"),
+        "A few checkout errors reported",
+        "medium",
+        None,
+        "inventory",
+        None,
+        onset=(_fault("inventory", error_rate=0.03, message="deadlock detected"),),
+        notes="About 3% of reservations fail: below the 5% onset threshold, few log lines.",
+    ),
+    Scenario(
+        "F20",
+        "hard",
+        ("errors", "flapping"),
+        "Checkout failed on and off, seems fine now",
+        "medium",
+        None,
+        "inventory",
+        None,
+        onset=(
+            _fault(
+                "inventory", error_rate=0.4, message="connection reset by peer", wait_after_s=40
+            ),
+            _fault("inventory", wait_after_s=40),
+            _fault(
+                "inventory", error_rate=0.4, message="connection reset by peer", wait_after_s=40
+            ),
+            _fault("inventory"),
+        ),
+        notes="Errors for 40 s, clear for 40 s, errors for 40 s, then healthy to the end.",
+    ),
+    Scenario(
+        "F21",
+        "hard",
+        ("latency", "cascade", "fixed-by-redeploy"),
+        "Checkout was failing earlier",
+        "high",
+        None,
+        "inventory",
+        "3.3.0",
+        onset=(
+            _deploy("inventory", "3.3.0", latency_ms=2500, wait_after_s=75),
+            _deploy("inventory", "3.3.1"),
+        ),
+        notes="3.3.0 broke checkout; 3.3.1 fixed it inside the window. Name 3.3.0, not 3.3.1.",
+    ),
+    Scenario(
+        "F22",
+        "hard",
+        ("latency", "no-errors", "cascade"),
+        "Checkout is slow",
+        "medium",
+        None,
+        "inventory",
+        None,
+        onset=(_fault("inventory", latency_ms=1500),),
+        notes="Under orders' 2 s timeout: no errors anywhere, every hop slow.",
+    ),
+    Scenario(
+        "F23",
+        "hard",
+        ("errors", "misleading-report", "decoy-deploy"),
+        "Orders 2.9.0 broke checkout",
+        "high",
+        "Errors began after the orders 2.9.0 rollout.",
+        "inventory",
+        None,
+        onset=(
+            _deploy("orders", "2.9.0", wait_after_s=30),
+            _fault("inventory", error_rate=0.08, message="connection pool exhausted"),
+        ),
+        notes="The blamed deploy is clean; inventory fails about 8% of reservations.",
+    ),
+    Scenario(
+        "F24",
+        "hard",
+        ("errors", "latency", "two-faults"),
+        "Checkout errors and slowness",
+        "high",
+        None,
+        "orders",
+        None,
+        onset=(
+            _fault("orders", error_rate=0.3, message="database connection refused"),
+            _fault("inventory", latency_ms=600),
+        ),
+        also_accepted=("inventory",),
+        notes="Two independent faults; either service counts as the root cause.",
+    ),
+    Scenario(
+        "F25",
+        "hard",
+        ("latency", "cascade", "pre-existing", "decoy-deploy"),
+        "Checkout failing since the gateway deploy",
+        "high",
+        None,
+        "inventory",
+        None,
+        before_window=(_fault("inventory", latency_ms=2500),),
+        onset=(_deploy("gateway", "1.5.4"),),
+        notes="The fault predates the window; the gateway deploy is the only change in it.",
     ),
     # Healthy windows: no root cause should be named.
     Scenario(

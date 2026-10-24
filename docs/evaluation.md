@@ -1,7 +1,7 @@
 # Evaluation (Milestone 5)
 
 The evaluation measures how well the investigation agent diagnoses incidents whose root
-cause is known. It replays 24 frozen incidents through the same prompt and Claude client the
+cause is known. It replays 31 frozen incidents through the same prompt and Claude client the
 API uses and grades each diagnosis with exact checks. The baseline report is in
 [`backend/eval/results/report.md`](../backend/eval/results/report.md).
 
@@ -19,6 +19,7 @@ case with its report, expected answer, and evidence.
 | `silent` | F10-F13 | A fault with no deploy; find the service without blaming a release. |
 | `decoy-deploy` | F14-F16 | An unrelated deploy is visible (in F14 the report blames it); F16 has two deploys and one is at fault. |
 | `missing-source` | F17-F18 | F01 without logs and F10 without traces, as if that backend had failed. |
+| `hard` | F19-F25 | Added after the baseline for headroom: 3% errors with no metric onset, flapping errors that stop, a bad release fixed by the next one inside the window, slowness with no errors anywhere, a misleading report plus a decoy deploy in the blamed service, two independent faults (either service counts), and a fault already running before the window with a decoy deploy inside it. |
 | `healthy` | H01-H06 | No fault; the diagnosis must not name a root cause. Includes a recent good deploy, a rollback, a vague report, a report of an outage the data contradicts, and a one-service scope. |
 
 Scenarios are defined in `backend/eval/scenarios.py`. `python -m eval.capture` resets the
@@ -40,7 +41,7 @@ Exact checks only; no model grades another model.
 
 | Metric | Applies to | Passes when |
 |---|---|---|
-| `correct` | all | Faulty case: root cause names the expected service. Healthy case: root cause is null. |
+| `correct` | all | Faulty case: root cause names the expected service (or another the case accepts, for two faults). Healthy case: root cause is null. |
 | `recall` | faulty | `correct` on faulty cases: the expected service was found. |
 | `specificity` | healthy | Root cause is null. |
 | `release` | deploy-caused | Root-cause statement names the bad release (exact version match). |
@@ -60,7 +61,7 @@ From `backend/` with the virtualenv active:
 ```bash
 python -m eval.run --check oracle                  # free
 python -m eval.run --check null                    # free
-python -m eval.run --variant baseline --max-usd 2  # paid, about $1.25 for 24 cases
+python -m eval.run --variant baseline --max-usd 2  # paid, about $1.25 for the original 24
 python -m eval.report                              # writes eval/results/report.md
 python -m eval.overview                            # writes eval/cases/CASES.md
 ```
@@ -114,6 +115,7 @@ regression sample. Both runs used the baseline model and effort.
 |---|---|---|---|---|---|---|
 | `v1` | 2 | A source that failed to collect is citable as `src-<source>` | F17 x3, F18 x3, F01, F14, H05 | 9/9 | 8/9 | $0.53 |
 | `v2` | 3 | A source that was queried and returned nothing is citable too | H05 x3, F17, F18 | 5/5 | 5/5 | $0.25 |
+| `v3` | 3 | None; the seven new hard cases | F19-F25 x2 | 14/14 | 14/14 | $0.82 |
 
 - **v1** fixed the target: all six F17 and F18 runs cited the failed source in their re-run
   actions and passed. It exposed the same gap in another form: H05 recommended pulling
@@ -122,16 +124,23 @@ regression sample. Both runs used the baseline model and effort.
 - **v2** made those sources citable as well. All five runs passed, citing for example
   `src-deployments` when ruling out a deploy ("no deployment records were found in the
   window") and the empty trace and log sources for an action to re-run them.
-- Not measured: prompt version 3 on the other 19 cases. The change adds one instruction and an
+- **v3** ran prompt version 3 on the seven hard cases, twice each (14 runs, $0.82): all 14
+  correct with valid citations. The model found the 3% error rate from five log lines, named
+  3.3.0 rather than the fix 3.3.1, and ruled out the decoy gateway deploy in F25 because errors
+  were already logged under the previous gateway release. In F24 both runs blamed the orders
+  database errors but neither mentioned the second fault, a tenfold rise in inventory latency;
+  the grader accepts either service, so this miss scores as correct.
+- Not measured: prompt version 3 on the other 19 original cases. The change adds one instruction and an
   `<empty_sources>` list, so regressions are unlikely but not ruled out; a full run costs about
   $1.25.
 
 ## Known limitations
 
-- **Little headroom.** The baseline scores at or near the ceiling, so this set detects
-  regressions (prompt, model, or effort changes) better than it ranks improvements. Harder
-  cases are needed to compare stronger configurations.
-- **Small samples.** 24 cases and one run each; per-group intervals are wide, and run-to-run
+- **Little headroom.** The baseline scores at or near the ceiling, and the seven hard cases
+  added for headroom scored 14 of 14 as well, so this set detects regressions (prompt, model,
+  or effort changes) better than it ranks improvements. The checks, not only the cases, limit
+  it: a diagnosis that misses a second fault (F24) still scores as correct.
+- **Small samples.** 31 cases, mostly one run each; per-group intervals are wide, and run-to-run
   variance is not measured (`--reps` supports it).
 - **One synthetic system.** All cases come from the three-service demo stack and its fault
   types; results say little about larger or real systems.

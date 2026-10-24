@@ -1,0 +1,9 @@
+{
+ "model": "claude-opus-5-5",
+ "effort": "medium",
+ "max_tokens": 16000,
+ "prompt_version": "3",
+ "harness_sha": "eb094a0c2c4f854150d7a5b8049cb0ab190c3c7d1f31d1732158d678df2be887",
+ "cases": 7,
+ "reps": 2
+}

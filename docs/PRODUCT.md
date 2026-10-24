@@ -32,7 +32,7 @@ seconds, and an honest "not sure" or "nothing wrong" when that is the truth.
 Every claim cites the stored evidence that supports it, and the backend checks those citations;
 a diagnosis that fails the check is shown as invalid, never as an answer. The system records
 what it ruled out and what it does not know, and is measured against incidents with known root
-causes (24 cases; see `docs/evaluation.md`).
+causes (31 cases; see `docs/evaluation.md`).
 
 ## Operating Context
 

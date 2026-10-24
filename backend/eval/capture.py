@@ -140,6 +140,7 @@ async def capture(scenario: Scenario, stack: Stack, backends: Backends, commit: 
         },
         "expected": {
             "root_cause_service": scenario.expected_service,
+            "also_accepted": list(scenario.also_accepted),
             "release": scenario.expected_release,
         },
         "scenario": {

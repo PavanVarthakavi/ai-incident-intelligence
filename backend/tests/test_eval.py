@@ -195,3 +195,16 @@ def test_done_keys_enable_resume(tmp_path: Path) -> None:
     path = tmp_path / "results.jsonl"
     path.write_text(json.dumps({"prompt_id": "F01", "rep": 0}) + "\n")
     assert runner.done_keys(path) == {("F01", 0)}
+
+
+def test_a_second_real_fault_is_accepted_when_listed() -> None:
+    two_faults = {
+        "snapshot": {"evidence": [{"id": "ev-1", "source": "metrics"}], "source_errors": []},
+        "expected": {
+            "root_cause_service": "orders",
+            "also_accepted": ["inventory"],
+            "release": None,
+        },
+    }
+    assert grade(two_faults, constant_output("inventory"))["correct"] == 1.0
+    assert grade(two_faults, constant_output("gateway"))["correct"] == 0.0

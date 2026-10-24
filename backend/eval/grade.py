@@ -2,7 +2,8 @@
 
 Metrics per case (None when a metric does not apply to the case):
 
-- correct:     faulty case: root cause names the faulty service.
+- correct:     faulty case: root cause names the faulty service (or one of the
+               case's also_accepted services, when it has two real faults).
                healthy case: no root cause.
 - recall:      `correct` on faulty cases only.
 - specificity: `correct` on healthy cases only.
@@ -43,7 +44,8 @@ def grade(case: dict[str, Any], output: DiagnosisOutput) -> dict[str, float | No
     if expected_service is None:
         correct = root is None
     else:
-        correct = root is not None and (root.service or "").strip().lower() == expected_service
+        accepted = {expected_service, *case["expected"].get("also_accepted", [])}
+        correct = root is not None and (root.service or "").strip().lower() in accepted
 
     release = None
     if expected_release is not None:

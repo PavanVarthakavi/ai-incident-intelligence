@@ -6,7 +6,7 @@ evidence-grounded incident diagnoses.
 > **Status: Milestone 6 (Frontend).** A local demo system produces logs, metrics, traces,
 > and deployment events; the backend collects them into citable evidence, stores incidents
 > with immutable snapshots in PostgreSQL, and diagnoses a snapshot with Claude, checking that
-> every claim cites stored evidence. An evaluation of 24 incidents with known root causes
+> every claim cites stored evidence. An evaluation of 31 incidents with known root causes
 > measures diagnosis quality, and a web interface presents each diagnosis as a report whose
 > claims link to their evidence. See [`docs/roadmap.md`](docs/roadmap.md).
 
@@ -23,7 +23,7 @@ evidence-grounded incident diagnoses.
 | Telemetry stack: OTel Collector, Prometheus, Jaeger, OpenSearch (`compose.yaml`) | Implemented |
 | Incidents with evidence snapshots in PostgreSQL (`/v1/incidents`) | Implemented |
 | Investigation agent: cited diagnoses with Claude (`.../diagnoses`) | Implemented |
-| Evaluation: 24 frozen incidents, exact-check grading, baseline report (`backend/eval/`) | Implemented |
+| Evaluation: 31 frozen incidents, exact-check grading, baseline report (`backend/eval/`) | Implemented |
 | Web interface: incident list, report with linked evidence, new incident (`frontend/`) | Implemented |
 
 See [`docs/architecture.md`](docs/architecture.md) for the target design,
@@ -129,8 +129,8 @@ deploy, and checks that the backend finds it in every telemetry source.
 
 ## Web interface
 
-With the backend running, `python -m eval.seed` (from `backend/`) loads the 24 evaluation
-incidents with their real diagnoses; then `npm run dev` in `frontend/`. Details in
+With the backend running, `python -m eval.seed` (from `backend/`) loads the 31 evaluation
+incidents, the original 24 with their real diagnoses; then `npm run dev` in `frontend/`. Details in
 [`docs/frontend.md`](docs/frontend.md).
 
 ## Data policy

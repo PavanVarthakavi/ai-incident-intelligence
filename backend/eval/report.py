@@ -22,6 +22,7 @@ LABELS = {
     "specificity": "Specificity (healthy)",
     "release": "Release named",
     "citations": "Citations valid",
+    "complete": "Every fault named (two-fault cases)",
 }
 
 

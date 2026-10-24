@@ -69,7 +69,8 @@ Goal: measure diagnosis quality objectively.
   finding; measured as variants `v1` and `v2`
 - [x] Seven harder cases (weak, flapping, masked, misleading, two faults, pre-existing):
   14 of 14 correct
-- Next: checks that score completeness (a second fault named), and cases the model fails
+- [x] Completeness check for two-fault cases: F24 scores 0 of 2 (the second fault is missed)
+- Next: more cases the model fails, such as further multi-fault scenarios
 - Not planned: running paid evaluations in CI
 
 ## M6: Frontend

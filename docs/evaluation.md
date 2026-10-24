@@ -46,6 +46,7 @@ Exact checks only; no model grades another model.
 | `specificity` | healthy | Root cause is null. |
 | `release` | deploy-caused | Root-cause statement names the bad release (exact version match). |
 | `citations` | all | The backend's citation check passes (every claim cites IDs in the snapshot). |
+| `complete` | two-fault | Every faulty service is named in the root cause, a contributing factor, or the timeline; a ruled-out mention does not count. |
 
 Scores are reported with 95% Wilson intervals, overall and per group. Two free checks keep the
 grader honest: `--check oracle` grades the known answers (must score 100%) and `--check null`
@@ -62,6 +63,7 @@ From `backend/` with the virtualenv active:
 python -m eval.run --check oracle                  # free
 python -m eval.run --check null                    # free
 python -m eval.run --variant baseline --max-usd 2  # paid, about $1.25 for the original 24
+python -m eval.run --variant v3 --regrade          # free: re-grade stored replies
 python -m eval.report                              # writes eval/results/report.md
 python -m eval.overview                            # writes eval/cases/CASES.md
 ```
@@ -128,8 +130,9 @@ regression sample. Both runs used the baseline model and effort.
   correct with valid citations. The model found the 3% error rate from five log lines, named
   3.3.0 rather than the fix 3.3.1, and ruled out the decoy gateway deploy in F25 because errors
   were already logged under the previous gateway release. In F24 both runs blamed the orders
-  database errors but neither mentioned the second fault, a tenfold rise in inventory latency;
-  the grader accepts either service, so this miss scores as correct.
+  database errors but neither mentioned the second fault, a tenfold rise in inventory latency.
+  The `complete` check was added for this and scores both runs 0; `correct` still accepts either
+  service. Stored runs were re-graded from their replies; no other grade changed.
 - Not measured: prompt version 3 on the other 19 original cases. The change adds one instruction and an
   `<empty_sources>` list, so regressions are unlikely but not ruled out; a full run costs about
   $1.25.
@@ -138,8 +141,8 @@ regression sample. Both runs used the baseline model and effort.
 
 - **Little headroom.** The baseline scores at or near the ceiling, and the seven hard cases
   added for headroom scored 14 of 14 as well, so this set detects regressions (prompt, model,
-  or effort changes) better than it ranks improvements. The checks, not only the cases, limit
-  it: a diagnosis that misses a second fault (F24) still scores as correct.
+  or effort changes) better than it ranks improvements. Only F24 shows headroom so far, through the
+  `complete` check (0 of 2); one case is too few to compare configurations on.
 - **Small samples.** 31 cases, mostly one run each; per-group intervals are wide, and run-to-run
   variance is not measured (`--reps` supports it).
 - **One synthetic system.** All cases come from the three-service demo stack and its fault
